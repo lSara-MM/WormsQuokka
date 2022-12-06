@@ -20,6 +20,11 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	rect.x = 200;
+	rect.y = 200;
+	rect.w = 100;
+	rect.h = 100;
+
 	return ret;
 }
 
@@ -34,7 +39,10 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	
+
+	App->renderer->DrawQuad(rect, 0, 255, 255, 255); 
+
+	App->renderer->DrawCircle(500, 200, 100, 0, 255, 255, 255); 
 
 	return UPDATE_CONTINUE;
 }
