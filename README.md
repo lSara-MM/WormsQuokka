@@ -1,2 +1,11 @@
 # WormsQuokka
 a
+e
+
+
+REPARTICION DE TAREAS
+-ALBERTO:
+-ANDREU:
+-ERIC:
+-SARA:
+-SONIA:
