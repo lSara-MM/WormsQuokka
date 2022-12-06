@@ -57,4 +57,5 @@ public:
  
 	SDL_Rect rect; 
 
+	iPoint pos;
 };
