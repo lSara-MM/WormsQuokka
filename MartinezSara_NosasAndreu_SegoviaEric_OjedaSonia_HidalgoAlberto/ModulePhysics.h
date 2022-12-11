@@ -2,6 +2,28 @@
 #include "Module.h"
 #include "Globals.h"
 
+
+class pbody
+{
+public:
+	pbody();
+	pbody(int x, int y, int rad, bool dynamic = true);
+	~pbody();
+
+	bool isDynamic;
+	iPoint pos;
+	int radious;
+	
+	p2List<pbody>* allBodies; //Lista con cuerpos estaticos
+private:
+
+};
+
+
+
+//p2List<pbody*>* collisions; //Lista solo cuerpos dinamicos
+
+
 class ModulePhysics : public Module
 {
 public:
@@ -13,23 +35,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	class pbody
-	{
-	public:
-		pbody();
-		pbody(int x, int y, int rad, bool dynamic = true) 
-		{
-			
-		}
-		~pbody();
-		
-		bool isDynamic;
-		iPoint pos;
-		int radious;
-
-	private:
-
-	};
+	
 
 	
 

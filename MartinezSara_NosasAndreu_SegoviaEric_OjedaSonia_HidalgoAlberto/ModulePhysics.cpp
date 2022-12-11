@@ -46,3 +46,12 @@ bool ModulePhysics::CleanUp()
 
 	return true;
 }
+
+pbody::pbody(int x, int y, int rad, bool dynamic)
+{
+	pos.x = x;
+	pos.y = y;
+	radious = rad;
+	isDynamic = dynamic;
+
+}
