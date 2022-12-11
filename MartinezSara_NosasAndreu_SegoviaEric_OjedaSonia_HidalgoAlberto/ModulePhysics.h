@@ -13,6 +13,26 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	class pbody
+	{
+	public:
+		pbody();
+		pbody(int x, int y, int rad, bool dynamic = true) 
+		{
+			
+		}
+		~pbody();
+		
+		bool isDynamic;
+		iPoint pos;
+		int radious;
+
+	private:
+
+	};
+
+	
+
 private:
 
 	bool debug;
