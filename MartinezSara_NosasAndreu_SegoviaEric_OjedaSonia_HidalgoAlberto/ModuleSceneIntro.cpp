@@ -18,7 +18,6 @@ ModuleSceneIntro::~ModuleSceneIntro()
 // Load assets
 bool ModuleSceneIntro::Start()
 {
-	app = new Application();
 
 	LOG("Loading Intro assets");
 	bool ret = true;
@@ -59,14 +58,20 @@ update_status ModuleSceneIntro::Update()
 	//}
 	
 
-	if (app->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 		x += 10;
-		LOG("X");
 	}
 
-	if (app->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
 		x -= 10;
-		LOG("-X");
+	}	
+	
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
+		y -= 10;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
+		y += 10;
 	}
 
 
