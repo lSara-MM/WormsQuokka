@@ -3,6 +3,8 @@
 #include "Animation.h"
 #include "p2DynArray.h"
 #include "Globals.h"
+#include "ModuleInput.h"
+#include "Application.h"
 
 #include "ModulePhysics.h"
 
@@ -60,4 +62,8 @@ public:
 	SDL_Rect rect; 
 
 	iPoint pos;
+
+	int x = 500, y = 200;
+
+	Application* app;
 };
