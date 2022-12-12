@@ -60,11 +60,8 @@ public:
         return Vec2D(x, y);
     }
 
-
-
 public:
 	float x, y;
-
 };
 
 enum BodyType
@@ -83,46 +80,39 @@ enum BodyShape
 class pBody
 {
 public:
-    pBody();
+    pBody() {};
+    pBody(int x, int y, int width_, int height_, BodyShape shape_ = BodyShape::RECTANGLE, BodyType type_ = BodyType::STATIC);
+    ~pBody() {};
 
-    pBody(int x, int y, int width_, int height_, BodyShape shape = BodyShape::RECTANGLE, BodyType type_ = BodyType::STATIC);
-    ~pBody();
-
-    void SetMass(float m) { mass = m; }
-    void SetVel(Vec2D v) { velocity = v; }
-    void SetAcc(Vec2D a) { acc = a; }
-    void SetDen(float d) { density = d; }
-    void SetMassFric(float ff) { friction = ff; }
-    void SetRest(float rest) { restitution = rest; }
+    void SetMass(float m);
+    void SetVel(Vec2D v);
+    void SetAcc(Vec2D a);
+    void SetDen(float d);
+    void SetMassFric(float ff);
+    void SetRest(float rest);
 
     // apply force to the center
-    void ApplyForce(Vec2D f) { force += f; }
+    void ApplyForce(Vec2D f);
 
 public:
     int width, height;
     //float radius;
 
     iPoint pos;
-    Vec2D velocity;
-    Vec2D acc;
+    Vec2D velocity = { 0, 0 };
+    Vec2D acc = { 0, 0 };
 
     Vec2D force;
 
-    float mass;
-    float density;
-    float friction;
-    float restitution;
+    float mass = 1.0f;
+    float density = 0.0f;
+    float friction = 0.20f;
+    float restitution = 0.0f;
 
+    BodyShape shape;
     BodyType type;
     
     p2List<pBody>* allBodies; //Lista con cuerpos estaticos
 private:
 
 };
-
-pBody::pBody(int x, int y, int width_, int height_, BodyShape shape, BodyType type_)
-{
-    pos.x = x;
-    pos.y = y;
-    type = type_;
-}

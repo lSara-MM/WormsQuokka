@@ -12,6 +12,9 @@
     <Filter Include="Header Files\Containers">
       <UniqueIdentifier>{97c4111e-b102-4ba8-9053-6f07ccbbe3d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{be408498-2f77-43b8-9521-77af14b06db4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -53,11 +56,11 @@
     <ClInclude Include="p2List.h">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="ModulePhysics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PhysWorld.h">
-      <Filter>Header Files</Filter>
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ModulePhysics.h">
+      <Filter>Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,7 +95,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysWorld.cpp">
+      <Filter>Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
