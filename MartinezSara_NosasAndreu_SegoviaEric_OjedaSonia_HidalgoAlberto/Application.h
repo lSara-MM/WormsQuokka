@@ -1,3 +1,6 @@
+#ifndef __Application_H__
+#define __Application_H__
+
 #pragma once
 
 #include "p2List.h"
@@ -42,3 +45,7 @@ private:
 
 	void AddModule(Module* mod);
 };
+
+//extern Application* app;
+
+#endif	// __APP_H__
