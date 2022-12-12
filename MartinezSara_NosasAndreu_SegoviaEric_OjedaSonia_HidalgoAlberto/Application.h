@@ -28,6 +28,13 @@ public:
 	ModuleSceneIntro* scene_intro;
 	ModulePhysics* physics;
 
+	// time
+	float time = 1000 / 60;
+	
+
+	float dt;
+	int frame = 0;
+
 private:
 
 	p2List<Module*> list_modules;

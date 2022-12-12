@@ -53,7 +53,7 @@ update_status ModuleSceneIntro::Update()
 
 	App->renderer->DrawCircle(x, y, 100, 0, 255, 255, 255); 
 		
-	p2List_item<pbody>* bodies;
+	//p2List_item<pbody>* bodies ;
 	
 	//for(bodies=allBodies->getFirst();bodies=bodies->next;bodies->next!=nullptr)
 	//{
