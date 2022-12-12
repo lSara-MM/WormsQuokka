@@ -23,8 +23,12 @@ int main(int argc, char ** argv)
 	main_states state = MAIN_CREATION;
 	Application* App = NULL;
 
+	uint startTime;
+	float fps;
+
 	while (state != MAIN_EXIT)
 	{
+		startTime = SDL_GetTicks();
 		switch (state)
 		{
 		case MAIN_CREATION:
@@ -80,6 +84,15 @@ int main(int argc, char ** argv)
 			break;
 
 		}
+
+		// time control
+		if (App->time > SDL_GetTicks() - startTime)
+		{
+			SDL_Delay(App->time - (SDL_GetTicks() - startTime));
+		}
+		fps = (SDL_GetTicks() - startTime);
+		App->dt = fps;
+		break;
 	}
 
 	delete App;

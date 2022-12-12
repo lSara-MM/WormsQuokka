@@ -4,6 +4,8 @@
 #include "p2DynArray.h"
 #include "Globals.h"
 
+#include "ModulePhysics.h"
+
 #define BOUNCER_TIME 200
 
 enum lightTypes

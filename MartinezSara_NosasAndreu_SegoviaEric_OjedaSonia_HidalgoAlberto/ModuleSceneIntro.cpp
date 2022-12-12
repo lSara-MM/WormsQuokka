@@ -26,11 +26,7 @@ bool ModuleSceneIntro::Start()
 	rect.w = 100;
 	rect.h = 100;
 
-	pbody* b1 = new pbody(500, 200, 100);
-
-
-	//allBodies->add(*b1);
-
+	pBody* b1 = new pBody(500, 200, 100, 100);
 	return ret;
 }
 
@@ -50,7 +46,7 @@ update_status ModuleSceneIntro::Update()
 
 	App->renderer->DrawCircle(500, 200, 100, 0, 255, 255, 255); 
 		
-	p2List_item<pbody>* bodies ;
+	//p2List_item<pbody>* bodies ;
 	
 	//for(bodies=allBodies->getFirst();bodies=bodies->next;bodies->next!=nullptr)
 	{
