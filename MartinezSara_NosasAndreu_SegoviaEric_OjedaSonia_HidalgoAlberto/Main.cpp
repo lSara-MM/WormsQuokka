@@ -92,7 +92,6 @@ int main(int argc, char ** argv)
 		}
 		fps = (SDL_GetTicks() - startTime);
 		App->dt = fps;
-		break;
 	}
 
 	delete App;

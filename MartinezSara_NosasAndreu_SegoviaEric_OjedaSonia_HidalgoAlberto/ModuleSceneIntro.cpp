@@ -30,9 +30,7 @@ bool ModuleSceneIntro::Start()
 	rect.w = 100;
 	rect.h = 100;
 
-	pbody* b1 = new pbody(500, 200, 100);
-
-	//allBodies->add(*b1);
+	pBody* b1 = new pBody(500, 200, 100, 100);
 
 	return ret;
 }

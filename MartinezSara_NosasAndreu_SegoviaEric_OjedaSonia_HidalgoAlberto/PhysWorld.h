@@ -94,6 +94,8 @@ public:
     // apply force to the center
     void ApplyForce(Vec2D f);
 
+
+
 public:
     int width, height;
     //float radius;
@@ -112,7 +114,7 @@ public:
     BodyShape shape;
     BodyType type;
     
-    p2List<pBody>* allBodies; //Lista con cuerpos estaticos
+    p2List<pBody>* listBodies; //Lista con cuerpos estaticos
 private:
 
 };

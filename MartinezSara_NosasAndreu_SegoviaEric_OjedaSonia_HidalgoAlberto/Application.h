@@ -30,10 +30,8 @@ public:
 
 	// time
 	float time = 1000 / 60;
-	
-
 	float dt;
-	int frame = 0;
+	//int frame = 0;
 
 private:
 
