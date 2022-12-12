@@ -48,7 +48,7 @@ update_status ModuleSceneIntro::Update()
 
 	App->renderer->DrawQuad(rect, 0, 255, 255, 255); 
 
-	App->renderer->DrawCircle(x, y, 100, 0, 255, 255, 255); 
+	App->renderer->DrawCircle(x, y, rad, 0, 255, 255, 255); 
 		
 	//p2List_item<pbody>* bodies ;
 	
@@ -56,7 +56,6 @@ update_status ModuleSceneIntro::Update()
 	//{
 		//App->renderer->DrawCircle(bodies->data.pos.x,bodies->data.pos.y,bodies->data.radious, 255, 255, 255);
 	//}
-	
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
 		x += 10;
