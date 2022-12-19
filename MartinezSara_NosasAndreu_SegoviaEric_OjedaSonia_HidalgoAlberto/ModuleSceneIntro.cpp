@@ -29,7 +29,7 @@ bool ModuleSceneIntro::Start()
 	rect.w = 100;
 	rect.h = 100;
 
-	pBody* b1 = new pBody(500, 200, 100, 100);
+	//pBody* b1 = new pBody(500, 200, 100, 100);
 
 	return ret;
 }
