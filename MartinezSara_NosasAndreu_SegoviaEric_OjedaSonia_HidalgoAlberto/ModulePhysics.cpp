@@ -4,7 +4,6 @@
 #include "math.h"
 #include <cmath>
 
-// TODO 1: Include Box 2 header and library
 
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -253,6 +252,25 @@ void compute_hydrodynamic_buoyancy(float& fx, float& fy, const PhysBall& ball, c
 	fy = fbuoyancy_modulus; // Buoyancy is parallel to pressure gradient
 }
 
+
+// Integration scheme: Velocity Backwards Euler
+void integrator_velocity_Backwards_Euler(PhysBall& ball, float dt)
+{
+	ball.x += ball.vx * dt;
+	ball.y += ball.vy * dt;
+	ball.vx += ball.ax * dt;
+	ball.vy += ball.ay * dt;
+}
+
+// Integration scheme: Velocity Forwards Euler
+void integrator_velocity_Forwards_Euler(PhysBall& ball, float dt)
+{
+	ball.vx += ball.ax * dt;
+	ball.vy += ball.ay * dt;
+	ball.x += ball.vx * dt;
+	ball.y += ball.vy * dt;
+}
+
 // Integration scheme: Velocity Verlet
 void integrator_velocity_verlet(PhysBall& ball, float dt)
 {
@@ -261,6 +279,7 @@ void integrator_velocity_verlet(PhysBall& ball, float dt)
 	ball.vx += ball.ax * dt;
 	ball.vy += ball.ay * dt;
 }
+
 
 // Detect collision with ground
 bool is_colliding_with_ground(const PhysBall& ball, const Ground& ground)

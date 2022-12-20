@@ -117,6 +117,12 @@ void compute_hydrodynamic_drag(float& fx, float& fy, const PhysBall& ball, const
 // Compute Hydrodynamic Buoyancy force
 void compute_hydrodynamic_buoyancy(float& fx, float& fy, const PhysBall& ball, const Water& water);
 
+// Integration scheme: Velocity Backwards Euler
+void integrator_velocity_Backwards_Euler(PhysBall& ball, float dt);
+
+// Integration scheme: Velocity Forwards Euler
+void integrator_velocity_Forwards_Euler(PhysBall& ball, float dt);
+
 // Integration scheme: Velocity Verlet
 void integrator_velocity_verlet(PhysBall& ball, float dt);
 
