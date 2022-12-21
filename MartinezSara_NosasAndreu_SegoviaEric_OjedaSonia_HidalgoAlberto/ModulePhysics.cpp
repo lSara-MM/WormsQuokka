@@ -348,6 +348,22 @@ bool check_collision_circle_rectangle(float cx, float cy, float cr, float rx, fl
 	return (cornerDistance_sq <= (cr * cr));
 }
 
+bool check_collision_circle_circle(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2)
+{
+	
+
+	// Distance from center of circle to center of rectangle
+	float dist_x = std::abs(cx1 - cx2);
+	float dist_y = std::abs(cy1 - cy2);
+
+	// If circle is further than both angles, not interceting
+	if ((sqrt(dist_x * dist_x + dist_y* dist_y)) > (cr1+cr2)) { return false; }
+	
+
+	// If circle is closer than radius together, is intersecting
+	if ((sqrt(dist_x * dist_x + dist_y * dist_y)) <= (cr1 + cr2)) { return true; }
+}
+
 // Convert from meters to pixels (for SDL drawing)
 SDL_Rect Ground::pixels()
 {
