@@ -22,14 +22,14 @@ bool ModulePhysics::Start()
 	// Create ground
 	ground = Ground();
 	ground.x = 0.0f; // [m]
-	ground.y = 0.0f; // [m]
+	ground.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
 	ground.w = 30.0f; // [m]
 	ground.h = 5.0f; // [m]
 
 	// Create Water
 	water = Water();
 	water.x = ground.x + ground.w; // Start where ground ends [m]
-	water.y = 0.0f; // [m]
+	water.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
 	water.w = 30.0f; // [m]
 	water.h = 5.0f; // [m]
 	water.density = 50.0f; // [kg/m^3]
@@ -57,7 +57,7 @@ bool ModulePhysics::Start()
 
 	// Set initial position and velocity of the ball
 	ball.x = 2.0f;
-	ball.y = (ground.y + ground.h) + 2.0f;
+	ball.y = (ground.y - ground.h) + 2.0f;
 	ball.vx = 5.0f;
 	ball.vy = 10.0f;
 
@@ -76,7 +76,7 @@ update_status ModulePhysics::PreUpdate()
 		// Set static properties of the ball
 		ball2.mass = 10.0f; // [kg]
 		ball2.surface = 1.0f; // [m^2]
-		ball2.radius = 0.5f; // [m]
+		ball2.radius = 4.0f; // [m]
 		ball2.cd = 0.4f; // [-]
 		ball2.cl = 1.2f; // [-]
 		ball2.b = 10.0f; // [...]
@@ -84,8 +84,8 @@ update_status ModulePhysics::PreUpdate()
 		ball2.coef_restitution = 0.8f; // [-]
 
 		// Set initial position and velocity of the ball
-		ball2.x = 12.0f;
-		ball2.y = (ground.y + ground.h) + 2.0f;
+		ball2.x = PIXEL_TO_METERS(App->input->GetMouseX());
+		ball2.y = PIXEL_TO_METERS(App->input->GetMouseY());
 		ball2.vx = -5.0f;
 		ball2.vy = -10.0f;
 
@@ -93,6 +93,7 @@ update_status ModulePhysics::PreUpdate()
 		balls.emplace_back(ball2);
 	}
 
+	LOG("%f", PIXEL_TO_METERS(App->input->GetMouseY()));
 
 
 	// Process all balls in the scenario
@@ -116,7 +117,7 @@ update_status ModulePhysics::PreUpdate()
 
 		// Gravity force
 		float fgx = ball.mass * 0.0f;
-		float fgy = ball.mass * -10.0f; // Let's assume gravity is constant and downwards
+		float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
 		ball.fx += fgx; ball.fy += fgy; // Add this force to ball's total force
 
 		// Aerodynamic Drag force (only when not in water)
@@ -165,9 +166,9 @@ update_status ModulePhysics::PreUpdate()
 		{
 			if (ball.x <= (ground.x + ground.w))
 			{
-				if (ball.y >= ground.y) {
+				if (ball.y >= (ground.y - ground.h*2)) {
 					// TP ball to ground surface
-					ball.y = ground.y + ground.h + ball.radius;
+					ball.y = ground.y - ground.h - ball.radius;
 
 					// Elastic bounce with ground
 					ball.vy = -ball.vy;
@@ -208,7 +209,7 @@ update_status ModulePhysics::PostUpdate()
 	{
 		// Convert from physical magnitudes to geometrical pixels
 		int pos_x = METERS_TO_PIXELS(ball.x);
-		int pos_y = SCREEN_HEIGHT - METERS_TO_PIXELS(ball.y);
+		int pos_y =  METERS_TO_PIXELS(ball.y);
 		int size_r = METERS_TO_PIXELS(ball.radius);
 
 		// Select color
@@ -266,10 +267,10 @@ void compute_hydrodynamic_drag(float& fx, float& fy, const PhysBall& ball, const
 void compute_hydrodynamic_buoyancy(float& fx, float& fy, const PhysBall& ball, const Water& water)
 {
 	// Compute submerged area (assume ball is a rectangle, for simplicity)
-	float water_top_level = water.y + water.h; // Water top level y
+	float water_top_level = water.y - water.h; // Water top level y
 	float h = 2.0f * ball.radius; // Ball "hitbox" height
 	float surf = h * (water_top_level - ball.y); // Submerged surface
-	if ((ball.y + ball.radius) < water_top_level) surf = h * h; // If ball completely submerged, use just all ball area
+	if ((ball.y - ball.radius) < water_top_level) surf = h * h; // If ball completely submerged, use just all ball area
 	surf *= 0.4; // FUYM to adjust values (should compute the area of circle segment correctly instead; I'm too lazy for that)
 
 	// Compute Buoyancy force
@@ -311,7 +312,7 @@ void integrator_velocity_verlet(PhysBall& ball, float dt)
 bool is_colliding_with_ground(const PhysBall& ball, const Ground& ground)
 {
 	float rect_x = (ground.x + ground.w / 2.0f); // Center of rectangle
-	float rect_y = (ground.y + ground.h / 2.0f); // Center of rectangle
+	float rect_y = (ground.y - ground.h / 2.0f); // Center of rectangle
 	return check_collision_circle_rectangle(ball.x, ball.y, ball.radius, rect_x, rect_y, ground.w, ground.h);
 }
 
@@ -319,7 +320,7 @@ bool is_colliding_with_ground(const PhysBall& ball, const Ground& ground)
 bool is_colliding_with_water(const PhysBall& ball, const Water& water)
 {
 	float rect_x = (water.x + water.w / 2.0f); // Center of rectangle
-	float rect_y = (water.y + water.h / 2.0f); // Center of rectangle
+	float rect_y = (water.y - water.h / 2.0f); // Center of rectangle
 	return check_collision_circle_rectangle(ball.x, ball.y, ball.radius, rect_x, rect_y, water.w, water.h);
 }
 
@@ -342,7 +343,7 @@ bool check_collision_circle_rectangle(float cx, float cy, float cr, float rx, fl
 
 	// If all of above fails, check corners
 	float a = dist_x - rw / 2.0f;
-	float b = dist_y - rh / 2.0f;
+	float b = dist_y + rh / 2.0f;
 	float cornerDistance_sq = a * a + b * b;
 	return (cornerDistance_sq <= (cr * cr));
 }
@@ -352,7 +353,7 @@ SDL_Rect Ground::pixels()
 {
 	SDL_Rect pos_px{};
 	pos_px.x = METERS_TO_PIXELS(x);
-	pos_px.y = SCREEN_HEIGHT - METERS_TO_PIXELS(y);
+	pos_px.y = METERS_TO_PIXELS(y);
 	pos_px.w = METERS_TO_PIXELS(w);
 	pos_px.h = METERS_TO_PIXELS(-h); // Can I do this? LOL
 	return pos_px;
