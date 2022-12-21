@@ -76,7 +76,7 @@ update_status ModulePhysics::PreUpdate()
 		// Set static properties of the ball
 		ball2.mass = 10.0f; // [kg]
 		ball2.surface = 1.0f; // [m^2]
-		ball2.radius = 4.0f; // [m]
+		ball2.radius = 0.5f; // [m]
 		ball2.cd = 0.4f; // [-]
 		ball2.cl = 1.2f; // [-]
 		ball2.b = 10.0f; // [...]
