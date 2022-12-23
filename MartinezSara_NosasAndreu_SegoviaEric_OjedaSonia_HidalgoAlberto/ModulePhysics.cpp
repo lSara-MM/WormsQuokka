@@ -23,18 +23,26 @@ bool ModulePhysics::Start()
 	ground = Ground();
 	ground.x = 0.0f; // [m]
 	ground.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
-	ground.w = 30.0f; // [m]
-	ground.h = 5.0f; // [m]
+	ground.w = 13.0f; // [m]
+	ground.h = 20.0f; // [m]
 
 	grounds.emplace_back(ground);
 
 	ground1 = Ground();
-	ground1.x = 10.0f; // [m]
-	ground1.y = PIXEL_TO_METERS(SCREEN_HEIGHT) - 5; // [m]
+	ground1.x = 28.0f; // [m]
+	ground1.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
 	ground1.w = 10.0f; // [m]
-	ground1.h = 5.0f; // [m]
+	ground1.h = 6.0f; // [m]
 
 	grounds.emplace_back(ground1);
+
+	ground2 = Ground();
+	ground2.x = 35.0f; // [m]
+	ground2.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
+	ground2.w = 30.0f; // [m]
+	ground2.h = 10.0f; // [m]
+
+	grounds.emplace_back(ground2);
 
 	// Create Water
 	water = Water();
@@ -96,8 +104,8 @@ update_status ModulePhysics::PreUpdate()
 		// Set initial position and velocity of the ball
 		ball2.x = PIXEL_TO_METERS(App->input->GetMouseX());
 		ball2.y = PIXEL_TO_METERS(App->input->GetMouseY());
-		ball2.vx = 5.0f;
-		ball2.vy = 0.0f;
+		ball2.vx = 0.0f;
+		ball2.vy = 20.0f;
 
 		// Add ball to the collection
 		balls.emplace_back(ball2);
@@ -207,6 +215,19 @@ update_status ModulePhysics::PreUpdate()
 
 			}
 
+			if(ball.y  >= PIXEL_TO_METERS(SCREEN_HEIGHT))
+			{
+				// TP ball to ground surface
+				ball.y -= ball.radius;
+
+				ball.vy = -ball.vy;
+
+				// FUYM non-elasticity
+				ball.vx *= ball.coef_friction;
+				ball.vy *= ball.coef_restitution;
+
+			}
+
 			if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
 			{
 				// TP ball to ground surface
@@ -266,16 +287,16 @@ update_status ModulePhysics::PostUpdate()
 	// Colors
 	int color_r, color_g, color_b;
 
+	// Draw water
+	color_r = 0; color_g = 0; color_b = 255;
+	App->renderer->DrawQuad(water.pixels(), color_r, color_g, color_b);
+
 	// Draw ground
 	for (auto& ground : grounds)
 	{
 		color_r = 0; color_g = 255; color_b = 0;
 		App->renderer->DrawQuad(ground.pixels(), color_r, color_g, color_b);
 	}
-
-	// Draw water
-	color_r = 0; color_g = 0; color_b = 255;
-	App->renderer->DrawQuad(water.pixels(), color_r, color_g, color_b);
 
 	// Draw all balls in the scenario
 	for (auto& ball : balls)
