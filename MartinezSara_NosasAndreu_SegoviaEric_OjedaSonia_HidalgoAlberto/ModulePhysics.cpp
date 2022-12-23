@@ -86,8 +86,8 @@ update_status ModulePhysics::PreUpdate()
 		// Set initial position and velocity of the ball
 		ball2.x = PIXEL_TO_METERS(App->input->GetMouseX());
 		ball2.y = PIXEL_TO_METERS(App->input->GetMouseY());
-		ball2.vx = -5.0f;
-		ball2.vy = -10.0f;
+		ball2.vx = 5.0f;
+		ball2.vy = 0.0f;
 
 		// Add ball to the collection
 		balls.emplace_back(ball2);
@@ -119,6 +119,27 @@ update_status ModulePhysics::PreUpdate()
 		float fgx = ball.mass * 0.0f;
 		float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
 		ball.fx += fgx; ball.fy += fgy; // Add this force to ball's total force
+
+		//for(int i = 0; i < balls.size(); i++){	
+		//	for (int j = 0; j < balls.size(); j++) {
+		//		if (balls.at(j).x == balls.at(i).x)
+		//		{
+		//			balls.at(j).x += balls.at(j).radius;
+
+		//			balls.at(j).vx = balls.at(i).vx;
+		//			balls.at(i).vx = balls.at(j).vx;
+
+		//			// FUYM non-elasticity
+		//			balls.at(j).vx *= balls.at(j).coef_friction;
+		//		}
+		//		if (((balls.at(j).x + ball.radius) == balls.at(i).x)) {
+		//			balls.at(j).x -= balls.at(j).radius;
+
+		//			balls.at(j).vx = balls.at(i).vx;
+		//			balls.at(i).vx = balls.at(j).vx;
+		//		}
+		//	}
+		//}
 
 		// Aerodynamic Drag force (only when not in water)
 		if (!is_colliding_with_water(ball, water))
@@ -160,6 +181,32 @@ update_status ModulePhysics::PreUpdate()
 
 		// Step #4: solve collisions
 		// ----------------------------------------------------------------------------------------
+
+		if ((ball.x - ball.radius) <= 0)
+		{
+					// TP ball to ground surface
+					ball.x += ball.radius;
+
+					ball.vx = -ball.vx;
+
+					// FUYM non-elasticity
+					ball.vx *= ball.coef_friction;
+					ball.vy *= ball.coef_restitution;
+				
+		}
+
+		if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
+		{
+			// TP ball to ground surface
+			ball.x -= ball.radius;
+
+			ball.vx = -ball.vx;
+
+			// FUYM non-elasticity
+			ball.vx *= ball.coef_friction;
+			ball.vy *= ball.coef_restitution;
+
+		}
 
 		// Solve collision between ball and ground
 		if (is_colliding_with_ground(ball, ground))
