@@ -47,17 +47,17 @@ bool ModulePhysics::Start()
 	// Create Water
 	water = Water();
 	water.x = ground.x + ground.w; // Start where ground ends [m]
-	water.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
+	water.y = PIXEL_TO_METERS(SCREEN_HEIGHT)+10.0f; // [m]
 	water.w = 30.0f; // [m]
-	water.h = 5.0f; // [m]
+	water.h = 15.0f; // [m]
 	water.density = 50.0f; // [kg/m^3]
 	water.vx = -1.0f; // [m/s]
 	water.vy = 0.0f; // [m/s]
 
 	// Create atmosphere
 	atmosphere = Atmosphere();
-	atmosphere.windx = 10.0f; // [m/s]
-	atmosphere.windy = 5.0f; // [m/s]
+	atmosphere.windx = 5.0f; // [m/s]
+	atmosphere.windy = 0.0f; // [m/s]
 	atmosphere.density = 1.0f; // [kg/m^3]
 
 	// Create a ball
@@ -74,7 +74,7 @@ bool ModulePhysics::Start()
 	ball.coef_restitution = 0.8f; // [-]
 
 	// Set initial position and velocity of the ball
-	ball.x = 2.0f;
+	ball.x = 2.0f ;
 	ball.y = (ground.y - ground.h) + 2.0f;
 	ball.vx = 5.0f;
 	ball.vy = 10.0f;
@@ -87,6 +87,8 @@ bool ModulePhysics::Start()
 
 update_status ModulePhysics::PreUpdate()
 {
+	
+
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		PhysBall ball2 = PhysBall();
@@ -138,6 +140,9 @@ update_status ModulePhysics::PreUpdate()
 			// Gravity force
 			float fgx = ball.mass * 0.0f;
 			float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
+
+			
+
 			ball.fx += fgx; ball.fy += fgy; // Add this force to ball's total force
 
 			//for(int i = 0; i < balls.size(); i++){	
@@ -180,6 +185,7 @@ update_status ModulePhysics::PreUpdate()
 				// Hydrodynamic Buoyancy force
 				float fhbx = 0.0f; float fhby = 0.0f;
 				compute_hydrodynamic_buoyancy(fhbx, fhby, ball, water);
+				
 				ball.fx += fhbx; ball.fy += fhby; // Add this force to ball's total force
 			}
 
@@ -306,6 +312,7 @@ update_status ModulePhysics::PostUpdate()
 			int pos_x = METERS_TO_PIXELS(ball.x);
 			int pos_y = METERS_TO_PIXELS(ball.y);
 			int size_r = METERS_TO_PIXELS(ball.radius);
+			
 
 			// Select color
 			if (ball.physics_enabled)
@@ -320,6 +327,8 @@ update_status ModulePhysics::PostUpdate()
 			// Draw ball
 			App->renderer->DrawCircle(pos_x, pos_y, size_r, color_r, color_g, color_b);
 	}
+
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -364,8 +373,8 @@ void compute_hydrodynamic_buoyancy(float& fx, float& fy, const PhysBall& ball, c
 	// Compute submerged area (assume ball is a rectangle, for simplicity)
 	float water_top_level = water.y - water.h; // Water top level y
 	float h = 2.0f * ball.radius; // Ball "hitbox" height
-	float surf = h * (water_top_level - ball.y); // Submerged surface
-	if ((ball.y - ball.radius) < water_top_level) surf = h * h; // If ball completely submerged, use just all ball area
+	float surf = h * (water_top_level - ball.y-ball.radius); // Submerged surface
+	//if ((ball.y - ball.radius) < water_top_level) surf = h * h; // If ball completely submerged, use just all ball area
 	surf *= 0.4; // FUYM to adjust values (should compute the area of circle segment correctly instead; I'm too lazy for that)
 
 	// Compute Buoyancy force
@@ -416,7 +425,7 @@ bool is_colliding_with_water(const PhysBall& ball, const Water& water)
 {
 	float rect_x = (water.x + water.w / 2.0f); // Center of rectangle
 	float rect_y = (water.y - water.h / 2.0f); // Center of rectangle
-	return check_collision_circle_rectangle(ball.x, ball.y, ball.radius, rect_x, rect_y, water.w, water.h);
+	return check_collision_circle_rectangle(ball.x, ball.y, ball.radius, rect_x, rect_y, water.w, water.h); //El codigo ya tienen en cuenta que x,y es desde el centro.
 }
 
 // Detect collision between circle and rectange
