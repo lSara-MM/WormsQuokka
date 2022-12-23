@@ -18,8 +18,8 @@ public:
 
 	PhysBall() {};
 
-	// x, y, rad, mass, vx, vy, ax, ay, surface, cl, cd, b, friction, restitution, enabled;
-	PhysBall(float x_, float y_, float rad, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float ax_ = 0.0f, float ay_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, bool enabled = true)
+	// x, y, rad, mass, vx, vy, surface, cl, cd, b, friction, restitution, ax, ay, enabled;
+	PhysBall(float x_, float y_, float rad, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true)
 	{
 		x = x_;
 		y = y_;

@@ -88,26 +88,29 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate()
 {
 	
-
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		PhysBall ball2 = PhysBall();
+		int posX = PIXEL_TO_METERS(App->input->GetMouseX());
+		int posY = PIXEL_TO_METERS(App->input->GetMouseY());
+		PhysBall ball2 = PhysBall(posX, posY, 0.5f, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
 
-		// Set static properties of the ball
-		ball2.mass = 10.0f; // [kg]
-		ball2.surface = 1.0f; // [m^2]
-		ball2.radius = 0.5f; // [m]
-		ball2.cd = 0.4f; // [-]
-		ball2.cl = 1.2f; // [-]
-		ball2.b = 10.0f; // [...]
-		ball2.coef_friction = 0.9f; // [-]
-		ball2.coef_restitution = 0.8f; // [-]
 
-		// Set initial position and velocity of the ball
-		ball2.x = PIXEL_TO_METERS(App->input->GetMouseX());
-		ball2.y = PIXEL_TO_METERS(App->input->GetMouseY());
-		ball2.vx = 0.0f;
-		ball2.vy = 20.0f;
+
+		//// Set static properties of the ball
+		//ball2.mass = 10.0f; // [kg]
+		//ball2.surface = 1.0f; // [m^2]
+		//ball2.radius = 0.5f; // [m]
+		//ball2.cd = 0.4f; // [-]
+		//ball2.cl = 1.2f; // [-]
+		//ball2.b = 10.0f; // [...]
+		//ball2.coef_friction = 0.9f; // [-]
+		//ball2.coef_restitution = 0.8f; // [-]
+
+		//// Set initial position and velocity of the ball
+		//ball2.x = PIXEL_TO_METERS(App->input->GetMouseX());
+		//ball2.y = PIXEL_TO_METERS(App->input->GetMouseY());
+		//ball2.vx = 0.0f;
+		//ball2.vy = 20.0f;
 
 		// Add ball to the collection
 		balls.emplace_back(ball2);
