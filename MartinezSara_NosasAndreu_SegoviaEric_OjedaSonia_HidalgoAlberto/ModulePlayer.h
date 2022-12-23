@@ -3,14 +3,37 @@
 #include "Animation.h"
 #include "Globals.h"
 #include "p2Point.h"
+#include "ModulePhysics.h"
 
-struct Object
+enum class WormType
+{
+	RED,
+	BLUE
+};
+
+class Object
 {
 	SDL_Texture* graphic;
 	uint fx;
 
 	Object() : graphic(NULL)
 	{}
+
+	Object(iPoint pos, int id_, WormType type_, bool render = true) : graphic(NULL)
+	{
+		position = pos;
+		id = id_;
+		type = type_;
+		renderable = render;
+	}
+
+public:
+	iPoint position;
+	bool renderable = true;
+	int id;
+	WormType type;
+
+	PhysBall* body;
 };
 
 class ModulePlayer : public Module
