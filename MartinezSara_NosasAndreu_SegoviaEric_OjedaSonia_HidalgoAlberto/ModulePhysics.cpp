@@ -26,6 +26,16 @@ bool ModulePhysics::Start()
 	ground.w = 30.0f; // [m]
 	ground.h = 5.0f; // [m]
 
+	grounds.emplace_back(ground);
+
+	ground1 = Ground();
+	ground1.x = 10.0f; // [m]
+	ground1.y = PIXEL_TO_METERS(SCREEN_HEIGHT) - 5; // [m]
+	ground1.w = 10.0f; // [m]
+	ground1.h = 5.0f; // [m]
+
+	grounds.emplace_back(ground1);
+
 	// Create Water
 	water = Water();
 	water.x = ground.x + ground.w; // Start where ground ends [m]
@@ -69,7 +79,7 @@ bool ModulePhysics::Start()
 
 update_status ModulePhysics::PreUpdate()
 {
-	if (App->input->GetKey(SDL_SCANCODE_1)==KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		PhysBall ball2 = PhysBall();
 
@@ -99,141 +109,154 @@ update_status ModulePhysics::PreUpdate()
 	// Process all balls in the scenario
 	for (auto& ball : balls)
 	{
-		// Skip ball if physics not enabled
-		if (!ball.physics_enabled)
+		for (auto& ground : grounds) 
 		{
-			continue;
-		}
-
-		// Step #0: Clear old values
-		// ----------------------------------------------------------------------------------------
-		
-		// Reset total acceleration and total accumulated force of the ball
-		ball.fx = ball.fy = 0.0f;
-		ball.ax = ball.ay = 0.0f;
-
-		// Step #1: Compute forces
-		// ----------------------------------------------------------------------------------------
-
-		// Gravity force
-		float fgx = ball.mass * 0.0f;
-		float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
-		ball.fx += fgx; ball.fy += fgy; // Add this force to ball's total force
-
-		//for(int i = 0; i < balls.size(); i++){	
-		//	for (int j = 0; j < balls.size(); j++) {
-		//		if (balls.at(j).x == balls.at(i).x)
-		//		{
-		//			balls.at(j).x += balls.at(j).radius;
-
-		//			balls.at(j).vx = balls.at(i).vx;
-		//			balls.at(i).vx = balls.at(j).vx;
-
-		//			// FUYM non-elasticity
-		//			balls.at(j).vx *= balls.at(j).coef_friction;
-		//		}
-		//		if (((balls.at(j).x + ball.radius) == balls.at(i).x)) {
-		//			balls.at(j).x -= balls.at(j).radius;
-
-		//			balls.at(j).vx = balls.at(i).vx;
-		//			balls.at(i).vx = balls.at(j).vx;
-		//		}
-		//	}
-		//}
-
-		// Aerodynamic Drag force (only when not in water)
-		if (!is_colliding_with_water(ball, water))
-		{
-			float fdx = 0.0f; float fdy = 0.0f;
-			compute_aerodynamic_drag(fdx, fdy, ball, atmosphere);
-			ball.fx += fdx; ball.fy += fdy; // Add this force to ball's total force
-		}
-
-		// Hydrodynamic forces (only when in water)
-		if (is_colliding_with_water(ball, water))
-		{
-			// Hydrodynamic Drag force
-			float fhdx = 0.0f; float fhdy = 0.0f;
-			compute_hydrodynamic_drag(fhdx, fhdy, ball, water);
-			ball.fx += fhdx; ball.fy += fhdy; // Add this force to ball's total force
-
-			// Hydrodynamic Buoyancy force
-			float fhbx = 0.0f; float fhby = 0.0f;
-			compute_hydrodynamic_buoyancy(fhbx, fhby, ball, water);
-			ball.fx += fhbx; ball.fy += fhby; // Add this force to ball's total force
-		}
-
-		// Other forces
-		// ...
-
-		// Step #2: 2nd Newton's Law
-		// ----------------------------------------------------------------------------------------
-		
-		// SUM_Forces = mass * accel --> accel = SUM_Forces / mass
-		ball.ax = ball.fx / ball.mass;
-		ball.ay = ball.fy / ball.mass;
-
-		// Step #3: Integrate --> from accel to new velocity & new position
-		// ----------------------------------------------------------------------------------------
-
-		// We will use the 2nd order "Velocity Verlet" method for integration.
-		integrator_velocity_verlet(ball, dt);
-
-		// Step #4: solve collisions
-		// ----------------------------------------------------------------------------------------
-
-		if ((ball.x - ball.radius) <= 0)
-		{
-					// TP ball to ground surface
-					ball.x += ball.radius;
-
-					ball.vx = -ball.vx;
-
-					// FUYM non-elasticity
-					ball.vx *= ball.coef_friction;
-					ball.vy *= ball.coef_restitution;
-				
-		}
-
-		if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
-		{
-			// TP ball to ground surface
-			ball.x -= ball.radius;
-
-			ball.vx = -ball.vx;
-
-			// FUYM non-elasticity
-			ball.vx *= ball.coef_friction;
-			ball.vy *= ball.coef_restitution;
-
-		}
-
-		// Solve collision between ball and ground
-		if (is_colliding_with_ground(ball, ground))
-		{
-			if (ball.x <= (ground.x + ground.w))
+			// Skip ball if physics not enabled
+			if (!ball.physics_enabled)
 			{
-				if (ball.y >= (ground.y - ground.h*2)) {
-					// TP ball to ground surface
-					ball.y = ground.y - ground.h - ball.radius;
+				continue;
+			}
 
-					// Elastic bounce with ground
-					ball.vy = -ball.vy;
+			// Step #0: Clear old values
+			// ----------------------------------------------------------------------------------------
 
-					// FUYM non-elasticity
+			// Reset total acceleration and total accumulated force of the ball
+			ball.fx = ball.fy = 0.0f;
+			ball.ax = ball.ay = 0.0f;
+
+			// Step #1: Compute forces
+			// ----------------------------------------------------------------------------------------
+
+			// Gravity force
+			float fgx = ball.mass * 0.0f;
+			float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
+			ball.fx += fgx; ball.fy += fgy; // Add this force to ball's total force
+
+			//for(int i = 0; i < balls.size(); i++){	
+			//	for (int j = 0; j < balls.size(); j++) {
+			//		if (balls.at(j).x == balls.at(i).x)
+			//		{
+			//			balls.at(j).x += balls.at(j).radius;
+
+			//			balls.at(j).vx = balls.at(i).vx;
+			//			balls.at(i).vx = balls.at(j).vx;
+
+			//			// FUYM non-elasticity
+			//			balls.at(j).vx *= balls.at(j).coef_friction;
+			//		}
+			//		if (((balls.at(j).x + ball.radius) == balls.at(i).x)) {
+			//			balls.at(j).x -= balls.at(j).radius;
+
+			//			balls.at(j).vx = balls.at(i).vx;
+			//			balls.at(i).vx = balls.at(j).vx;
+			//		}
+			//	}
+			//}
+
+			// Aerodynamic Drag force (only when not in water)
+			if (!is_colliding_with_water(ball, water))
+			{
+				float fdx = 0.0f; float fdy = 0.0f;
+				compute_aerodynamic_drag(fdx, fdy, ball, atmosphere);
+				ball.fx += fdx; ball.fy += fdy; // Add this force to ball's total force
+			}
+
+			// Hydrodynamic forces (only when in water)
+			if (is_colliding_with_water(ball, water))
+			{
+				// Hydrodynamic Drag force
+				float fhdx = 0.0f; float fhdy = 0.0f;
+				compute_hydrodynamic_drag(fhdx, fhdy, ball, water);
+				ball.fx += fhdx; ball.fy += fhdy; // Add this force to ball's total force
+
+				// Hydrodynamic Buoyancy force
+				float fhbx = 0.0f; float fhby = 0.0f;
+				compute_hydrodynamic_buoyancy(fhbx, fhby, ball, water);
+				ball.fx += fhbx; ball.fy += fhby; // Add this force to ball's total force
+			}
+
+			// Other forces
+			// ...
+
+			// Step #2: 2nd Newton's Law
+			// ----------------------------------------------------------------------------------------
+
+			// SUM_Forces = mass * accel --> accel = SUM_Forces / mass
+			ball.ax = ball.fx / ball.mass;
+			ball.ay = ball.fy / ball.mass;
+
+			// Step #3: Integrate --> from accel to new velocity & new position
+			// ----------------------------------------------------------------------------------------
+
+			// We will use the 2nd order "Velocity Verlet" method for integration.
+			integrator_velocity_verlet(ball, dt);
+
+			// Step #4: solve collisions
+			// ----------------------------------------------------------------------------------------
+
+			if ((ball.x - ball.radius) <= 0)
+			{
+				// TP ball to ground surface
+				ball.x += ball.radius;
+
+				ball.vx = -ball.vx;
+
+				// FUYM non-elasticity
+				ball.vx *= ball.coef_friction;
+				ball.vy *= ball.coef_restitution;
+
+			}
+
+			if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
+			{
+				// TP ball to ground surface
+				ball.x -= ball.radius;
+
+				ball.vx = -ball.vx;
+
+				// FUYM non-elasticity
+				ball.vx *= ball.coef_friction;
+				ball.vy *= ball.coef_restitution;
+
+			}
+
+			// Solve collision between ball and ground
+			if (is_colliding_with_ground(ball, ground))
+			{
+				if (ball.x >= (ground.x + ground.w))
+				{
+					ball.x = ground.x + ground.w + ball.radius;
+					ball.vx = -ball.vx;
 					ball.vx *= ball.coef_friction;
 					ball.vy *= ball.coef_restitution;
 				}
-			}
-			else {
-				ball.x = ground.x + ground.w + ball.radius;
-				ball.vx = -ball.vx;
-				ball.vx *= ball.coef_friction;
-				ball.vy *= ball.coef_restitution;
+
+
+				else if (ball.x <= ground.x)
+				{
+					ball.x = ground.x - ball.radius;
+					ball.vx = -ball.vx;
+					ball.vx *= ball.coef_friction;
+					ball.vy *= ball.coef_restitution;
+				}
+				else
+				{
+					if (ball.y >= (ground.y - ground.h * 2))
+					{
+						// TP ball to ground surface
+						ball.y = ground.y - ground.h - ball.radius;
+
+						// Elastic bounce with ground
+						ball.vy = -ball.vy;
+
+						// FUYM non-elasticity
+						ball.vx *= ball.coef_friction;
+						ball.vy *= ball.coef_restitution;
+					}
+				}
 			}
 		}
 	}
-
 	// Continue game
 	return UPDATE_CONTINUE;
 }
@@ -244,8 +267,11 @@ update_status ModulePhysics::PostUpdate()
 	int color_r, color_g, color_b;
 
 	// Draw ground
-	color_r = 0; color_g = 255; color_b = 0;
-	App->renderer->DrawQuad(ground.pixels(), color_r, color_g, color_b);
+	for (auto& ground : grounds)
+	{
+		color_r = 0; color_g = 255; color_b = 0;
+		App->renderer->DrawQuad(ground.pixels(), color_r, color_g, color_b);
+	}
 
 	// Draw water
 	color_r = 0; color_g = 0; color_b = 255;
@@ -254,23 +280,24 @@ update_status ModulePhysics::PostUpdate()
 	// Draw all balls in the scenario
 	for (auto& ball : balls)
 	{
-		// Convert from physical magnitudes to geometrical pixels
-		int pos_x = METERS_TO_PIXELS(ball.x);
-		int pos_y =  METERS_TO_PIXELS(ball.y);
-		int size_r = METERS_TO_PIXELS(ball.radius);
+		
+			// Convert from physical magnitudes to geometrical pixels
+			int pos_x = METERS_TO_PIXELS(ball.x);
+			int pos_y = METERS_TO_PIXELS(ball.y);
+			int size_r = METERS_TO_PIXELS(ball.radius);
 
-		// Select color
-		if (ball.physics_enabled)
-		{
-			color_r = 255; color_g = 255; color_b = 255;
-		}
-		else
-		{
-			color_r = 255; color_g = 0; color_b = 0;
-		}
+			// Select color
+			if (ball.physics_enabled)
+			{
+				color_r = 255; color_g = 255; color_b = 255;
+			}
+			else
+			{
+				color_r = 255; color_g = 0; color_b = 0;
+			}
 
-		// Draw ball
-		App->renderer->DrawCircle(pos_x, pos_y, size_r, color_r, color_g, color_b);
+			// Draw ball
+			App->renderer->DrawCircle(pos_x, pos_y, size_r, color_r, color_g, color_b);
 	}
 
 	return UPDATE_CONTINUE;
