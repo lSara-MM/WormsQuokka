@@ -45,7 +45,7 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	void Debug();
+	Debug();
 
 	App->renderer->DrawQuad(rect, 0, 255, 255, 255); 
 
@@ -83,16 +83,19 @@ void ModuleSceneIntro::Debug() {
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		App->physics->method = integrationMethods::BACKWARDS_EULER;
+		LOG("Backwards Euler");
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 	{
 		App->physics->method = integrationMethods::FORWARDS_EULER;
+		LOG("Forwards Euler");
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
 		App->physics->method = integrationMethods::VERLET;
+		LOG("Verlet");
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
