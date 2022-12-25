@@ -213,10 +213,15 @@ update_status ModulePhysics::PreUpdate()
 			for (int i = 0; i < t; i++) {
 				for (int j = 0; j < t; j++) {
 
-					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == false) {
+					/*if(balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius && balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius*/
 
-						balls.at(i).vx = -balls.at(i).vx; 
-						balls.at(j).vy = -balls.at(j).vy; 
+					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true) {
+
+						balls.at(i).vx = -balls.at(j).vx; 
+						balls.at(i).vy = -balls.at(j).vy; 
+						balls.at(j).vy = -balls.at(i).vy; 
+						balls.at(j).vx = -balls.at(i).vx; 
+				
 					}
 				}
 			}
