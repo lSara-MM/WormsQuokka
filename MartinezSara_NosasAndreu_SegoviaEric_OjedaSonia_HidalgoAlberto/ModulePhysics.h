@@ -10,6 +10,14 @@
 #define METERS_TO_PIXELS(m) ((int) std::floor(PIXELS_PER_METER * m))
 #define PIXEL_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
 
+//Integer method
+enum class integerMethod
+{
+	BACKWARDS_EULER,
+	FORWARDS_EULER,
+	VERLET
+	
+};
 
 // Class: Ball object (a simple stoopid physics object)
 class PhysBall
@@ -133,6 +141,13 @@ public:
 
 	// Misc
 	float dt = 1.0 / 60.0;
+
+	//debug
+	bool gravityIsEnabled;
+	bool buoyancyIsEnabled;
+	bool hidroIsEnabled;
+	bool aeroIsEnabled;
+	integerMethod method;
 
 private:
 

@@ -45,6 +45,7 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	void Debug();
 
 	App->renderer->DrawQuad(rect, 0, 255, 255, 255); 
 
@@ -75,4 +76,43 @@ update_status ModuleSceneIntro::Update()
 
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleSceneIntro::Debug() {
+
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		App->physics->method = integerMethod::BACKWARDS_EULER;
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+	{
+		App->physics->method = integerMethod::FORWARDS_EULER;
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	{
+		App->physics->method = integerMethod::VERLET;
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+	{
+		App->physics->gravityIsEnabled = !App->physics->gravityIsEnabled;
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	{
+		App->physics->buoyancyIsEnabled = !App->physics->buoyancyIsEnabled;
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	{
+		App->physics->hidroIsEnabled = !App->physics->hidroIsEnabled;
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
+	{
+		App->physics->aeroIsEnabled = !App->physics->aeroIsEnabled;
+	}
+
 }
