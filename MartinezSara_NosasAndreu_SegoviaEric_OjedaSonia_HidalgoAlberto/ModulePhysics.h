@@ -128,6 +128,9 @@ public:
 	Ground ground2{};
 	Water water{};
 
+	//Debugs
+	int integrator = 0;
+
 	// Misc
 	float dt = 1.0 / 60.0;
 

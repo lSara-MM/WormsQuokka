@@ -223,7 +223,20 @@ update_status ModulePhysics::PreUpdate()
 			// ----------------------------------------------------------------------------------------
 
 			// We will use the 2nd order "Velocity Verlet" method for integration.
-			integrator_velocity_verlet(ball, dt);
+			if (integrator == 0) {
+				LOG("VERLET");
+				integrator_velocity_verlet(ball, dt);
+			}
+			
+			if (integrator == 1) {
+				LOG("Backwards Euler");
+				integrator_velocity_Backwards_Euler(ball, dt);
+			}
+			
+			if (integrator == 2) {
+				LOG("Forwards Euler");
+				integrator_velocity_Forwards_Euler(ball, dt);
+			}
 
 			// Step #4: solve collisions
 			// ----------------------------------------------------------------------------------------
@@ -307,6 +320,19 @@ update_status ModulePhysics::PreUpdate()
 
 update_status ModulePhysics::PostUpdate()
 {
+	//Debugs
+	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN){
+		integrator = 0;
+	}	
+	
+	if(App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN){
+		integrator = 1;
+	}	
+	
+	if(App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN){
+		integrator = 2;
+	}
+
 	// Colors
 	int color_r, color_g, color_b;
 
