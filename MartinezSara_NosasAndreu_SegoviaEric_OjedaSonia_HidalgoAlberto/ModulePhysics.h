@@ -121,6 +121,7 @@ public:
 	// Physics objects
 	std::vector<PhysBall> balls{};
 	std::vector<Ground> grounds{};
+	// Create a ball
 	Atmosphere atmosphere{};
 	Ground ground{};
 	Ground ground1{};

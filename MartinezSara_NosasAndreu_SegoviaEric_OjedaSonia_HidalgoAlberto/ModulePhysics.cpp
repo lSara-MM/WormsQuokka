@@ -61,9 +61,7 @@ bool ModulePhysics::Start()
 	atmosphere.windy = 0.0f; // [m/s]
 	atmosphere.density = 1.0f; // [kg/m^3]
 
-	// Create a ball
 	PhysBall ball = PhysBall();
-
 	// Set static properties of the ball
 	ball.mass = 10.0f; // [kg]
 	ball.surface = 1.0f; // [m^2]
@@ -95,8 +93,6 @@ update_status ModulePhysics::PreUpdate()
 		int posY = PIXEL_TO_METERS(App->input->GetMouseY());
 		PhysBall ball2 = PhysBall(posX, posY, 0.5f, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
 
-
-
 		//// Set static properties of the ball
 		//ball2.mass = 10.0f; // [kg]
 		//ball2.surface = 1.0f; // [m^2]
@@ -117,12 +113,13 @@ update_status ModulePhysics::PreUpdate()
 		balls.emplace_back(ball2);
 	}
 
-	LOG("%f", PIXEL_TO_METERS(App->input->GetMouseY()));
+	//LOG("%f", PIXEL_TO_METERS(App->input->GetMouseY()));
 
 
 	// Process all balls in the scenario
 	for (auto& ball : balls)
 	{
+
 		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) { ball.radius += 0.1f; }
 		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) { ball.radius -= 0.1f; }
 
@@ -147,8 +144,6 @@ update_status ModulePhysics::PreUpdate()
 			// Gravity force
 			float fgx = ball.mass * 0.0f;
 			float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
-
-			
 
 			ball.fx += fgx; ball.fy += fgy; // Add this force to ball's total force
 
@@ -243,9 +238,6 @@ update_status ModulePhysics::PreUpdate()
 
 			if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
 			{
-				// TP ball to ground surface
-				ball.x -= ball.radius;
-
 				ball.vx = -ball.vx;
 
 				// FUYM non-elasticity
@@ -437,6 +429,7 @@ bool is_colliding_with_water(const PhysBall& ball, const Water& water)
 {
 	float rect_x = (water.x + water.w / 2.0f); // Center of rectangle
 	float rect_y = (water.y - water.h / 2.0f); // Center of rectangle
+
 	return check_collision_circle_rectangle(ball.x, ball.y, ball.radius, rect_x, rect_y, water.w, water.h); //El codigo ya tienen en cuenta que x,y es desde el centro.
 }
 
@@ -466,8 +459,6 @@ bool check_collision_circle_rectangle(float cx, float cy, float cr, float rx, fl
 
 bool check_collision_circle_circle(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2)
 {
-	
-
 	// Distance from center of circle to center of rectangle
 	float dist_x = std::abs(cx1 - cx2);
 	float dist_y = std::abs(cy1 - cy2);
