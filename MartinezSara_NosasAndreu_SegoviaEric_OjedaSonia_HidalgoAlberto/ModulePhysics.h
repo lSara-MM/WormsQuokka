@@ -166,4 +166,6 @@ bool is_colliding_with_water(const PhysBall& ball, const Water& water);
 // Detect collision between circle and rectange
 bool check_collision_circle_rectangle(float cx, float cy, float cr, float rx, float ry, float rw, float rh);
 
+bool check_collision_circle_circle(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2);
+
 

@@ -191,6 +191,24 @@ update_status ModulePhysics::PreUpdate()
 				ball.fx += fhbx; ball.fy += fhby; // Add this force to ball's total force
 			}
 
+			int t = balls.size(); 
+
+			for (int i = 0; i < t; i++) {
+				for (int j = 0; j < t; j++) {
+
+					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == false) {
+
+						balls.at(i).vx = -balls.at(i).vx; 
+						balls.at(j).vy = -balls.at(j).vy; 
+					}
+				}
+			}
+			/*if (check_collision_circle_circle(ball.x, ball.y, ball.radius, ball.x, ball.y, ball.radius) == true) {
+
+				ball.vx = -ball.vx; 
+				ball.vy = -ball.vy; 
+			}*/
+
 			// Other forces
 			// ...
 
