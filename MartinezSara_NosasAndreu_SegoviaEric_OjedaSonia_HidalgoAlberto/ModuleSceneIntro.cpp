@@ -82,17 +82,17 @@ void ModuleSceneIntro::Debug() {
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
-		App->physics->method = integerMethod::BACKWARDS_EULER;
+		App->physics->method = integrationMethods::BACKWARDS_EULER;
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 	{
-		App->physics->method = integerMethod::FORWARDS_EULER;
+		App->physics->method = integrationMethods::FORWARDS_EULER;
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
-		App->physics->method = integerMethod::VERLET;
+		App->physics->method = integrationMethods::VERLET;
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)

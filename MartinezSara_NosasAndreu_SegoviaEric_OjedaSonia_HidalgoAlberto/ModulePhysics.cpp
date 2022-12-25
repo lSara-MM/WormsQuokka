@@ -239,38 +239,20 @@ update_status ModulePhysics::PreUpdate()
 			// Step #3: Integrate --> from accel to new velocity & new position
 			// ----------------------------------------------------------------------------------------
 
-<<<<<<< Updated upstream
-			// We will use the 2nd order "Velocity Verlet" method for integration.
-			if (integrator == 0) {
-				LOG("VERLET");
-				integrator_velocity_verlet(ball, dt);
-			}
-			
-			if (integrator == 1) {
-				LOG("Backwards Euler");
-				integrator_velocity_Backwards_Euler(ball, dt);
-			}
-			
-			if (integrator == 2) {
-				LOG("Forwards Euler");
-				integrator_velocity_Forwards_Euler(ball, dt);
-			}
-=======
 			// Switch to determine which method of integration to use.(posar text en pantalla de quin mètode s'utilitza)
 			switch (method)
 			{
-			case integerMethod::BACKWARDS_EULER:
+			case integrationMethods::BACKWARDS_EULER:
 
 				integrator_velocity_Backwards_Euler(ball, dt);
 
 				break;
-			case integerMethod::FORWARDS_EULER:
+			case integrationMethods::FORWARDS_EULER:
 
 				integrator_velocity_Forwards_Euler(ball, dt);
->>>>>>> Stashed changes
 
 				break;
-			case integerMethod::VERLET:
+			case integrationMethods::VERLET:
 			
 				integrator_velocity_verlet(ball, dt);
 

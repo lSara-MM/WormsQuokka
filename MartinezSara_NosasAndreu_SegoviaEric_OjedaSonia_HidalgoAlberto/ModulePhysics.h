@@ -11,7 +11,7 @@
 #define PIXEL_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
 
 //Integer method
-enum class integerMethod
+enum class integrationMethods
 {
 	BACKWARDS_EULER,
 	FORWARDS_EULER,
@@ -147,7 +147,7 @@ public:
 	bool buoyancyIsEnabled;
 	bool hidroIsEnabled;
 	bool aeroIsEnabled;
-	integerMethod method;
+	integrationMethods method;
 
 private:
 
