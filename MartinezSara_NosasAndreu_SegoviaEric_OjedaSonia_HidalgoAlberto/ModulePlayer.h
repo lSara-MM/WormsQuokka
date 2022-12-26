@@ -12,6 +12,14 @@ enum class WormType
 	BLUE
 };
 
+enum class MovementType
+{
+	APPLY_FORCE,
+	APPLY_VELOCITY,
+	CHANGE_POSITION
+
+};
+
 class Object
 {
 public:
@@ -58,9 +66,16 @@ public:
 
 	bool Start();
 	update_status Update();
+	update_status PostUpdate();
 	bool CleanUp();
 
+
+	float posX, posY, radBody;
+	int playerBody;
+	MovementType movement;
+
 	void controls(Object player);
+
 
 public:
 	p2List <Object*>* listPlayers;
