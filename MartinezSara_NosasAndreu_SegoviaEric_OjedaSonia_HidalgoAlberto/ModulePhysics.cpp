@@ -218,20 +218,34 @@ update_status ModulePhysics::PreUpdate()
 					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true && i!=j) {
 
 						//Sacamos el vector desde el centro de i hacia j
-						float preX = balls.at(j).x - balls.at(i).x;
-						float preY = balls.at(j).y - balls.at(i).y;
+							float preXj = balls.at(j).x - balls.at(i).x;
+							float preYj = balls.at(j).y - balls.at(i).y;
 						
-						//Modulo del vector
-						float module = modulus(preX, preY);
+							//Modulo del vector
+							float module = modulus(preXj, preYj);
 
-						//Hacemos el vector unitario
-						preX /= module;
-						preY /= module;
+							//Hacemos el vector unitario
+							preXj /= module;
+							preYj /= module;
 
-						float dist = balls.at(i).radius + balls.at(j).radius;
+							float dist = balls.at(i).radius + balls.at(j).radius;
 
-						balls.at(j).x = balls.at(i).x + preX * dist;
-						balls.at(j).y = balls.at(i).y + preY * dist;
+							balls.at(j).x = balls.at(i).x + preXj * dist;
+							balls.at(j).y = balls.at(i).y + preYj * dist;
+
+						//Hacemos lo mismo de j a i
+							float preXi = balls.at(i).x - balls.at(j).x;
+							float preYi = balls.at(i).y - balls.at(j).y;
+
+							//Modulo del vector
+							module = modulus(preXi, preYi);
+
+							//Hacemos el vector unitario
+							preXi /= module;
+							preYi /= module;
+
+							balls.at(i).x = balls.at(j).x + preXi * dist;
+							balls.at(i).y = balls.at(j).y + preYi * dist;
 
 						/*if (App->input->GetKey(SDL_SCANCODE_5) == KEY_REPEAT)
 						{
@@ -246,15 +260,20 @@ update_status ModulePhysics::PreUpdate()
 						{
 							//Velocidad en X
 							float auxX = 0;
+							if (abs(balls.at(j).vx) <= 0.2f) { balls.at(j).vx = 0; }
+							if (abs(balls.at(i).vx) <= 0.2f) { balls.at(i).vx = 0; }
 							auxX = balls.at(j).vx;
 							balls.at(j).vx = balls.at(i).vx;
-							balls.at(i).vx = auxX;
+							balls.at(i).vx = auxX ;
+
 
 							//Velocidad en Y
+							if (abs(balls.at(j).vy) <= 0.2f) { balls.at(j).vy = 0; }
+							if (abs(balls.at(i).vy) <= 0.2f) { balls.at(i).vy = 0; }
 							float auxY = 0;
 							auxY = balls.at(j).vy;
-							balls.at(j).vy = balls.at(i).vy;
-							balls.at(i).vy = auxY;
+							balls.at(j).vy = balls.at(i).vy ;
+							balls.at(i).vy = auxY ;
 						}
 					}
 				}
@@ -331,6 +350,9 @@ update_status ModulePhysics::PreUpdate()
 
 			if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
 			{
+				//In case the ball gets out of the screen
+				if ((ball.x) >= PIXEL_TO_METERS(SCREEN_WIDTH)) { ball.x = PIXEL_TO_METERS(SCREEN_WIDTH)-ball.radius; }
+
 				ball.vx = -ball.vx;
 
 				// FUYM non-elasticity
@@ -345,6 +367,9 @@ update_status ModulePhysics::PreUpdate()
 				if (ball.x >= (ground.x + ground.w))
 				{
 					ball.x = ground.x + ground.w + ball.radius;
+					
+					if (abs(ball.vx)<=0.2f){ball.vx = 0;} //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
+
 					ball.vx = -ball.vx;
 					ball.vx *= ball.coef_friction;
 					ball.vy *= ball.coef_restitution;
@@ -354,6 +379,7 @@ update_status ModulePhysics::PreUpdate()
 				else if (ball.x <= ground.x)
 				{
 					ball.x = ground.x - ball.radius;
+					if (abs(ball.vx) <= 0.2f) { ball.vx = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
 					ball.vx = -ball.vx;
 					ball.vx *= ball.coef_friction;
 					ball.vy *= ball.coef_restitution;
@@ -366,6 +392,7 @@ update_status ModulePhysics::PreUpdate()
 						ball.y = ground.y - ground.h - ball.radius;
 
 						// Elastic bounce with ground
+						if (abs(ball.vy) <= 0.4f) { ball.vy = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
 						ball.vy = -ball.vy;
 
 						// FUYM non-elasticity
