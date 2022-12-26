@@ -74,7 +74,7 @@ public:
 	int playerBody;
 	MovementType movement;
 
-	void controls(Object player);
+	//void controls(Object player);
 
 
 public:
