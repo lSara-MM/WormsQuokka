@@ -58,21 +58,21 @@ update_status ModuleSceneIntro::Update()
 		//App->renderer->DrawCircle(bodies->data.pos.x,bodies->data.pos.y,bodies->data.radious, 255, 255, 255);
 	//}
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-		x += 10;
-	}
+	//if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
+	//	x += 10;
+	//}
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-		x -= 10;
-	}	
-	
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-		y -= 10;
-	}
+	//if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
+	//	x -= 10;
+	//}	
+	//
+	//if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
+	//	y -= 10;
+	//}
 
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-		y += 10;
-	}
+	//if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
+	//	y += 10;
+	//}
 
 
 	return UPDATE_CONTINUE;
@@ -118,4 +118,25 @@ void ModuleSceneIntro::Debug() {
 		App->physics->aeroIsEnabled = !App->physics->aeroIsEnabled;
 	}
 
+	else if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
+	{
+		App->player->movement = MovementType::APPLY_FORCE;
+		LOG("Movement applying force");
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	{
+
+		App->player->movement = MovementType::APPLY_VELOCITY;
+		LOG("Movement applying velocity");
+
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+	{
+
+		App->player->movement = MovementType::CHANGE_POSITION;
+		LOG("Movement changing position");
+
+	}
 }

@@ -11,6 +11,14 @@ enum class WormType
 	BLUE
 };
 
+enum class MovementType
+{
+	APPLY_FORCE,
+	APPLY_VELOCITY,
+	CHANGE_POSITION
+
+};
+
 class Object
 {
 	SDL_Texture* graphic;
@@ -44,8 +52,11 @@ public:
 
 	bool Start();
 	update_status Update();
+	update_status PostUpdate();
 	bool CleanUp();
 
-public:
+	float posX, posY, radBody;
+	int playerBody;
+	MovementType movement;
 
 };

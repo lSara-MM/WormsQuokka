@@ -79,7 +79,7 @@ bool ModulePhysics::Start()
 	ball.vy = 10.0f;
 
 	// Add ball to the collection
-	balls.emplace_back(ball);
+	//balls.emplace_back(ball);
 
 
 	//debug
@@ -87,6 +87,7 @@ bool ModulePhysics::Start()
 	buoyancyIsEnabled = true;
 	hidroIsEnabled = true;
 	aeroIsEnabled = true;
+	method = integrationMethods::VERLET;
 
 	return true;
 }
@@ -233,6 +234,9 @@ update_status ModulePhysics::PreUpdate()
 
 			// Other forces
 			// ...
+			//Force added with function 
+			ball.fx += ball.addedForceX;
+			ball.fy += ball.addedForceY;
 
 			// Step #2: 2nd Newton's Law
 			// ----------------------------------------------------------------------------------------
@@ -348,19 +352,8 @@ update_status ModulePhysics::PreUpdate()
 
 update_status ModulePhysics::PostUpdate()
 {
-	//Debugs
-	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN){
-		integrator = 0;
-	}	
-	
-	if(App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN){
-		integrator = 1;
-	}	
-	
-	if(App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN){
-		integrator = 2;
-	}
 
+	
 	// Colors
 	int color_r, color_g, color_b;
 
@@ -552,6 +545,42 @@ SDL_Rect Ground::pixels()
 	pos_px.w = METERS_TO_PIXELS(w);
 	pos_px.h = METERS_TO_PIXELS(-h); // Can I do this? LOL
 	return pos_px;
+}
+
+//Setters ball
+void PhysBall::ApplyForce(float forX, float forY)
+{
+	addedForceX = forX;
+	addedForceY = forY;
+}
+
+void PhysBall::SetVelocity(float vx_, float vy_)
+{
+	vx = vx_;
+	vy = vy_;
+}
+
+
+void PhysBall::AddPosition(float x_, float y_)
+{
+	x += PIXEL_TO_METERS(x_);
+	y += PIXEL_TO_METERS(y_);
+}
+
+//Create ball
+//És el mateix que el constructor, però retorna la posició de l'element a la llista, necessari per fer coses amb player
+//Inspirat en un projecte de l'any passat
+//on està listItem :(
+
+int ModulePhysics::CreateBall(float x_, float y_, float rad_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction_, float cRest_, float ax_, float ay_, bool enabled_)
+{
+
+	PhysBall* new_ball = new PhysBall(x_, y_, rad_,  mass_, vx_ , vy_, surface_, cl_,  cd_ , b_, cFriction_, cRest_, ax_, ay_, enabled_);
+	
+	balls.push_back(*new_ball);
+
+	return balls.size() - 1;
+	
 }
 
 

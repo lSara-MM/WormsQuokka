@@ -47,7 +47,12 @@ public:
 		coef_restitution = cRest;
 			
 		physics_enabled = enabled;
+
 	}
+
+	void ApplyForce(float forX, float forY);
+	void SetVelocity(float vx_, float vy_);
+	void AddPosition(float x_, float y_);
 
 public:
 	// Position
@@ -67,6 +72,10 @@ public:
 	float fx;
 	float fy;
 
+	//Extra Force applied
+	float addedForceX=0;
+	float addedForceY=0;
+
 	// Mass
 	float mass;
 
@@ -85,6 +94,7 @@ public:
 
 	// Has physics enabled?
 	bool physics_enabled = true;
+
 };
 
 
@@ -148,6 +158,9 @@ public:
 	bool hidroIsEnabled;
 	bool aeroIsEnabled;
 	integrationMethods method;
+
+	//problemes amb llista
+	int CreateBall(float x_, float y_, float rad_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction, float cRest, float ax_, float ay_, bool enabled_ = true);
 
 private:
 
