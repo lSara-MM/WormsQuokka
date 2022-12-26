@@ -29,6 +29,9 @@ bool ModuleSceneIntro::Start()
 	rect.w = 100;
 	rect.h = 100;
 
+	Object* worm = new Object(10, 28, 1, WormType::BLUE);
+	App->player->listBLUE->add(worm);
+
 	//pBody* b1 = new pBody(500, 200, 100, 100);
 
 	return ret;

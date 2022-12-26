@@ -216,13 +216,47 @@ update_status ModulePhysics::PreUpdate()
 
 					/*if(balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius && balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius*/
 
-					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true) {
+					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true && i!=j) {
 
-						balls.at(i).vx = -balls.at(j).vx; 
-						balls.at(i).vy = -balls.at(j).vy; 
-						balls.at(j).vy = -balls.at(i).vy; 
-						balls.at(j).vx = -balls.at(i).vx; 
-				
+						//Sacamos el vector desde el centro de i hacia j
+						float preX = balls.at(j).x - balls.at(i).x;
+						float preY = balls.at(j).y - balls.at(i).y;
+						
+						//Modulo del vector
+						float module = modulus(preX, preY);
+
+						//Hacemos el vector unitario
+						preX /= module;
+						preY /= module;
+
+						float dist = balls.at(i).radius + balls.at(j).radius;
+
+						balls.at(j).x = balls.at(i).x + preX * dist;
+						balls.at(j).y = balls.at(i).y + preY * dist;
+
+						/*if (App->input->GetKey(SDL_SCANCODE_5) == KEY_REPEAT)
+						{
+							balls.at(i).vx = -balls.at(j).vx;
+							balls.at(i).vy = -balls.at(j).vy;
+							balls.at(j).vy = -balls.at(i).vy;
+							balls.at(j).vx = -balls.at(i).vx;
+						}*/
+						 
+
+						//if (App->input->GetKey(SDL_SCANCODE_P) == KEY_IDLE)
+						{
+							//Velocidad en X
+							float auxX = 0;
+							auxX = balls.at(j).vx;
+							balls.at(j).vx = balls.at(i).vx;
+							balls.at(i).vx = auxX;
+
+							//Velocidad en Y
+							float auxY = 0;
+							auxY = balls.at(j).vy;
+							balls.at(j).vy = balls.at(i).vy;
+							balls.at(i).vy = auxY;
+						}
 					}
 				}
 			}
@@ -371,25 +405,24 @@ update_status ModulePhysics::PostUpdate()
 	// Draw all balls in the scenario
 	for (auto& ball : balls)
 	{
-		
-			// Convert from physical magnitudes to geometrical pixels
-			int pos_x = METERS_TO_PIXELS(ball.x);
-			int pos_y = METERS_TO_PIXELS(ball.y);
-			int size_r = METERS_TO_PIXELS(ball.radius);
-			
+		// Convert from physical magnitudes to geometrical pixels
+		int pos_x = METERS_TO_PIXELS(ball.x);
+		int pos_y = METERS_TO_PIXELS(ball.y);
+		int size_r = METERS_TO_PIXELS(ball.radius);
 
-			// Select color
-			if (ball.physics_enabled)
-			{
-				color_r = 255; color_g = 255; color_b = 255;
-			}
-			else
-			{
-				color_r = 255; color_g = 0; color_b = 0;
-			}
 
-			// Draw ball
-			App->renderer->DrawCircle(pos_x, pos_y, size_r, color_r, color_g, color_b);
+		// Select color
+		if (ball.physics_enabled)
+		{
+			color_r = 255; color_g = 255; color_b = 255;
+		}
+		else
+		{
+			color_r = 255; color_g = 0; color_b = 0;
+		}
+
+		// Draw ball
+		App->renderer->DrawCircle(pos_x, pos_y, size_r, color_r, color_g, color_b);
 	}
 
 	
