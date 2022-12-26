@@ -81,7 +81,7 @@ public:
 		p2List_item<tdata>*   p_data_item;
 		p_data_item = new p2List_item < tdata >(item);
 
-		if(start == NULL)
+		if(start == nullptr)
 		{
 			start = end = p_data_item;
 		}

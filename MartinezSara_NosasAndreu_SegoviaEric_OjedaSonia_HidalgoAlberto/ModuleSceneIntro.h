@@ -62,7 +62,7 @@ public:
  
 	SDL_Rect rect; 
 
-	iPoint pos;
+	//iPoint pos;
 
 	int x = 500, y = 200, rad = 100;
 };

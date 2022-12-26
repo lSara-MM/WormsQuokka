@@ -412,25 +412,24 @@ update_status ModulePhysics::PostUpdate()
 	// Draw all balls in the scenario
 	for (auto& ball : balls)
 	{
-		
-			// Convert from physical magnitudes to geometrical pixels
-			int pos_x = METERS_TO_PIXELS(ball.x);
-			int pos_y = METERS_TO_PIXELS(ball.y);
-			int size_r = METERS_TO_PIXELS(ball.radius);
-			
+		// Convert from physical magnitudes to geometrical pixels
+		int pos_x = METERS_TO_PIXELS(ball.x);
+		int pos_y = METERS_TO_PIXELS(ball.y);
+		int size_r = METERS_TO_PIXELS(ball.radius);
 
-			// Select color
-			if (ball.physics_enabled)
-			{
-				color_r = 255; color_g = 255; color_b = 255;
-			}
-			else
-			{
-				color_r = 255; color_g = 0; color_b = 0;
-			}
 
-			// Draw ball
-			App->renderer->DrawCircle(pos_x, pos_y, size_r, color_r, color_g, color_b);
+		// Select color
+		if (ball.physics_enabled)
+		{
+			color_r = 255; color_g = 255; color_b = 255;
+		}
+		else
+		{
+			color_r = 255; color_g = 0; color_b = 0;
+		}
+
+		// Draw ball
+		App->renderer->DrawCircle(pos_x, pos_y, size_r, color_r, color_g, color_b);
 	}
 
 	
