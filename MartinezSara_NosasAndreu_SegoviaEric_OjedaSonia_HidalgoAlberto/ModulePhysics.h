@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+
 #include <vector>
 
 
@@ -19,6 +20,13 @@ enum class integrationMethods
 	
 };
 
+enum class WormType
+{
+	RED,
+	BLUE,
+	OTHER
+};
+
 // Class: Ball object (a simple stoopid physics object)
 class PhysBall
 {
@@ -27,7 +35,7 @@ public:
 	PhysBall() {};
 
 	// x, y, rad, mass, vx, vy, surface, cl, cd, b, friction, restitution, ax, ay, enabled;
-	PhysBall(float x_, float y_, float rad, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true)
+	PhysBall(float x_, float y_, float rad, WormType type_ = WormType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true)
 	{
 		x = x_;
 		y = y_;
@@ -47,8 +55,31 @@ public:
 		coef_restitution = cRest;
 			
 		physics_enabled = enabled;
-
+		type = type_;
 	}
+
+	/*PhysBall(float x_, float y_, float rad, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true)
+	{
+		x = x_;
+		y = y_;
+		radius = rad;
+		mass = mass_;
+
+		vx = vx_;
+		vy = vy_;
+		ax = ax_;
+		ay = ay_;
+
+		surface = surface_;
+		cl = cl_;
+		cd = cd_;
+		b = b_;
+		coef_friction = cFriction;
+		coef_restitution = cRest;
+
+		physics_enabled = enabled;
+	}*/
+
 
 	void ApplyForce(float forX, float forY);
 	void SetVelocity(float vx_, float vy_);
@@ -94,7 +125,8 @@ public:
 
 	// Has physics enabled?
 	bool physics_enabled = true;
-
+	int id;
+	WormType type;
 };
 
 
@@ -160,7 +192,7 @@ public:
 	integrationMethods method;
 
 	//problemes amb llista
-	int CreateBall(float x_, float y_, float rad_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction, float cRest, float ax_, float ay_, bool enabled_ = true);
+	int CreateBall(float x_, float y_, float rad_, WormType type_ = WormType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true);
 
 private:
 

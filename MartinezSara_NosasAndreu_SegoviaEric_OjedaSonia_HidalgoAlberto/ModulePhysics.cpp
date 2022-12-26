@@ -99,7 +99,7 @@ update_status ModulePhysics::PreUpdate()
 	{
 		int posX = PIXEL_TO_METERS(App->input->GetMouseX());
 		int posY = PIXEL_TO_METERS(App->input->GetMouseY());
-		PhysBall ball2 = PhysBall(posX, posY, 0.5f, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
+		PhysBall ball2 = PhysBall(posX, posY, 0.5f, WormType::OTHER, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
 
 		//// Set static properties of the ball
 		//ball2.mass = 10.0f; // [kg]
@@ -413,8 +413,6 @@ update_status ModulePhysics::PreUpdate()
 
 update_status ModulePhysics::PostUpdate()
 {
-
-	
 	// Colors
 	int color_r, color_g, color_b;
 
@@ -441,18 +439,30 @@ update_status ModulePhysics::PostUpdate()
 		// Select color
 		if (ball.physics_enabled)
 		{
-			color_r = 255; color_g = 255; color_b = 255;
+			switch (ball.type)
+			{
+			case WormType::RED:
+				color_r = 255; color_g = 0; color_b = 0;
+				break;
+			case WormType::BLUE:
+				color_r = 0; color_g = 130; color_b = 255;
+				break;
+			case WormType::OTHER:
+				color_r = 100; color_g = 100; color_b = 100;
+				break;
+			default:
+				break;
+			}
+			
 		}
 		else
 		{
-			color_r = 255; color_g = 0; color_b = 0;
+			color_r = 255; color_g = 255; color_b = 255;
 		}
 
 		// Draw ball
 		App->renderer->DrawCircle(pos_x, pos_y, size_r, color_r, color_g, color_b);
 	}
-
-	
 
 	return UPDATE_CONTINUE;
 }
@@ -632,15 +642,28 @@ void PhysBall::AddPosition(float x_, float y_)
 //Inspirat en un projecte de l'any passat
 //on està listItem :(
 
-int ModulePhysics::CreateBall(float x_, float y_, float rad_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction_, float cRest_, float ax_, float ay_, bool enabled_)
+int ModulePhysics::CreateBall(float x_, float y_, float rad_, WormType type_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction_, float cRest_, float ax_, float ay_, bool enabled_)
 {
-
-	PhysBall* new_ball = new PhysBall(x_, y_, rad_,  mass_, vx_ , vy_, surface_, cl_,  cd_ , b_, cFriction_, cRest_, ax_, ay_, enabled_);
-	
+	PhysBall* new_ball = new PhysBall(x_, y_, rad_, type_, mass_, vx_ , vy_, surface_, cl_,  cd_ , b_, cFriction_, cRest_, ax_, ay_, enabled_);
+	new_ball->id = App->player->setID++;
 	balls.push_back(*new_ball);
 
+	// nose si aixo servira per a algo, potser si despues 
+	switch (type_)
+	{
+	case WormType::RED:
+		App->player->listRED.emplace_back(*new_ball);
+		break;
+	case WormType::BLUE:
+		App->player->listBLUE.emplace_back(*new_ball);
+		break;
+	case WormType::OTHER:
+		break;
+	default:
+		break;
+	}
+
 	return balls.size() - 1;
-	
 }
 
 

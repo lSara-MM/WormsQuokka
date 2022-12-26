@@ -13,14 +13,26 @@ ModulePlayer::~ModulePlayer()
 // Load assets
 bool ModulePlayer::Start()
 {
-
+	// Blue team
 	posX = PIXEL_TO_METERS(100);
 	posY = PIXEL_TO_METERS(200);
-	radBody = 0.5f;
+	radBody = 1.0f;
 
-	playerBody = App->physics->CreateBall(posX, posY, radBody, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0, 0.0,true);
-
+	int num = App->physics->CreateBall(posX, posY, radBody, WormType::BLUE, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
 	movement = MovementType::APPLY_FORCE;
+	//listPlayers.emplace_back(num);
+	listBlueP.emplace_back(num);
+	
+
+	// Red team
+	posX = PIXEL_TO_METERS(600);
+	posY = PIXEL_TO_METERS(350);
+
+	num = App->physics->CreateBall(posX, posY, radBody, WormType::RED, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
+	movement = MovementType::APPLY_FORCE;
+	//listPlayers.emplace_back(num);
+	listRedP.emplace_back(num);
+
 
 	LOG("Loading player");
 
@@ -38,85 +50,28 @@ bool ModulePlayer::Start()
 	//item = listRED->getFirst();
 	//for (item; item != nullptr; item = item->next) { listPlayers->add(item->data); }
 
+	playerTurn = true;
 	return true;
 }
 
 //Player control
 update_status ModulePlayer::Update()
 {
-	
-
-	switch (movement)
+	if (playerTurn)	// Blue turn
 	{
-	case MovementType::APPLY_FORCE:
-
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-
-			App->physics->balls.at(playerBody).ApplyForce(1500.0f, 0.0f);
-
-		}
-
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-
-			App->physics->balls.at(playerBody).ApplyForce(-1500.0f, 0.0f);
-
-		}
-
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A)==KEY_UP) {
-
-	
-			App->physics->balls.at(playerBody).ApplyForce(0.0F, 0.0f);
-
-		}
-
-		break;
-	case MovementType::APPLY_VELOCITY:
-
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-
-			App->physics->balls.at(playerBody).SetVelocity(15.0f, 0.0f);
-
-		}
-
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-
-			App->physics->balls.at(playerBody).SetVelocity(-15.0f, 0.0f);
-
-		}
-
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) {
-
-
-			App->physics->balls.at(playerBody).SetVelocity(0.0F, 0.0f);
-
-		}
-
-		break;
-	case MovementType::CHANGE_POSITION:
-
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-
-			App->physics->balls.at(playerBody).AddPosition(15.0f, 0.0f);
-
-		}
-
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-
-			App->physics->balls.at(playerBody).AddPosition(-15.0f, 0.0f);
-
-		}
-
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) {
-
-
-			App->physics->balls.at(playerBody).AddPosition(0.0F, 0.0f);
-
-		}
-
-		break;
-	default:
-		break;
+		controls(listBlueP.front(), MovementType::APPLY_FORCE);
 	}
+	else // Red turn
+	{
+		controls(listRedP.front(), MovementType::APPLY_FORCE);
+	}
+
+	if (listBLUE.empty()) 
+	{ LOG("RED team wins") }
+
+	if (listRED.empty()) 
+	{ LOG("BLUE team wins") }
+
 	return UPDATE_CONTINUE;
 }
 
@@ -135,6 +90,58 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
+void ModulePlayer::controls(int player, MovementType move)
+{
+	switch (move)
+	{
+	case MovementType::APPLY_FORCE:
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
+		{ App->physics->balls.at(player).ApplyForce(1500.0f, 0.0f); }
+
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
+		{ App->physics->balls.at(player).ApplyForce(-1500.0f, 0.0f); }
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) 
+		{ App->physics->balls.at(player).ApplyForce(0.0F, 0.0f); }
+
+		break;
+
+	case MovementType::APPLY_VELOCITY:
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
+		{ App->physics->balls.at(player).SetVelocity(15.0f, 0.0f); }
+
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
+		{ App->physics->balls.at(player).SetVelocity(-15.0f, 0.0f); }
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) 
+		{ App->physics->balls.at(player).SetVelocity(0.0F, 0.0f); }
+
+		break;
+
+	case MovementType::CHANGE_POSITION:
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
+		{ App->physics->balls.at(player).AddPosition(15.0f, 0.0f); }
+
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
+		{ App->physics->balls.at(player).AddPosition(-15.0f, 0.0f); }
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
+		{ App->physics->balls.at(player).AddPosition(0.0F, 0.0f); }
+
+		break;
+	default:
+		break;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		playerTurn = !playerTurn;
+	}
+
+}
 
 
 //// Update: draw background
