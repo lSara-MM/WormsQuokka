@@ -95,41 +95,35 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate()
 {
 	
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
 	{
-		int posX = PIXEL_TO_METERS(App->input->GetMouseX());
-		int posY = PIXEL_TO_METERS(App->input->GetMouseY());
-		PhysBall ball2 = PhysBall(posX, posY, 0.5f, WormType::OTHER, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
-
-		//// Set static properties of the ball
-		//ball2.mass = 10.0f; // [kg]
-		//ball2.surface = 1.0f; // [m^2]
-		//ball2.radius = 0.5f; // [m]
-		//ball2.cd = 0.4f; // [-]
-		//ball2.cl = 1.2f; // [-]
-		//ball2.b = 10.0f; // [...]
-		//ball2.coef_friction = 0.9f; // [-]
-		//ball2.coef_restitution = 0.8f; // [-]
-
-		//// Set initial position and velocity of the ball
-		//ball2.x = PIXEL_TO_METERS(App->input->GetMouseX());
-		//ball2.y = PIXEL_TO_METERS(App->input->GetMouseY());
-		//ball2.vx = 0.0f;
-		//ball2.vy = 20.0f;
+		float posX = PIXEL_TO_METERS(App->input->GetMouseX());
+		float posY = PIXEL_TO_METERS(App->input->GetMouseY());
+		PhysBall ball2 = PhysBall(posX, posY, 0.5f, ObjectType::OTHER, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
 
 		// Add ball to the collection
 		balls.emplace_back(ball2);
 	}
 
-	//LOG("%f", PIXEL_TO_METERS(App->input->GetMouseY()));
+	if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN)
+	{
+		float posX = App->input->GetMouseX();
+		float posY = App->input->GetMouseY();
+		App->player->CreateWeapon(posX, posY, ObjectType::GUN);
+	}
 
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+	{
+		float posX = App->input->GetMouseX();
+		float posY = App->input->GetMouseY();
+		App->player->CreateWeapon(posX, posY, ObjectType::GRENADE);
+	}
 
 	// Process all balls in the scenario
 	for (auto& ball : balls)
 	{
-
-		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) { ball.radius += 0.1f; }
-		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) { ball.radius -= 0.1f; }
+		if (App->input->GetKey(SDL_SCANCODE_M) == KEY_DOWN) { ball.radius += 0.1f; }
+		if (App->input->GetKey(SDL_SCANCODE_N) == KEY_DOWN) { ball.radius -= 0.1f; }
 
 		for (auto& ground : grounds) 
 		{
@@ -216,37 +210,37 @@ update_status ModulePhysics::PreUpdate()
 
 					/*if(balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius && balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius*/
 
-					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true && i!=j) {
+					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true && i != j) {
 
-						//Sacamos el vector desde el centro de i hacia j
-							float preXj = balls.at(j).x - balls.at(i).x;
-							float preYj = balls.at(j).y - balls.at(i).y;
-						
-							//Modulo del vector
-							float module = modulus(preXj, preYj);
+						// Sacamos el vector desde el centro de i hacia j
+						float preXj = balls.at(j).x - balls.at(i).x;
+						float preYj = balls.at(j).y - balls.at(i).y;
 
-							//Hacemos el vector unitario
-							preXj /= module;
-							preYj /= module;
+						//Modulo del vector
+						float module = modulus(preXj, preYj);
 
-							float dist = balls.at(i).radius + balls.at(j).radius;
+						//Hacemos el vector unitario
+						preXj /= module;
+						preYj /= module;
 
-							balls.at(j).x = balls.at(i).x + preXj * dist;
-							balls.at(j).y = balls.at(i).y + preYj * dist;
+						float dist = balls.at(i).radius + balls.at(j).radius;
+
+						balls.at(j).x = balls.at(i).x + preXj * dist;
+						balls.at(j).y = balls.at(i).y + preYj * dist;
 
 						//Hacemos lo mismo de j a i
-							float preXi = balls.at(i).x - balls.at(j).x;
-							float preYi = balls.at(i).y - balls.at(j).y;
+						float preXi = balls.at(i).x - balls.at(j).x;
+						float preYi = balls.at(i).y - balls.at(j).y;
 
-							//Modulo del vector
-							module = modulus(preXi, preYi);
+						//Modulo del vector
+						module = modulus(preXi, preYi);
 
-							//Hacemos el vector unitario
-							preXi /= module;
-							preYi /= module;
+						//Hacemos el vector unitario
+						preXi /= module;
+						preYi /= module;
 
-							balls.at(i).x = balls.at(j).x + preXi * dist;
-							balls.at(i).y = balls.at(j).y + preYi * dist;
+						balls.at(i).x = balls.at(j).x + preXi * dist;
+						balls.at(i).y = balls.at(j).y + preYi * dist;
 
 						/*if (App->input->GetKey(SDL_SCANCODE_5) == KEY_REPEAT)
 						{
@@ -255,7 +249,7 @@ update_status ModulePhysics::PreUpdate()
 							balls.at(j).vy = -balls.at(i).vy;
 							balls.at(j).vx = -balls.at(i).vx;
 						}*/
-						 
+
 
 						//if (App->input->GetKey(SDL_SCANCODE_P) == KEY_IDLE)
 						{
@@ -265,7 +259,7 @@ update_status ModulePhysics::PreUpdate()
 							if (abs(balls.at(i).vx) <= 0.2f) { balls.at(i).vx = 0; }
 							auxX = balls.at(j).vx;
 							balls.at(j).vx = balls.at(i).vx;
-							balls.at(i).vx = auxX ;
+							balls.at(i).vx = auxX;
 
 
 							//Velocidad en Y
@@ -273,8 +267,8 @@ update_status ModulePhysics::PreUpdate()
 							if (abs(balls.at(i).vy) <= 0.2f) { balls.at(i).vy = 0; }
 							float auxY = 0;
 							auxY = balls.at(j).vy;
-							balls.at(j).vy = balls.at(i).vy ;
-							balls.at(i).vy = auxY ;
+							balls.at(j).vy = balls.at(i).vy;
+							balls.at(i).vy = auxY;
 						}
 					}
 				}
@@ -443,14 +437,21 @@ update_status ModulePhysics::PostUpdate()
 		{
 			switch (ball.type)
 			{
-			case WormType::RED:
+			case ObjectType::RED:
 				color_r = 255; color_g = 0; color_b = 0;
 				break;
-			case WormType::BLUE:
+			case ObjectType::BLUE:
 				color_r = 0; color_g = 130; color_b = 255;
 				break;
-			case WormType::OTHER:
-				color_r = 100; color_g = 100; color_b = 100;
+
+			case ObjectType::GUN:
+				color_r = 255; color_g = 100; color_b = 100;
+				break;
+			case ObjectType::GRENADE:
+				color_r = 0; color_g = 255; color_b = 0;
+				break;
+			case ObjectType::OTHER:
+				color_r = 255; color_g = 255; color_b = 255;
 				break;
 			default:
 				break;
@@ -459,7 +460,7 @@ update_status ModulePhysics::PostUpdate()
 		}
 		else
 		{
-			color_r = 255; color_g = 255; color_b = 255;
+			color_r = 100; color_g = 100; color_b = 100;
 		}
 
 		// Draw ball
@@ -472,6 +473,7 @@ update_status ModulePhysics::PostUpdate()
 // Called before quitting
 bool ModulePhysics::CleanUp()
 {
+	balls.clear();
 	return true;
 }
 
@@ -644,26 +646,10 @@ void PhysBall::AddPosition(float x_, float y_)
 //Inspirat en un projecte de l'any passat
 //on està listItem :(
 
-int ModulePhysics::CreateBall(float x_, float y_, float rad_, WormType type_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction_, float cRest_, float ax_, float ay_, bool enabled_)
+int ModulePhysics::CreateBall(float x_, float y_, float rad_, ObjectType type_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction_, float cRest_, float ax_, float ay_, bool enabled_)
 {
 	PhysBall* new_ball = new PhysBall(x_, y_, rad_, type_, mass_, vx_ , vy_, surface_, cl_,  cd_ , b_, cFriction_, cRest_, ax_, ay_, enabled_);
-	new_ball->id = App->player->setID++;
 	balls.push_back(*new_ball);
-
-	// nose si aixo servira per a algo, potser si despues 
-	switch (type_)
-	{
-	case WormType::RED:
-		App->player->listRED.emplace_back(*new_ball);
-		break;
-	case WormType::BLUE:
-		App->player->listBLUE.emplace_back(*new_ball);
-		break;
-	case WormType::OTHER:
-		break;
-	default:
-		break;
-	}
 
 	return balls.size() - 1;
 }

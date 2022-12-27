@@ -20,10 +20,12 @@ enum class integrationMethods
 	
 };
 
-enum class WormType
+enum class ObjectType
 {
 	RED,
 	BLUE,
+	GUN,
+	GRENADE,
 	OTHER
 };
 
@@ -35,7 +37,7 @@ public:
 	PhysBall() {};
 
 	// x, y, rad, mass, vx, vy, surface, cl, cd, b, friction, restitution, ax, ay, enabled;
-	PhysBall(float x_, float y_, float rad, WormType type_ = WormType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true)
+	PhysBall(float x_, float y_, float rad, ObjectType type_ = ObjectType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true)
 	{
 		x = x_;
 		y = y_;
@@ -57,28 +59,6 @@ public:
 		physics_enabled = enabled;
 		type = type_;
 	}
-
-	/*PhysBall(float x_, float y_, float rad, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true)
-	{
-		x = x_;
-		y = y_;
-		radius = rad;
-		mass = mass_;
-
-		vx = vx_;
-		vy = vy_;
-		ax = ax_;
-		ay = ay_;
-
-		surface = surface_;
-		cl = cl_;
-		cd = cd_;
-		b = b_;
-		coef_friction = cFriction;
-		coef_restitution = cRest;
-
-		physics_enabled = enabled;
-	}*/
 
 
 	void ApplyForce(float forX, float forY);
@@ -104,8 +84,8 @@ public:
 	float fy;
 
 	//Extra Force applied
-	float addedForceX=0;
-	float addedForceY=0;
+	float addedForceX = 0;
+	float addedForceY = 0;
 
 	// Mass
 	float mass;
@@ -126,7 +106,7 @@ public:
 	// Has physics enabled?
 	bool physics_enabled = true;
 	int id;
-	WormType type;
+	ObjectType type;
 };
 
 
@@ -193,7 +173,7 @@ public:
 	integrationMethods method;
 
 	//problemes amb llista
-	int CreateBall(float x_, float y_, float rad_, WormType type_ = WormType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true);
+	int CreateBall(float x_, float y_, float rad_, ObjectType type_ = ObjectType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true);
 
 private:
 

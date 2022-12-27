@@ -12,35 +12,23 @@ enum class MovementType
 	APPLY_FORCE,
 	APPLY_VELOCITY,
 	CHANGE_POSITION
-
 };
 
-class Object
+class Worm
 {
 public:
 	SDL_Texture* graphic;
 	uint fx;
 
-	Object() : graphic(NULL) {}
+	Worm() : graphic(NULL) {}
 
-	/*Object(iPoint pos, int id_, WormType type_, bool render = true) : graphic(NULL)
-	{
-		position = pos;
-		id = id_;
-		type = type_;
-		renderable = render;
-	}*/
-
-	/*Object(int posX_, int posY_, int id_, WormType type_, bool render = true) : graphic(NULL)
+	Worm(int posX_, int posY_, ObjectType type_, int hp = 100, bool render = true) : graphic(NULL)
 	{
 		posX = posX_;
 		posY = posY_;
-		id = id_;
 		type = type_;
-		renderable = render;
-		
-		body = new PhysBall(PIXEL_TO_METERS(posX), PIXEL_TO_METERS(posY), 1.0f, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
-	}*/
+		renderable = render;	
+	}
 
 public:
 	//iPoint position;	// idk perque me dona problemes? tf 
@@ -48,10 +36,69 @@ public:
 
 	bool renderable = true;
 	int id;
-	WormType type;
+	int hp;
+	ObjectType type;
 
-	PhysBall* body;
+	int body;
 };
+
+//class Gun
+//{
+//public:
+//	SDL_Texture* graphic;
+//	uint fx;
+//
+//	Gun() : graphic(NULL) {}
+//
+//	Gun(int posX_, int posY_, ObjectType type_, bool render = true) : graphic(NULL)
+//	{
+//		posX = posX_;
+//		posY = posY_;
+//		type = type_;
+//
+//		renderable = render;
+//	}
+//
+//public:
+//	int posX, posY;
+//
+//	bool renderable = true;
+//	//int id;
+//	int range;
+//	ObjectType type;
+//
+//	PhysBall* body;
+//};
+
+class Weapon
+{
+public:
+	SDL_Texture* graphic;
+	uint fx;
+
+	Weapon() : graphic(NULL) {}
+
+	Weapon(int posX_, int posY_, ObjectType type_, bool render = true) : graphic(NULL)
+	{
+		posX = posX_;
+		posY = posY_;
+		type = type_;
+
+		renderable = render;
+	}
+	
+public:
+	//iPoint position;	// idk perque me dona problemes? tf 
+	int posX, posY;
+
+	bool renderable = true;
+	//int id;
+	float range;	// range of damage
+	ObjectType type;
+
+	int body;
+};
+
 
 class ModulePlayer : public Module
 {
@@ -64,17 +111,20 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void controls(int player, MovementType move);
+	int CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_ = 100, bool render = true);
+	int CreateWeapon(int posX_, int posY_, ObjectType type_, bool render = true);
 
+	int selectPlayer(int p);
+	void controls(Worm* player, MovementType move);
 
 public:
 
-	std::vector<PhysBall> listBLUE{};
-	std::vector<PhysBall> listRED{};
-
-	//std::vector<int> listPlayers{};
-	std::vector<int> listBlueP{};
-	std::vector<int> listRedP{};
+	//std::vector<PhysBall> listBLUE{};
+	//std::vector<PhysBall> listRED{};
+	 
+	std::vector<int> listPlayers{};
+	std::vector<Worm*> listBlueP{};
+	std::vector<Worm*> listRedP{};
 
 	float posX, posY, radBody;
 	int playerBody;
@@ -83,5 +133,6 @@ public:
 	int setID;
 	bool playerTurn;	// blue = true, red = false
 
-	int currentPlayer;
+	int currentBlue;
+	int currentRed;
 };
