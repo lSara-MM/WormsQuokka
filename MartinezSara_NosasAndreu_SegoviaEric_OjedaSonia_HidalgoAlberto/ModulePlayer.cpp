@@ -59,11 +59,11 @@ update_status ModulePlayer::Update()
 {
 	if (playerTurn)	// Blue turn
 	{
-		controls(listBlueP.front(), MovementType::APPLY_FORCE);
+		controls(listBlueP.front(), movement);
 	}
 	else // Red turn
 	{
-		controls(listRedP.front(), MovementType::APPLY_FORCE);
+		controls(listRedP.front(), movement);
 	}
 
 	if (listBLUE.empty()) 

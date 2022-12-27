@@ -182,7 +182,8 @@ public:
 	int integrator = 0;
 
 	// Misc
-	float dt = 1.0 / 60.0;
+	//float dt = 1.0 / 60.0;
+	float dt_updated;
 
 	//debug
 	bool gravityIsEnabled;

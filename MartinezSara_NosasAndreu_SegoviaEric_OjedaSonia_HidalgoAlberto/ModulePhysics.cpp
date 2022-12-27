@@ -300,23 +300,25 @@ update_status ModulePhysics::PreUpdate()
 
 			// Step #3: Integrate --> from accel to new velocity & new position
 			// ----------------------------------------------------------------------------------------
-
+			//Update dt 
+			dt_updated = App->dt / 1000;
+			
 			// Switch to determine which method of integration to use.(posar text en pantalla de quin mètode s'utilitza)
 			switch (method)
 			{
 			case integrationMethods::BACKWARDS_EULER:
 
-				integrator_velocity_Backwards_Euler(ball, dt);
+				integrator_velocity_Backwards_Euler(ball, dt_updated);
 
 				break;
 			case integrationMethods::FORWARDS_EULER:
 
-				integrator_velocity_Forwards_Euler(ball, dt);
+				integrator_velocity_Forwards_Euler(ball, dt_updated);
 
 				break;
 			case integrationMethods::VERLET:
 			
-				integrator_velocity_verlet(ball, dt);
+				integrator_velocity_verlet(ball, dt_updated);
 
 				break;
 			default:
