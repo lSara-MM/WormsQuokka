@@ -62,15 +62,18 @@
     <ClInclude Include="ModulePhysics.h">
       <Filter>Physics</Filter>
     </ClInclude>
+    <ClInclude Include="SString.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Defs.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModuleWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
@@ -99,6 +102,9 @@
     </ClCompile>
     <ClCompile Include="PhysWorld.cpp">
       <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Header Files\Containers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

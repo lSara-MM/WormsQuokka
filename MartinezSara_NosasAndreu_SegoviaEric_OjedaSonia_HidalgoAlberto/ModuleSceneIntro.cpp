@@ -6,6 +6,7 @@
 #include "ModuleInput.h"
 #include "Application.h"
 
+#include "SString.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -18,8 +19,8 @@ ModuleSceneIntro::~ModuleSceneIntro()
 // Load assets
 bool ModuleSceneIntro::Start()
 {
-
 	LOG("Loading Intro assets");
+
 	bool ret = true;
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
@@ -48,35 +49,13 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	SString title("%s | Current FPS: %f DeltaTime: %f  Expected FPS: %i, DeltaTime: %i", TITLE, 1000 / App->dt, App->dt, 1000 / App->time, App->time);
+	App->window->SetTitle(title.GetString());
+
 	Debug();
 
 	App->renderer->DrawQuad(rect, 0, 255, 255, 255); 
-
 	App->renderer->DrawCircle(x, y, rad, 0, 255, 255, 255); 
-		
-	//p2List_item<pbody>* bodies ;
-	
-	//for(bodies=allBodies->getFirst();bodies=bodies->next;bodies->next!=nullptr)
-	//{
-		//App->renderer->DrawCircle(bodies->data.pos.x,bodies->data.pos.y,bodies->data.radious, 255, 255, 255);
-	//}
-
-	//if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) {
-	//	x += 10;
-	//}
-
-	//if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) {
-	//	x -= 10;
-	//}	
-	//
-	//if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) {
-	//	y -= 10;
-	//}
-
-	//if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) {
-	//	y += 10;
-	//}
-
 
 	return UPDATE_CONTINUE;
 }

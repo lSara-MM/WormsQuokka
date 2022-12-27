@@ -26,7 +26,7 @@ public:
 	ModulePhysics* physics;
 
 	// time
-	float time = 1000 / 60;
+	uint time = 1000 / 60;
 	float dt;
 	//int frame = 0;
 
