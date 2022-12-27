@@ -121,4 +121,28 @@ void ModuleSceneIntro::Debug() {
 		LOG("Movement changing position");
 
 	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+	{
+
+		App->timeControl = DeltaTimeControl::FIXED_DELTATIME;
+		LOG("Fixed delta time");
+
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)//m'he quedat sense fs
+	{
+
+		App->timeControl = DeltaTimeControl::FIXED_DELTATIME_DELAY;
+		LOG("Fixed delta time with delay");
+
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+	{
+
+		App->timeControl = DeltaTimeControl::VARIABLE_DELTATIME;
+		LOG("Variable delta time");
+
+	}
 }

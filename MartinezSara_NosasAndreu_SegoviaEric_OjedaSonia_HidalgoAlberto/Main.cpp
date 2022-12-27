@@ -85,13 +85,38 @@ int main(int argc, char ** argv)
 
 		}
 
-		// time control
-		if (App->time > SDL_GetTicks() - startTime)
+		switch (App->timeControl)
 		{
-			SDL_Delay(App->time - (SDL_GetTicks() - startTime));
+
+		case DeltaTimeControl::FIXED_DELTATIME:
+
+			App->dt = App->time;
+
+			break;
+		case DeltaTimeControl::FIXED_DELTATIME_DELAY:
+
+			App->dt = App->time;
+
+			if (App->time > SDL_GetTicks() - startTime)
+			{
+				SDL_Delay(App->time - (SDL_GetTicks() - startTime));
+			}
+
+			break;
+		case DeltaTimeControl::VARIABLE_DELTATIME://aquest és el que estava per defecte, no sé si es diu així
+
+			if (App->time > SDL_GetTicks() - startTime)
+			{
+				SDL_Delay(App->time - (SDL_GetTicks() - startTime));
+			}
+			fps = (SDL_GetTicks() - startTime);
+			App->dt = fps;
+
+			break;
+		default:
+			break;
 		}
-		fps = (SDL_GetTicks() - startTime);
-		App->dt = fps;
+		
 	}
 
 	delete App;

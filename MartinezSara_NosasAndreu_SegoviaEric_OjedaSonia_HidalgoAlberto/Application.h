@@ -13,6 +13,15 @@
 #include "ModulePhysics.h"
 #include "ModuleSceneIntro.h"
 
+enum class DeltaTimeControl
+{
+
+	FIXED_DELTATIME,
+	FIXED_DELTATIME_DELAY,
+	VARIABLE_DELTATIME
+
+};
+
 class Application
 {
 public:
@@ -42,6 +51,8 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+
+	DeltaTimeControl timeControl = DeltaTimeControl::VARIABLE_DELTATIME;
 
 private:
 
