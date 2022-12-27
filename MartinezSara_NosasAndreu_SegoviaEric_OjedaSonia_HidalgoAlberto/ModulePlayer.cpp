@@ -150,7 +150,7 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, ObjectType type_, bool rend
 		vx = 5.0f;		vy = 20.0f;		mass = 50.0f;
 	}
 
-	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
+	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
 
 	return new_gun->body;
 }
