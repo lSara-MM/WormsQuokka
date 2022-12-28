@@ -29,6 +29,8 @@ enum class ObjectType
 	OTHER
 };
 
+
+
 // Class: Ball object (a simple stoopid physics object)
 class PhysBall
 {
@@ -107,6 +109,9 @@ public:
 	bool physics_enabled = true;
 	int id;
 	ObjectType type;
+
+	//variable used to draw wind
+	int iwind = 0;
 };
 
 
@@ -174,6 +179,9 @@ public:
 
 	//problemes amb llista
 	int CreateBall(float x_, float y_, float rad_, ObjectType type_ = ObjectType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true);
+
+	//variable used to draw wind
+	int iwind = 0;
 
 private:
 

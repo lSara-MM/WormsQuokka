@@ -412,6 +412,25 @@ update_status ModulePhysics::PostUpdate()
 	// Colors
 	int color_r, color_g, color_b;
 
+	//Draw wind
+	color_r = 0; color_g = 255; color_b = 125;
+	
+	++iwind;
+	for(float i=0;i<=PIXEL_TO_METERS(SCREEN_WIDTH);i+= atmosphere.windx +2.0f)
+	{
+		for (float j = 0; j <= PIXEL_TO_METERS(SCREEN_WIDTH); j += atmosphere.windy  + 2.0f)
+		{		
+			App->renderer->DrawLine(
+				20*i*(atmosphere.windx /abs(atmosphere.windx))+ iwind*atmosphere.windx*4,
+				20 * j* (atmosphere.windy / abs(atmosphere.windy)) + (iwind) * atmosphere.windy*4,
+				20*i* (atmosphere.windx / abs(atmosphere.windx)) +(iwind +1)*atmosphere.windx*4 ,
+				20 * j*(atmosphere.windy / abs(atmosphere.windy)) +  (iwind +1) * atmosphere.windy*4,
+				color_r, color_g, color_b, 100);
+		}
+			
+		
+	}
+	if (iwind >= 25) { iwind = 0; }
 	// Draw water
 	color_r = 0; color_g = 0; color_b = 255;
 	App->renderer->DrawQuad(water.pixels(), color_r, color_g, color_b);
@@ -422,6 +441,8 @@ update_status ModulePhysics::PostUpdate()
 		color_r = 0; color_g = 255; color_b = 0;
 		App->renderer->DrawQuad(ground.pixels(), color_r, color_g, color_b);
 	}
+
+	
 
 	// Draw all balls in the scenario
 	for (auto& ball : balls)
