@@ -85,26 +85,6 @@ update_status ModulePlayer::Update()
 	if (listRedP.empty() && listBlueP.empty()) 
 	{ LOG("DRAW"); }
 
-	//JUMP
-
-	for (auto& ground : App->physics->grounds)
-	{
-		if (check_collision_circle_rectangle(App->physics->balls.at(listBlueP.at(currentBlue)->body).x, App->physics->balls.at(listBlueP.at(currentBlue)->body).y, App->physics->balls.at(listBlueP.at(currentBlue)->body).radius, ground.x, ground.y, ground.w, ground.h)) 
-		{
-			jumpBlue = true;
-		}
-	}
-
-	if (jumpBlue) 
-	{
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
-		{
-			LOG("JUMP");
-			App->physics->balls.at(listBlueP.at(currentBlue)->body).ApplyForce(0, 40);;
-			jumpBlue = false;
-		}
-	}
-
 	return UPDATE_CONTINUE;
 }
 
@@ -152,7 +132,7 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, 
 	return new_worm->body;
 }
 
-int ModulePlayer::CreateWeapon(int posX_, int posY_, ObjectType type_, bool render)
+int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, ObjectType type_, bool render)
 {
 	Weapon* new_gun = new Weapon(posX_, posY_, type_, render);
 	//new_gun->id = setID++;
@@ -162,12 +142,12 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, ObjectType type_, bool rend
 	if (type_ == ObjectType::GUN) 
 	{ 
 		new_gun->range = 2; 
-		vx = 10.0f;		vy = 20.0f;		mass = 10.0f;
+		vx = 10.0f * dirX;		vy = 20.0f;		mass = 10.0f;
 	}
 	if (type_ == ObjectType::GRENADE) 
 	{ 
 		new_gun->range = 20; 
-		vx = 5.0f;		vy = 20.0f;		mass = 50.0f;
+		vx = 5.0f * dirX;		vy = 20.0f;		mass = 50.0f;
 	}
 
 	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
@@ -196,13 +176,26 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	case MovementType::APPLY_FORCE:
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
-		{ App->physics->balls.at(player->body).ApplyForce(1500.0f, 0.0f); }
+		{ 
+			App->physics->balls.at(player->body).ApplyForce(1500.0f, 0.0f); 
+			player->direction = true;
+			listBlueP.at(currentBlue);
+		}
 
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
-		{ App->physics->balls.at(player->body).ApplyForce(-1500.0f, 0.0f); }
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		{
+			App->physics->balls.at(player->body).ApplyForce(-1500.0f, 0.0f);
+			player->direction = false;
+		}
+		
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) 
+		{ App->physics->balls.at(player->body).ApplyForce(0.0f, -3000.0f); }
 
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) 
-		{ App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f); }
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+		{ App->physics->balls.at(player->body).ApplyForce(0.0f, 300.0f); }
+
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP || App->input->GetKey(SDL_SCANCODE_W) == KEY_UP)
+		{ App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f); }		
 
 		break;
 
@@ -240,6 +233,14 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
+		// int posX_, int posY_, int dirX, float dirY, ObjectType type_, bool render
+
+		int x = METERS_TO_PIXELS(1.0f / 2);
+		/*(player->direction == true) ? CreateWeapon(player->posX + 11, player->posY + 10, 1, 1, ObjectType::GUN)
+			: CreateWeapon(player->posX - 11, player->posY + 10, -1, 1, ObjectType::GUN);*/
+
+		CreateWeapon(player->posX + 11, player->posY + 10, 1, 1, ObjectType::GUN);
+		// hacer que espere a que colisione el proyectil 
 		playerTurn = !playerTurn;
 	}
 

@@ -109,14 +109,14 @@ update_status ModulePhysics::PreUpdate()
 	{
 		float posX = App->input->GetMouseX();
 		float posY = App->input->GetMouseY();
-		App->player->CreateWeapon(posX, posY, ObjectType::GUN);
+		App->player->CreateWeapon(posX, posY, 1, 1, ObjectType::GUN);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 	{
 		float posX = App->input->GetMouseX();
 		float posY = App->input->GetMouseY();
-		App->player->CreateWeapon(posX, posY, ObjectType::GRENADE);
+		App->player->CreateWeapon(posX, posY, 1, 1, ObjectType::GRENADE);
 	}
 
 	// Process all balls in the scenario

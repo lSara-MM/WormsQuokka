@@ -37,6 +37,7 @@ public:
 	bool renderable = true;
 	int id;
 	int hp;
+	bool direction = true;	// true - derecha, false - izquierda
 	ObjectType type;
 
 	int body;
@@ -112,7 +113,7 @@ public:
 	bool CleanUp();
 
 	int CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_ = 100, bool render = true);
-	int CreateWeapon(int posX_, int posY_, ObjectType type_, bool render = true);
+	int CreateWeapon(int posX_, int posY_, int dirX, float dirY, ObjectType type_, bool render = true);
 
 	int selectPlayer(int p);
 	void controls(Worm* player, MovementType move);
@@ -135,8 +136,4 @@ public:
 
 	int currentBlue;
 	int currentRed;
-
-	//Jump
-
-	bool jumpBlue = false;
 };
