@@ -135,4 +135,8 @@ public:
 
 	int currentBlue;
 	int currentRed;
+
+	//Jump
+
+	bool jumpBlue = false;
 };

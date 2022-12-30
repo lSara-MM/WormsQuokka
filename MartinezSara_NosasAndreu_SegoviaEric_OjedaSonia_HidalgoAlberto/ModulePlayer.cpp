@@ -85,6 +85,26 @@ update_status ModulePlayer::Update()
 	if (listRedP.empty() && listBlueP.empty()) 
 	{ LOG("DRAW"); }
 
+	//JUMP
+
+	for (auto& ground : App->physics->grounds)
+	{
+		if (check_collision_circle_rectangle(App->physics->balls.at(listBlueP.at(currentBlue)->body).x, App->physics->balls.at(listBlueP.at(currentBlue)->body).y, App->physics->balls.at(listBlueP.at(currentBlue)->body).radius, ground.x, ground.y, ground.w, ground.h)) 
+		{
+			jumpBlue = true;
+		}
+	}
+
+	if (jumpBlue) 
+	{
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+		{
+			LOG("JUMP");
+			App->physics->balls.at(listBlueP.at(currentBlue)->body).ApplyForce(0, 40);;
+			jumpBlue = false;
+		}
+	}
+
 	return UPDATE_CONTINUE;
 }
 
