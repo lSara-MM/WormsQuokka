@@ -416,15 +416,15 @@ update_status ModulePhysics::PostUpdate()
 	color_r = 0; color_g = 255; color_b = 125;
 	
 	++iwind;
-	for(float i=0;i<=PIXEL_TO_METERS(SCREEN_WIDTH);i+= atmosphere.windx +2.0f)
+	for(float i=-SCREEN_HEIGHT;i<=2*SCREEN_HEIGHT;i+= SCREEN_HEIGHT /10) //Pos y
 	{
-		for (float j = 0; j <= PIXEL_TO_METERS(SCREEN_WIDTH); j += atmosphere.windy  + 2.0f)
+		for (float j = -SCREEN_WIDTH; j <= 2*SCREEN_WIDTH; j += SCREEN_WIDTH/10) //Pos x
 		{		
 			App->renderer->DrawLine(
-				20*i*(atmosphere.windx /abs(atmosphere.windx))+ iwind*atmosphere.windx*4,
-				20 * j* (atmosphere.windy / abs(atmosphere.windy)) + (iwind) * atmosphere.windy*4,
-				20*i* (atmosphere.windx / abs(atmosphere.windx)) +(iwind +1)*atmosphere.windx*4 ,
-				20 * j*(atmosphere.windy / abs(atmosphere.windy)) +  (iwind +1) * atmosphere.windy*4,
+				j+ iwind* atmosphere.windx * 4, //X0
+				i + iwind * atmosphere.windy*4, //Y0
+				j + (iwind +1) *atmosphere.windx*4 , //X1
+				i +  (iwind +1) * atmosphere.windy*4, //Y1
 				color_r, color_g, color_b, 100);
 		}
 			
