@@ -188,8 +188,16 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			player->direction = false;
 		}
 		
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) 
-		{ App->physics->balls.at(player->body).ApplyForce(0.0f, -3000.0f); }
+	for (auto& ground : App->physics->grounds)
+	{
+		if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
+		{
+			if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) 
+			{ 
+					App->physics->balls.at(player->body).ApplyForce(0.0f, -3000.0f);
+			}
+		}
+	}
 
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		{ App->physics->balls.at(player->body).ApplyForce(0.0f, 300.0f); }
