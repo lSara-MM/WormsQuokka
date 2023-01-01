@@ -81,11 +81,6 @@ bool ModulePhysics::Start()
 	// Add ball to the collection
 	//balls.emplace_back(ball);
 
-	//Print text (de momento aqui lo dejo)
-	//De momento lo dejo aqui
-	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 :" };
-	blueFont = App->renderer->LoadFont("Fonts/FuenteAzulClaro.png", lookupTable, 1, 38); // 1 = rows 39 = columns
-	LOG("%d", blueFont);
 
 	//debug
 	options[0] = true;

@@ -108,11 +108,12 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, 
 {
 	Worm* new_worm = new Worm(posX_, posY_, type_, hp_, render);
 	new_worm->id = setID++;
+	new_worm->weapon = ObjectType::GUN; // gun by default
 
 	bool a;
 	(render) ? a = true : a = false;	// if render true, physics true 
 
-	new_worm->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY), 1.0f, type_, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0f, 0.0f, a);
+	new_worm->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), 1.0f, type_, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0f, 0.0f, a);
 
 	// nose si aixo servira per a algo, potser si despues 
 	switch (type_)
@@ -142,12 +143,12 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, Objec
 	if (type_ == ObjectType::GUN) 
 	{ 
 		new_gun->range = 2; 
-		vx = 10.0f * dirX;		vy = 20.0f;		mass = 10.0f;
+		vx = 30.0f * dirX;		vy = 20.0f;		mass = 10.0f;
 	}
 	if (type_ == ObjectType::GRENADE) 
 	{ 
 		new_gun->range = 20; 
-		vx = 5.0f * dirX;		vy = 20.0f;		mass = 50.0f;
+		vx = 10.0f * dirX;		vy = 20.0f;		mass = 50.0f;
 	}
 
 	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
@@ -188,16 +189,16 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			player->direction = false;
 		}
 		
-	for (auto& ground : App->physics->grounds)
-	{
-		if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
+		for (auto& ground : App->physics->grounds)
 		{
-			if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN) 
-			{ 
+			if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
+			{
+				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+				{ 
 					App->physics->balls.at(player->body).ApplyForce(0.0f, -3000.0f);
+				}
 			}
 		}
-	}
 
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 		{ App->physics->balls.at(player->body).ApplyForce(0.0f, 300.0f); }
@@ -236,18 +237,44 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		break;
 	}
 
-	//player->posX = App->physics->balls.at(player->body).x;
-	//player->posX = App->physics->balls.at(player->body).y;
+	player->posX = METERS_TO_PIXELS(App->physics->balls.at(player->body).x);
+	player->posY = METERS_TO_PIXELS(App->physics->balls.at(player->body).y);
+
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
+	{
+		switch (player->weapon)
+		{
+		case ObjectType::GUN:
+			player->weapon = ObjectType::GRENADE;
+			break;
+		case ObjectType::GRENADE:
+			player->weapon = ObjectType::GUN;	// in case more weapons, put next weapon
+			break;
+		default:
+			break;
+		}
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		// int posX_, int posY_, int dirX, float dirY, ObjectType type_, bool render
+		int a = METERS_TO_PIXELS(2.0f);
+		ObjectType b;
 
-		int x = METERS_TO_PIXELS(1.0f / 2);
-		/*(player->direction == true) ? CreateWeapon(player->posX + 11, player->posY + 10, 1, 1, ObjectType::GUN)
-			: CreateWeapon(player->posX - 11, player->posY + 10, -1, 1, ObjectType::GUN);*/
+		switch (player->weapon)
+		{
+		case ObjectType::GUN:
+			b = ObjectType::GUN;
+			break;
+		case ObjectType::GRENADE:
+			b = ObjectType::GRENADE;
+			break;
+		default:
+			break;
+		}
 
-		CreateWeapon(player->posX + 11, player->posY + 10, 1, 1, ObjectType::GUN);
+		(player->direction == true) ? CreateWeapon(player->posX + a, player->posY, 1, 1, b)
+			: CreateWeapon(player->posX - a, player->posY, -1, 1, b);
+
 		// hacer que espere a que colisione el proyectil 
 		playerTurn = !playerTurn;
 	}
