@@ -41,6 +41,8 @@ public:
 	ObjectType type;
 
 	int body;
+
+	ObjectType weapon;
 };
 
 //class Gun
@@ -127,8 +129,6 @@ public:
 	std::vector<Worm*> listBlueP{};
 	std::vector<Worm*> listRedP{};
 
-	float posX, posY, radBody;
-	int playerBody;
 	MovementType movement;
 
 	int setID;
