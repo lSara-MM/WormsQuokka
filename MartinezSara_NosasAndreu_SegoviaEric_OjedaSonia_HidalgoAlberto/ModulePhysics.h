@@ -184,7 +184,7 @@ public:
 	int iwind = 0;
 
 private:
-
+	int blueFont;
 	bool debug;
 };
 
