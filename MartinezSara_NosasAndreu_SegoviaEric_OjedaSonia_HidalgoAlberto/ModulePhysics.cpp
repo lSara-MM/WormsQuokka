@@ -48,9 +48,9 @@ bool ModulePhysics::Start()
 	// Create Water
 	water = Water();
 	water.x = ground.x + ground.w; // Start where ground ends [m]
-	water.y = PIXEL_TO_METERS(SCREEN_HEIGHT)+10.0f; // [m]
+	water.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
 	water.w = 30.0f; // [m]
-	water.h = 15.0f; // [m]
+	water.h = 5.0f; // [m]
 	water.density = 50.0f; // [kg/m^3]
 	water.vx = -1.0f; // [m/s]
 	water.vy = 0.0f; // [m/s]
@@ -412,11 +412,16 @@ update_status ModulePhysics::PostUpdate()
 	// Colors
 	int color_r, color_g, color_b;
 
+	// Draw water
+	color_r = 0; color_g = 0; color_b = 255;
+	App->renderer->DrawQuad(water.pixels(), color_r, color_g, color_b);
+
 	//Draw wind
 	color_r = 0; color_g = 255; color_b = 125;
 	
 	++iwind;
-	for(float i=-SCREEN_HEIGHT;i<=2*SCREEN_HEIGHT;i+= SCREEN_HEIGHT /10) //Pos y
+
+	for(float i=-SCREEN_HEIGHT;i<=2*SCREEN_HEIGHT- water.pixels().y;i+= SCREEN_HEIGHT /10) //Pos y
 	{
 		for (float j = -SCREEN_WIDTH; j <= 2*SCREEN_WIDTH; j += SCREEN_WIDTH/10) //Pos x
 		{		
@@ -430,10 +435,26 @@ update_status ModulePhysics::PostUpdate()
 			
 		
 	}
+
+	//Draw water currents
+	LOG("El agua es %d y su w es %d",water.pixels().x, water.pixels().w)
+	for (int k = water.pixels().y+  water.pixels().h; k <= water.pixels().y; k -= water.pixels().h /4 ) //Pos y
+	{
+		for (int m = water.pixels().x; m <= water.pixels().x+ water.pixels().w; m += water.pixels().w / 5) //Pos x
+		{
+			App->renderer->DrawLine(
+				m + iwind * water.vx*4 , //X0
+				k + iwind * water.vy*4 , //Y0
+				m + (iwind + 1) * water.vx*4 , //X1
+				k + (iwind + 1) * water.vy*4 , //Y1
+				125, 125, 255);
+		}
+
+
+	}
+
 	if (iwind >= 25) { iwind = 0; }
-	// Draw water
-	color_r = 0; color_g = 0; color_b = 255;
-	App->renderer->DrawQuad(water.pixels(), color_r, color_g, color_b);
+	
 
 	// Draw ground
 	for (auto& ground : grounds)
