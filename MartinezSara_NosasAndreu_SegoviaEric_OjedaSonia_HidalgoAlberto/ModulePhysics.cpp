@@ -88,11 +88,16 @@ bool ModulePhysics::Start()
 	LOG("%d", blueFont);
 
 	//debug
-	gravityIsEnabled = true;
+	options[0] = true;
+	options[1] = true;
+	options[2] = true;
+	options[3] = true;
+	options[4] = true;
 	buoyancyIsEnabled = true;
 	hidroIsEnabled = true;
 	aeroIsEnabled = true;
 	method = integrationMethods::VERLET;
+
 
 	return true;
 }
@@ -149,7 +154,7 @@ update_status ModulePhysics::PreUpdate()
 			// ----------------------------------------------------------------------------------------
 
 			// Gravity force
-			if (gravityIsEnabled)
+			if (options[1] = true)
 			{
 				float fgx = ball.mass * 0.0f;
 				float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
@@ -414,6 +419,15 @@ update_status ModulePhysics::PreUpdate()
 
 update_status ModulePhysics::PostUpdate()
 {
+	//ACTIVAR O DESACTIVAR 
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		debug = !debug;
+	}
+
+
+
+
 	// Colors
 	int color_r, color_g, color_b;
 
@@ -425,39 +439,40 @@ update_status ModulePhysics::PostUpdate()
 	color_r = 0; color_g = 255; color_b = 125;
 	
 	++iwind;
-
-	for(float i=-SCREEN_HEIGHT;i<=2*SCREEN_HEIGHT- water.pixels().y;i+= SCREEN_HEIGHT /10) //Pos y
+	if (options[0])
 	{
-		for (float j = -SCREEN_WIDTH; j <= 2*SCREEN_WIDTH; j += SCREEN_WIDTH/10) //Pos x
-		{		
-			App->renderer->DrawLine(
-				j+ iwind* atmosphere.windx * 4, //X0
-				i + iwind * atmosphere.windy*4, //Y0
-				j + (iwind +1) *atmosphere.windx*4 , //X1
-				i +  (iwind +1) * atmosphere.windy*4, //Y1
-				color_r, color_g, color_b, 100);
-		}
+		for(float i=-SCREEN_HEIGHT;i<=2*SCREEN_HEIGHT- water.pixels().y;i+= SCREEN_HEIGHT /10) //Pos y
+		{
+			for (float j = -SCREEN_WIDTH; j <= 2*SCREEN_WIDTH; j += SCREEN_WIDTH/10) //Pos x
+			{		
+				App->renderer->DrawLine(
+					j+ iwind* atmosphere.windx * 4, //X0
+					i + iwind * atmosphere.windy*4, //Y0
+					j + (iwind +1) *atmosphere.windx*4 , //X1
+					i +  (iwind +1) * atmosphere.windy*4, //Y1
+					color_r, color_g, color_b, 100);
+			}
 			
 		
-	}
-
-	//Draw water currents
-	LOG("El agua es %d y su w es %d",water.pixels().x, water.pixels().w)
-	for (int k = water.pixels().y+  water.pixels().h; k <= water.pixels().y; k -= water.pixels().h /4 ) //Pos y
-	{
-		for (int m = water.pixels().x; m <= water.pixels().x+ water.pixels().w; m += water.pixels().w / 5) //Pos x
-		{
-			App->renderer->DrawLine(
-				m + iwind * water.vx*4 , //X0
-				k + iwind * water.vy*4 , //Y0
-				m + (iwind + 1) * water.vx*4 , //X1
-				k + (iwind + 1) * water.vy*4 , //Y1
-				125, 125, 255);
 		}
 
+		//Draw water currents
+		LOG("El agua es %d y su w es %d",water.pixels().x, water.pixels().w)
+		for (int k = water.pixels().y+  water.pixels().h; k <= water.pixels().y; k -= water.pixels().h /4 ) //Pos y
+		{
+			for (int m = water.pixels().x; m <= water.pixels().x+ water.pixels().w; m += water.pixels().w / 5) //Pos x
+			{
+				App->renderer->DrawLine(
+					m + iwind * water.vx*4 , //X0
+					k + iwind * water.vy*4 , //Y0
+					m + (iwind + 1) * water.vx*4 , //X1
+					k + (iwind + 1) * water.vy*4 , //Y1
+					125, 125, 255);
+			}
 
+
+		}
 	}
-
 	if (iwind >= 25) { iwind = 0; }
 	
 
@@ -468,7 +483,16 @@ update_status ModulePhysics::PostUpdate()
 		App->renderer->DrawQuad(ground.pixels(), color_r, color_g, color_b);
 	}
 
-	App->renderer->BlitText(10, 10, blueFont, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 :",4.0F);
+	if(debug)
+	{
+	App->renderer->BlitText(10, 10, blueFont, "DEBUG MODE ACTIVE:");
+		for(int i=0;i<10*1;i+=10) //Ese *1* es el numero maximo de opciones
+		{
+			App->renderer->BlitText(26, 20+i, blueFont, "1: SHOW OR HIDE WIND AND CURRENT ");
+		}
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) { options[0] = !options[0]; }
+	}
+	
 	
 
 	// Draw all balls in the scenario

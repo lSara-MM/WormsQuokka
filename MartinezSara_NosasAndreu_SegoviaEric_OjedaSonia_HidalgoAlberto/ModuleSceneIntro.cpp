@@ -89,7 +89,7 @@ void ModuleSceneIntro::Debug() {
 
 	else if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 	{
-		App->physics->gravityIsEnabled = !App->physics->gravityIsEnabled;
+		App->physics->options[1] = !App->physics->options[1];
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)

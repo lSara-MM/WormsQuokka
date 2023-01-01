@@ -171,7 +171,12 @@ public:
 	float dt_updated;
 
 	//debug
-	bool gravityIsEnabled;
+	//0 Print wind & currents,
+	//1 Gravity enabled
+	//2 buoyancy Enabled
+	//3 hidro resistance enabled
+	//4 Aero is enabled
+	bool options[5];
 	bool buoyancyIsEnabled;
 	bool hidroIsEnabled;
 	bool aeroIsEnabled;
@@ -186,6 +191,9 @@ public:
 private:
 	int blueFont;
 	bool debug;
+	 
+	
+
 };
 
 // Compute modulus of a vector
