@@ -241,6 +241,17 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
 		{ App->physics->balls.at(player->body).AddPosition(-15.0f, 0.0f); }
 
+		for (auto& ground : App->physics->grounds)
+		{
+			if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
+			{
+				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+				{
+					App->physics->balls.at(player->body).AddPosition(App->physics->balls.at(player->body).x, -100.0f);
+				}
+			}
+		}
+
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
 		{ App->physics->balls.at(player->body).AddPosition(0.0F, 0.0f); }
 
