@@ -85,6 +85,8 @@ update_status ModulePlayer::Update()
 	if (listRedP.empty() && listBlueP.empty()) 
 	{ LOG("DRAW"); }
 
+	timer++;
+
 	return UPDATE_CONTINUE;
 }
 
@@ -178,30 +180,39 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
 		{ 
-			App->physics->balls.at(player->body).ApplyForce(1500.0f, 0.0f); 
+			App->physics->balls.at(player->body).ApplyForce(1500.0f, App->physics->balls.at(player->body).fy);
 			player->direction = true;
 			listBlueP.at(currentBlue);
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).ApplyForce(-1500.0f, 0.0f);
+			App->physics->balls.at(player->body).ApplyForce(-1500.0f, App->physics->balls.at(player->body).fy);
 			player->direction = false;
 		}
 		
+		if (jump) {
+			if (timer >= 40) {
+				App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f);
+				jump = false;
+			}
+		}
+
 		for (auto& ground : App->physics->grounds)
 		{
 			if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
 			{
 				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 				{ 
-					App->physics->balls.at(player->body).ApplyForce(0.0f, -3000.0f);
+					timer = 0.0f;
+					jump = true;
+					App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, -2700.0f);
 				}
 			}
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-		{ App->physics->balls.at(player->body).ApplyForce(0.0f, 300.0f); }
+		{ App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, 300.0f); }
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP || App->input->GetKey(SDL_SCANCODE_W) == KEY_UP)
 		{ App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f); }		

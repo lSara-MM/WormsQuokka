@@ -136,4 +136,7 @@ public:
 
 	int currentBlue;
 	int currentRed;
+	float timer = 0;
+
+	bool jump = false;
 };
