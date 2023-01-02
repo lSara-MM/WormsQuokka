@@ -69,12 +69,12 @@ update_status ModulePlayer::Update()
 	// Select player
 	if (playerTurn)	// Blue turn
 	{
-		currentBlue = selectPlayer(currentBlue);
+		currentBlue = selectPlayer(ObjectType::BLUE, currentBlue);
 		controls(listBlueP.at(currentBlue), movement);
 	}
 	else // Red turn
 	{
-		currentRed = selectPlayer(currentRed);
+		currentRed = selectPlayer(ObjectType::RED, currentRed);
 		controls(listRedP.at(currentRed), movement);
 	}
 
@@ -91,9 +91,10 @@ update_status ModulePlayer::Update()
 
 		if (listBlueP.at(Worm->id)->hp <= 0)
 		{
-			//listBlueP.erase(listBlueP.begin() + listBlueP.at(Worm->id)->body);
 			App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
 			App->physics->balls.at(listBlueP.at(Worm->id)->body).physics_enabled = false;
+			
+			(currentBlue == 0) ? currentBlue = 1 : currentBlue = 0;
 		}
 		else
 		{
@@ -113,9 +114,10 @@ update_status ModulePlayer::Update()
 
 		if (listRedP.at(Worm->id)->hp <= 0)
 		{
-			//listRedP.erase(listRedP.begin() + listRedP.at(currentRed)->body);
 			App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
 			App->physics->balls.at(listRedP.at(Worm->id)->body).physics_enabled = false;
+			
+			(currentRed == 0) ? currentRed = 1 : currentRed = 0;
 		}
 		else
 		{
@@ -158,6 +160,7 @@ bool ModulePlayer::CleanUp()
 
 	return true;
 }
+
 
 int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, bool render)
 {
@@ -212,7 +215,7 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, Objec
 }
 
 
-int ModulePlayer::selectPlayer(int p)
+int ModulePlayer::selectPlayer(ObjectType t, int p)
 {
 	// Depende del num de players, se puede hacer general pero nose, por ahora parece mas comodo asi
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
@@ -339,6 +342,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			App->physics->balls.at(player->body).AddPosition(-15.0f, 0.0f);
 			player->direction = -1;
 		}
+
 
 		for (auto& ground : App->physics->grounds)
 		{
