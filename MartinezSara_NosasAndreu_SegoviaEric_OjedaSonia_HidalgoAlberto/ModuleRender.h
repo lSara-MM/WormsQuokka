@@ -55,6 +55,9 @@ public:
 	SDL_Renderer* renderer;
 	SDL_Rect camera;
 
+	int blueFont;
+	int greenFont;
+
 private:
 	// An array to keep track and store all loaded fonts
 	Font fonts[MAX_FONTS];

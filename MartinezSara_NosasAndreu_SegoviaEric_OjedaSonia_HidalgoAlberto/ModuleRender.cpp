@@ -275,7 +275,7 @@ void ModuleRender::BlitText(int x, int y, int font_id, const char* text, float s
 {
 	if (text == nullptr || font_id < 0 || font_id >= MAX_FONTS || fonts[font_id].texture == nullptr)
 	{
-		//LOG("Unable to render text with bmp font id %d", font_id);
+		LOG("Unable to render text with bmp font id %d", font_id);
 		return;
 	}
 

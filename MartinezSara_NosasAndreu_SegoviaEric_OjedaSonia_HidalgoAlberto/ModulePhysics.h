@@ -188,11 +188,6 @@ public:
 	int iwind = 0;
 
 private:
-	int blueFont;
-	int greenFont;
-	 
-	
-
 };
 
 // Compute modulus of a vector

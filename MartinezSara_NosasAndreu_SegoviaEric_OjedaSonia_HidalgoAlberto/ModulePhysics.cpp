@@ -91,11 +91,6 @@ bool ModulePhysics::Start()
 	
 	method = integrationMethods::VERLET;
 
-	//De momento lo dejo aqui
-	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 :" };
-	blueFont = App->renderer->LoadFont("Fonts/FuenteAzulClaro.png", lookupTable, 1, 38); // 1 = rows 39 = columns
-	greenFont = App->renderer->LoadFont("Fonts/FuenteVerde.png", lookupTable, 1, 38); // 1 = rows 39 = columns
-
 	return true;
 }
 
@@ -423,8 +418,6 @@ update_status ModulePhysics::PostUpdate()
 	}
 
 
-
-
 	// Colors
 	int color_r, color_g, color_b;
 
@@ -448,9 +441,7 @@ update_status ModulePhysics::PostUpdate()
 					j + (iwind +1) *atmosphere.windx*4 , //X1
 					i +  (iwind +1) * atmosphere.windy*4, //Y1
 					color_r, color_g, color_b, 100);
-			}
-			
-		
+			}		
 		}
 
 		//Draw water currents
@@ -466,10 +457,9 @@ update_status ModulePhysics::PostUpdate()
 					k + (iwind + 1) * water.vy*4 , //Y1
 					125, 125, 255);
 			}
-
-
 		}
 	}
+
 	if (iwind >= 25) { iwind = 0; }
 	
 
@@ -480,40 +470,32 @@ update_status ModulePhysics::PostUpdate()
 		App->renderer->DrawQuad(ground.pixels(), color_r, color_g, color_b);
 	}
 
-	if(!debug) { App->renderer->BlitText(10, 10, blueFont, "PRESS F1 TO SHOW AND ACTIVATE DEBUG"); }
-
-	if(debug)
+	if (debug)
 	{
-	App->renderer->BlitText(10, 10, blueFont, "DEBUG MODE ACTIVE:");
-		
-			App->renderer->BlitText(26, 20, blueFont, "1: SHOW OR HIDE WIND AND CURRENT ");
-			App->renderer->BlitText(26, 30, blueFont, "2: ENABLE OR DISABLE GRAVITY ");
-			App->renderer->BlitText(26, 40, blueFont, "3: ENABLE OR DISABLE BUOYANCY");
-			App->renderer->BlitText(26, 50, blueFont, "4: ENABLE OR DISABLE HYDRO DRAG ");
-			App->renderer->BlitText(26, 60, blueFont, "5: ENABLE OR DISABLE AERO DRAG ");
+		App->renderer->BlitText(10, 10, App->renderer->blueFont, "DEBUG MODE ACTIVE:");
 
-			//LADO OPUESTO PANTALLA
-			App->renderer->BlitText(SCREEN_WIDTH - 34 *8, 20, blueFont, "INTEGRATION METHOD: ");
-			App->renderer->BlitText(SCREEN_WIDTH - 28 * 8, 30, blueFont, "F2:BACKWARDS EULER");
-			App->renderer->BlitText(SCREEN_WIDTH - 28 * 8, 40, blueFont, "F3:FOWARDS EULER");
-			App->renderer->BlitText(SCREEN_WIDTH - 28 * 8, 50, blueFont, "F4:VERLET");
+		App->renderer->BlitText(26, 20, App->renderer->blueFont, "1: SHOW OR HIDE WIND AND CURRENT ");
+		App->renderer->BlitText(26, 30, App->renderer->blueFont, "2: ENABLE OR DISABLE GRAVITY ");
+		App->renderer->BlitText(26, 40, App->renderer->blueFont, "3: ENABLE OR DISABLE BUOYANCY");
+		App->renderer->BlitText(26, 50, App->renderer->blueFont, "4: ENABLE OR DISABLE HYDRO DRAG ");
+		App->renderer->BlitText(26, 60, App->renderer->blueFont, "5: ENABLE OR DISABLE AERO DRAG ");
 
-			switch (method)
-			{
-			case integrationMethods::BACKWARDS_EULER:
-				App->renderer->BlitText(SCREEN_WIDTH - 14 * 8, 10, greenFont, "BACKWARDS");
-				break;
-			case integrationMethods::FORWARDS_EULER:
-				App->renderer->BlitText(SCREEN_WIDTH - 14 * 8, 10, greenFont, "FOWARDS");
-				break;
-			case integrationMethods::VERLET:
-				App->renderer->BlitText(SCREEN_WIDTH - 14 * 8, 10, greenFont, "VERLET");
-				break;
-			default:
-				break;
-			}
-			
-
+		//LADO OPUESTO PANTALLA
+		App->renderer->BlitText(SCREEN_WIDTH - 40 * 8, 20, App->renderer->blueFont, "INTEGRATION METHOD: ");
+		switch (method)
+		{
+		case integrationMethods::BACKWARDS_EULER:
+			App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, App->renderer->greenFont, "BACKWARDS");
+			break;
+		case integrationMethods::FORWARDS_EULER:
+			App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, App->renderer->greenFont, "FOWARDS");
+			break;
+		case integrationMethods::VERLET:
+			App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, App->renderer->greenFont, "VERLET");
+			break;
+		default:
+			break;
+		}
 	}
 	
 
@@ -549,8 +531,7 @@ update_status ModulePhysics::PostUpdate()
 				break;
 			default:
 				break;
-			}
-			
+			}		
 		}
 		else
 		{

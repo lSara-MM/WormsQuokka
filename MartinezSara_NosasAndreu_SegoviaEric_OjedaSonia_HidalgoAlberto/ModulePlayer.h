@@ -36,7 +36,7 @@ public:
 
 	bool renderable = true;
 	int id;
-	int hp;
+	int hp = 100;
 	int direction = 1;	// 1 - derecha, -1 - izquierda
 	ObjectType type;
 

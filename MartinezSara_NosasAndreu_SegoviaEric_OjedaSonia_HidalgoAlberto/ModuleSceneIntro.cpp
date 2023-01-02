@@ -30,14 +30,10 @@ bool ModuleSceneIntro::Start()
 	rect.w = 100;
 	rect.h = 100;
 
+	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 :" };
+	App->renderer->blueFont = App->renderer->LoadFont("Fonts/FuenteAzulClaro.png", lookupTable, 1, 38); // 1 = rows 39 = columns
+	App->renderer->greenFont = App->renderer->LoadFont("Fonts/FuenteVerde.png", lookupTable, 1, 38); // 1 = rows 39 = columns
 	
-	
-
-	//Object* worm = new Object(10, 28, 1, WormType::BLUE);
-	//App->player->listBLUE->add(worm);
-
-	//pBody* b1 = new pBody(500, 200, 100, 100);
-
 	return ret;
 }
 
@@ -60,7 +56,7 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->DrawQuad(rect, 0, 255, 255, 255); 
 	App->renderer->DrawCircle(x, y, rad, 0, 255, 255, 255); 
 
-	App->renderer->BlitText(100, 100, blueFont, "A");
+	App->renderer->BlitText(100, 100, App->renderer->blueFont, "A");
 
 	return UPDATE_CONTINUE;
 }

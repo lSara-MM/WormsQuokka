@@ -3,6 +3,11 @@
 #include "ModulePlayer.h"
 #include "ModulePhysics.h"
 
+#include <iostream>
+using namespace std;
+#include <sstream>
+
+
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
@@ -82,6 +87,25 @@ update_status ModulePlayer::Update()
 		listRedP.at(currentRed);
 	}
 
+
+	for (auto& Worm : listBlueP)
+	{
+		// strings to const char*
+		string s_hp = std::to_string(Worm->hp);
+		const char* ch_hp = s_hp.c_str();
+
+		App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+	}
+
+	for (auto& Worm : listRedP)
+	{
+		// strings to const char*
+		string s_hp = std::to_string(Worm->hp);
+		const char* ch_hp = s_hp.c_str();
+
+		App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+	}
+
 	// Win/Lose conditions
 	if (listBlueP.empty() && !listRedP.empty())
 	{ LOG("RED team wins"); }
@@ -93,7 +117,6 @@ update_status ModulePlayer::Update()
 	{ LOG("DRAW"); }
 
 	timer++;
-
 	return UPDATE_CONTINUE;
 }
 
