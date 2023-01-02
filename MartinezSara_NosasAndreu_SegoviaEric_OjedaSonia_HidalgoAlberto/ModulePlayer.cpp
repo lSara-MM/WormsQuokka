@@ -201,8 +201,8 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	{
 	case MovementType::APPLY_FORCE:
 
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
-		{ 
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		{
 			App->physics->balls.at(player->body).ApplyForce(1500.0f, App->physics->balls.at(player->body).fy);
 			player->direction = 1;
 			listBlueP.at(currentBlue);
@@ -213,7 +213,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			App->physics->balls.at(player->body).ApplyForce(-1500.0f, App->physics->balls.at(player->body).fy);
 			player->direction = -1;
 		}
-		
+
 		if (jump) {
 			if (timer >= 40) {
 				App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f);
@@ -226,7 +226,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
 			{
 				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
-				{ 
+				{
 					timer = 0.0f;
 					jump = true;
 					App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, -2700.0f);
@@ -235,24 +235,28 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-		{ App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, 300.0f); }
+		{
+			App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, 300.0f);
+		}
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP || App->input->GetKey(SDL_SCANCODE_W) == KEY_UP)
-		{ App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f); }		
+		{
+			App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f);
+		}
 
 		break;
 
 	case MovementType::APPLY_VELOCITY:
 
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
-		{ 
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		{
 			App->physics->balls.at(player->body).SetVelocity(15.0f, App->physics->balls.at(player->body).vy);
 			player->direction = 1;
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).SetVelocity(-15.0f, App->physics->balls.at(player->body).vy); 
+			App->physics->balls.at(player->body).SetVelocity(-15.0f, App->physics->balls.at(player->body).vy);
 			player->direction = -1;
 		}
 
@@ -268,8 +272,10 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			}
 		}
 
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) 
-		{ App->physics->balls.at(player->body).SetVelocity(0.0F, 0.0f); }
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
+		{
+			App->physics->balls.at(player->body).SetVelocity(0.0F, 0.0f);
+		}
 
 		break;
 
@@ -299,35 +305,49 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
-		{ App->physics->balls.at(player->body).AddPosition(0.0F, 0.0f); }
+		{
+			App->physics->balls.at(player->body).AddPosition(0.0F, 0.0f);
+		}
 
 		break;
 	default:
 		break;
 	}
 
-	if (player->angle <= 90 && player->angle >= 0)
+	if (player->angle < 90)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN) 
-		{ player->angle += 5; }
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) 
-		{ player->angle -= 5; }
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
+		{
+			player->angle += 15;
+		}
 	}
 
+	if (player->angle > 0)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
+		{
+			player->angle -= 15;
+		}
+	}
 	player->posX = METERS_TO_PIXELS(App->physics->balls.at(player->body).x);
 	player->posY = METERS_TO_PIXELS(App->physics->balls.at(player->body).y);
 
 
-	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN) 
 	{ selectWeapon(player); }
 	
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) 
 	{ shoot(player); }
+
+	// App->renderer->DrawLine(player->posX, player->posY, player->posX + cos(3.14 * player->angle / 180) * 50 * player->direction, player->posY - sin(3.14 * player->angle / 180) * 50, 0, 255, 100);
+	// en vdd este no es acurate perque no se perque no dispara recte cap amunt totalment :/
+
+	App->renderer->DrawLine(player->posX, player->posY, player->posX + 50 * player->direction, player->posY - player->angle, 0, 255, 100);
 }
 
 int ModulePlayer::shoot(Worm* player)
 {
-	int a;	// projectile rad
+	int a;	// projectile radius
 	switch (player->weapon)
 	{
 	case ObjectType::GUN:
