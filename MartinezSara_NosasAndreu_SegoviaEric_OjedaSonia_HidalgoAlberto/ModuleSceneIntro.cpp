@@ -30,9 +30,7 @@ bool ModuleSceneIntro::Start()
 	rect.w = 100;
 	rect.h = 100;
 
-	//De momento lo dejo aqui
-	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 :" };
-	blueFont = App->renderer->LoadFont("WormsQuokka/MartinezSara_NosasAndreu_SegoviaEric_OjedaSonia_HidalgoAlberto/Game/Fonts/FuenteAzulClaro.png", lookupTable, 1, 39); // 1 = rows 39 = columns
+	
 	
 
 	//Object* worm = new Object(10, 28, 1, WormType::BLUE);
@@ -69,51 +67,59 @@ update_status ModuleSceneIntro::Update()
 
 void ModuleSceneIntro::Debug() {
 
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+
+	//"Nomenclatura": Bools con 1,2,3...,0 , multiple opcion con F1,F2...,F12
+
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->physics->debug==true)
 	{
 		App->physics->method = integrationMethods::BACKWARDS_EULER;
 		LOG("Backwards Euler");
 	}
 
-	else if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN && App->physics->debug == true)
 	{
 		App->physics->method = integrationMethods::FORWARDS_EULER;
 		LOG("Forwards Euler");
 	}
 
-	else if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN && App->physics->debug == true)
 	{
 		App->physics->method = integrationMethods::VERLET;
 		LOG("Verlet");
 	}
 
-	else if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{ 
+		App->physics->options[0] = !App->physics->options[0];
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
-		App->physics->options[1] = !App->physics->options[1];
+		App->physics->options[1] = !App->physics->options[1]; //Gravity enabler
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+	{
+		App->physics->options[2] = !App->physics->options[2]; //Buoyancy enabler
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+	{
+		App->physics->options[3] = !App->physics->options[3]; //Hidro enabler
+	}
+
+	else if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+	{
+		App->physics->options[4] = !App->physics->options[4]; //Aero enabler
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
-	{
-		App->physics->buoyancyIsEnabled = !App->physics->buoyancyIsEnabled;
-	}
-
-	else if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
-	{
-		App->physics->hidroIsEnabled = !App->physics->hidroIsEnabled;
-	}
-
-	else if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
-	{
-		App->physics->aeroIsEnabled = !App->physics->aeroIsEnabled;
-	}
-
-	else if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
 	{
 		App->player->movement = MovementType::APPLY_FORCE;
 		LOG("Movement applying force");
 	}
 
-	else if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 	{
 
 		App->player->movement = MovementType::APPLY_VELOCITY;
@@ -121,7 +127,7 @@ void ModuleSceneIntro::Debug() {
 
 	}
 
-	else if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN)
 	{
 
 		App->player->movement = MovementType::CHANGE_POSITION;
@@ -129,7 +135,7 @@ void ModuleSceneIntro::Debug() {
 
 	}
 
-	else if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_F8) == KEY_DOWN)
 	{
 
 		App->timeControl = DeltaTimeControl::FIXED_DELTATIME;
@@ -137,7 +143,7 @@ void ModuleSceneIntro::Debug() {
 
 	}
 
-	else if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)//m'he quedat sense fs
+	else if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN && App->physics->debug == true)
 	{
 
 		App->timeControl = DeltaTimeControl::FIXED_DELTATIME_DELAY;
@@ -145,7 +151,7 @@ void ModuleSceneIntro::Debug() {
 
 	}
 
-	else if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN && App->physics->debug == true)
 	{
 
 		App->timeControl = DeltaTimeControl::VARIABLE_DELTATIME;

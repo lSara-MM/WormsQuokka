@@ -171,15 +171,14 @@ public:
 	float dt_updated;
 
 	//debug
+	bool debug=true;
 	//0 Print wind & currents,
 	//1 Gravity enabled
 	//2 buoyancy Enabled
 	//3 hidro resistance enabled
 	//4 Aero is enabled
 	bool options[5];
-	bool buoyancyIsEnabled;
-	bool hidroIsEnabled;
-	bool aeroIsEnabled;
+	
 	integrationMethods method;
 
 	//problemes amb llista
@@ -190,7 +189,7 @@ public:
 
 private:
 	int blueFont;
-	bool debug;
+	int greenFont;
 	 
 	
 

@@ -83,16 +83,18 @@ bool ModulePhysics::Start()
 
 
 	//debug
-	options[0] = true;
-	options[1] = true;
-	options[2] = true;
-	options[3] = true;
-	options[4] = true;
-	buoyancyIsEnabled = true;
-	hidroIsEnabled = true;
-	aeroIsEnabled = true;
+	options[0] = true; //Show wind
+	options[1] = true; //Gravity
+	options[2] = true; //Bouyancy
+	options[3] = true; //Hidro Drag
+	options[4] = true; //Aero Drag
+	
 	method = integrationMethods::VERLET;
 
+	//De momento lo dejo aqui
+	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 :" };
+	blueFont = App->renderer->LoadFont("Fonts/FuenteAzulClaro.png", lookupTable, 1, 38); // 1 = rows 39 = columns
+	greenFont = App->renderer->LoadFont("Fonts/FuenteVerde.png", lookupTable, 1, 38); // 1 = rows 39 = columns
 
 	return true;
 }
@@ -179,7 +181,7 @@ update_status ModulePhysics::PreUpdate()
 			//}
 
 			// Aerodynamic Drag force (only when not in water)
-			if (!is_colliding_with_water(ball, water) && aeroIsEnabled)
+			if (!is_colliding_with_water(ball, water) && options[4])
 			{
 				float fdx = 0.0f; float fdy = 0.0f;
 				compute_aerodynamic_drag(fdx, fdy, ball, atmosphere);
@@ -190,7 +192,7 @@ update_status ModulePhysics::PreUpdate()
 			if (is_colliding_with_water(ball, water))
 			{
 				// Hydrodynamic Drag force
-				if (hidroIsEnabled)
+				if (options[3])
 				{
 					float fhdx = 0.0f; float fhdy = 0.0f;
 					compute_hydrodynamic_drag(fhdx, fhdy, ball, water);
@@ -198,7 +200,7 @@ update_status ModulePhysics::PreUpdate()
 				}
 
 				// Hydrodynamic Buoyancy force
-				if (buoyancyIsEnabled)
+				if (options[2])
 				{
 					float fhbx = 0.0f; float fhby = 0.0f;
 					compute_hydrodynamic_buoyancy(fhbx, fhby, ball, water);
@@ -481,11 +483,31 @@ update_status ModulePhysics::PostUpdate()
 	if(debug)
 	{
 	App->renderer->BlitText(10, 10, blueFont, "DEBUG MODE ACTIVE:");
-		for(int i=0;i<10*1;i+=10) //Ese *1* es el numero maximo de opciones
-		{
-			App->renderer->BlitText(26, 20+i, blueFont, "1: SHOW OR HIDE WIND AND CURRENT ");
-		}
-		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) { options[0] = !options[0]; }
+		
+			App->renderer->BlitText(26, 20, blueFont, "1: SHOW OR HIDE WIND AND CURRENT ");
+			App->renderer->BlitText(26, 30, blueFont, "2: ENABLE OR DISABLE GRAVITY ");
+			App->renderer->BlitText(26, 40, blueFont, "3: ENABLE OR DISABLE BUOYANCY");
+			App->renderer->BlitText(26, 50, blueFont, "4: ENABLE OR DISABLE HYDRO DRAG ");
+			App->renderer->BlitText(26, 60, blueFont, "5: ENABLE OR DISABLE AERO DRAG ");
+
+			//LADO OPUESTO PANTALLA
+			App->renderer->BlitText(SCREEN_WIDTH-40*8, 20, blueFont, "INTEGRATION METHOD: ");
+			switch (method)
+			{
+			case integrationMethods::BACKWARDS_EULER:
+				App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, greenFont, "BACKWARDS");
+				break;
+			case integrationMethods::FORWARDS_EULER:
+				App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, greenFont, "FOWARDS");
+				break;
+			case integrationMethods::VERLET:
+				App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, greenFont, "VERLET");
+				break;
+			default:
+				break;
+			}
+			
+
 	}
 	
 	
