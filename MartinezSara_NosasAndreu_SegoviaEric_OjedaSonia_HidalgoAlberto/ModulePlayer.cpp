@@ -211,10 +211,22 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	case MovementType::APPLY_VELOCITY:
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
-		{ App->physics->balls.at(player->body).SetVelocity(15.0f, 0.0f); }
+		{ App->physics->balls.at(player->body).SetVelocity(15.0f, App->physics->balls.at(player->body).vy); }
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
-		{ App->physics->balls.at(player->body).SetVelocity(-15.0f, 0.0f); }
+		{ App->physics->balls.at(player->body).SetVelocity(-15.0f, App->physics->balls.at(player->body).vy); }
+
+
+		for (auto& ground : App->physics->grounds)
+		{
+			if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
+			{
+				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+				{
+					App->physics->balls.at(player->body).SetVelocity(App->physics->balls.at(player->body).vx, -10.0f);
+				}
+			}
+		}
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) 
 		{ App->physics->balls.at(player->body).SetVelocity(0.0F, 0.0f); }
