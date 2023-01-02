@@ -480,6 +480,8 @@ update_status ModulePhysics::PostUpdate()
 		App->renderer->DrawQuad(ground.pixels(), color_r, color_g, color_b);
 	}
 
+	if(!debug) { App->renderer->BlitText(10, 10, blueFont, "PRESS F1 TO SHOW AND ACTIVATE DEBUG"); }
+
 	if(debug)
 	{
 	App->renderer->BlitText(10, 10, blueFont, "DEBUG MODE ACTIVE:");
@@ -491,17 +493,21 @@ update_status ModulePhysics::PostUpdate()
 			App->renderer->BlitText(26, 60, blueFont, "5: ENABLE OR DISABLE AERO DRAG ");
 
 			//LADO OPUESTO PANTALLA
-			App->renderer->BlitText(SCREEN_WIDTH-40*8, 20, blueFont, "INTEGRATION METHOD: ");
+			App->renderer->BlitText(SCREEN_WIDTH - 34 *8, 20, blueFont, "INTEGRATION METHOD: ");
+			App->renderer->BlitText(SCREEN_WIDTH - 28 * 8, 30, blueFont, "F2:BACKWARDS EULER");
+			App->renderer->BlitText(SCREEN_WIDTH - 28 * 8, 40, blueFont, "F3:FOWARDS EULER");
+			App->renderer->BlitText(SCREEN_WIDTH - 28 * 8, 50, blueFont, "F4:VERLET");
+
 			switch (method)
 			{
 			case integrationMethods::BACKWARDS_EULER:
-				App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, greenFont, "BACKWARDS");
+				App->renderer->BlitText(SCREEN_WIDTH - 14 * 8, 10, greenFont, "BACKWARDS");
 				break;
 			case integrationMethods::FORWARDS_EULER:
-				App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, greenFont, "FOWARDS");
+				App->renderer->BlitText(SCREEN_WIDTH - 14 * 8, 10, greenFont, "FOWARDS");
 				break;
 			case integrationMethods::VERLET:
-				App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, greenFont, "VERLET");
+				App->renderer->BlitText(SCREEN_WIDTH - 14 * 8, 10, greenFont, "VERLET");
 				break;
 			default:
 				break;
