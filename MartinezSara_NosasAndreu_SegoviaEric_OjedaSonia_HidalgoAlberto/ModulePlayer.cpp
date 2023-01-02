@@ -250,14 +250,14 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).ApplyForce(1500.0f, App->physics->balls.at(player->body).fy);
+			App->physics->balls.at(player->body).ApplyForce(1500.0f, 0.0f);
 			player->direction = 1;
 			listBlueP.at(currentBlue);
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).ApplyForce(-1500.0f, App->physics->balls.at(player->body).fy);
+			App->physics->balls.at(player->body).ApplyForce(-1500.0f, 0.0f);
 			player->direction = -1;
 		}
 
@@ -297,13 +297,13 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).SetVelocity(15.0f, App->physics->balls.at(player->body).vy);
+			App->physics->balls.at(player->body).SetVelocity(15.0f, 0.0f);
 			player->direction = 1;
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).SetVelocity(-15.0f, App->physics->balls.at(player->body).vy);
+			App->physics->balls.at(player->body).SetVelocity(-15.0f, 0.0f);
 			player->direction = -1;
 		}
 
