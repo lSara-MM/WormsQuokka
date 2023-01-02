@@ -35,12 +35,12 @@ public:
 	int posX, posY;
 
 	bool renderable = true;
-	int id;
+	int id;	// Position in vector 
 	int hp = 100;
 	int direction = 1;	// 1 - derecha, -1 - izquierda
 	ObjectType type;
 
-	int body;
+	int body;	// Position in list Balls
 
 	int playerWeapon;
 	ObjectType weapon;

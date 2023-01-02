@@ -51,6 +51,8 @@ bool ModulePlayer::Start()
 	CreatePlayer(100, 200, ObjectType::BLUE);
 	CreatePlayer(200, 200, ObjectType::BLUE);
 
+	setID = 0;
+
 	// Red team
 	CreatePlayer(600, 350, ObjectType::RED);
 	CreatePlayer(700, 350, ObjectType::RED);
@@ -76,35 +78,56 @@ update_status ModulePlayer::Update()
 		controls(listRedP.at(currentRed), movement);
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+	{
+		listBlueP.at(currentBlue)->hp = 0;
+	}
 
 	// Check hp
-	if (listBlueP.at(currentBlue)->hp < 0)
-	{
-		listBlueP.at(currentBlue);
-	}
-	if (listRedP.at(currentRed)->hp < 0)
-	{
-		listRedP.at(currentRed);
-	}
-
-
 	for (auto& Worm : listBlueP)
 	{
-		// strings to const char*
-		string s_hp = std::to_string(Worm->hp);
-		const char* ch_hp = s_hp.c_str();
+		Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
+		Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
 
-		App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+		if (listBlueP.at(Worm->id)->hp <= 0)
+		{
+			//listBlueP.erase(listBlueP.begin() + listBlueP.at(Worm->id)->body);
+			App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
+			App->physics->balls.at(listBlueP.at(Worm->id)->body).physics_enabled = false;
+		}
+		else
+		{
+			// strings to const char*
+			string s_hp = std::to_string(Worm->hp);
+			const char* ch_hp = s_hp.c_str();
+
+			App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+		}
 	}
+
 
 	for (auto& Worm : listRedP)
 	{
-		// strings to const char*
-		string s_hp = std::to_string(Worm->hp);
-		const char* ch_hp = s_hp.c_str();
+		Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
+		Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
 
-		App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+		if (listRedP.at(Worm->id)->hp <= 0)
+		{
+			//listRedP.erase(listRedP.begin() + listRedP.at(currentRed)->body);
+			App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
+			App->physics->balls.at(listRedP.at(Worm->id)->body).physics_enabled = false;
+		}
+		else
+		{
+			// strings to const char*
+			string s_hp = std::to_string(Worm->hp);
+			const char* ch_hp = s_hp.c_str();
+
+			App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+		}
 	}
+
+
 
 	// Win/Lose conditions
 	if (listBlueP.empty() && !listRedP.empty())
@@ -188,12 +211,13 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, Objec
 	return new_gun->body;
 }
 
+
 int ModulePlayer::selectPlayer(int p)
 {
 	// Depende del num de players, se puede hacer general pero nose, por ahora parece mas comodo asi
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN) 
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{ return 0; }
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) 
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{ return 1; }
 	/*if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) { return 2; }
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN) { return 3; }
@@ -352,9 +376,6 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			player->angle -= 15;
 		}
 	}
-	player->posX = METERS_TO_PIXELS(App->physics->balls.at(player->body).x);
-	player->posY = METERS_TO_PIXELS(App->physics->balls.at(player->body).y);
-
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN) 
 	{ selectWeapon(player); }
