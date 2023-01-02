@@ -59,6 +59,7 @@ bool ModulePlayer::Start()
 //Player control
 update_status ModulePlayer::Update()
 {
+	// Select player
 	if (playerTurn)	// Blue turn
 	{
 		currentBlue = selectPlayer(currentBlue);
@@ -70,9 +71,15 @@ update_status ModulePlayer::Update()
 		controls(listRedP.at(currentRed), movement);
 	}
 
+
+	// Check hp
 	if (listBlueP.at(currentBlue)->hp < 0)
 	{
 		listBlueP.at(currentBlue);
+	}
+	if (listRedP.at(currentRed)->hp < 0)
+	{
+		listRedP.at(currentRed);
 	}
 
 	// Win/Lose conditions
@@ -84,6 +91,8 @@ update_status ModulePlayer::Update()
 	
 	if (listRedP.empty() && listBlueP.empty()) 
 	{ LOG("DRAW"); }
+
+	timer++;
 
 	return UPDATE_CONTINUE;
 }
@@ -143,15 +152,15 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, Objec
 	if (type_ == ObjectType::GUN) 
 	{ 
 		new_gun->range = 2; 
-		vx = 30.0f * dirX;		vy = 20.0f;		mass = 10.0f;
+		vx = 30.0f * dirX;		vy = -1 * dirY;		mass = 10.0f;
 	}
 	if (type_ == ObjectType::GRENADE) 
 	{ 
 		new_gun->range = 20; 
-		vx = 10.0f * dirX;		vy = 20.0f;		mass = 50.0f;
+		vx = 10.0f * dirX;		vy = -5 * dirY;		mass = 50.0f;
 	}
 
-	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
+	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 0.3f, 0.5f, 0.1f);
 
 	return new_gun->body;
 }
@@ -170,6 +179,22 @@ int ModulePlayer::selectPlayer(int p)
 	return p;
 }
 
+void ModulePlayer::selectWeapon(Worm* player)
+{
+	switch (player->weapon)
+	{
+	case ObjectType::GUN:
+		player->weapon = ObjectType::GRENADE;
+		break;
+	case ObjectType::GRENADE:
+		player->weapon = ObjectType::GUN;	// in case more weapons, put next weapon
+		break;
+	default:
+		break;
+	}
+}
+
+
 void ModulePlayer::controls(Worm* player, MovementType move)
 {
 	switch (move)
@@ -178,30 +203,39 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
 		{ 
-			App->physics->balls.at(player->body).ApplyForce(1500.0f, 0.0f); 
-			player->direction = true;
+			App->physics->balls.at(player->body).ApplyForce(1500.0f, App->physics->balls.at(player->body).fy);
+			player->direction = 1;
 			listBlueP.at(currentBlue);
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).ApplyForce(-1500.0f, 0.0f);
-			player->direction = false;
+			App->physics->balls.at(player->body).ApplyForce(-1500.0f, App->physics->balls.at(player->body).fy);
+			player->direction = -1;
 		}
 		
+		if (jump) {
+			if (timer >= 40) {
+				App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f);
+				jump = false;
+			}
+		}
+
 		for (auto& ground : App->physics->grounds)
 		{
 			if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
 			{
 				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 				{ 
-					App->physics->balls.at(player->body).ApplyForce(0.0f, -3000.0f);
+					timer = 0.0f;
+					jump = true;
+					App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, -2700.0f);
 				}
 			}
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-		{ App->physics->balls.at(player->body).ApplyForce(0.0f, 300.0f); }
+		{ App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, 300.0f); }
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP || App->input->GetKey(SDL_SCANCODE_W) == KEY_UP)
 		{ App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f); }		
@@ -211,10 +245,28 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	case MovementType::APPLY_VELOCITY:
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
-		{ App->physics->balls.at(player->body).SetVelocity(15.0f, 0.0f); }
+		{ 
+			App->physics->balls.at(player->body).SetVelocity(15.0f, App->physics->balls.at(player->body).vy);
+			player->direction = 1;
+		}
 
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
-		{ App->physics->balls.at(player->body).SetVelocity(-15.0f, 0.0f); }
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		{
+			App->physics->balls.at(player->body).SetVelocity(-15.0f, App->physics->balls.at(player->body).vy); 
+			player->direction = -1;
+		}
+
+
+		for (auto& ground : App->physics->grounds)
+		{
+			if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
+			{
+				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+				{
+					App->physics->balls.at(player->body).SetVelocity(App->physics->balls.at(player->body).vx, -10.0f);
+				}
+			}
+		}
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP) 
 		{ App->physics->balls.at(player->body).SetVelocity(0.0F, 0.0f); }
@@ -223,11 +275,28 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 	case MovementType::CHANGE_POSITION:
 
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) 
-		{ App->physics->balls.at(player->body).AddPosition(15.0f, 0.0f); }
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		{
+			App->physics->balls.at(player->body).AddPosition(15.0f, 0.0f);
+			player->direction = 1;
+		}
 
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) 
-		{ App->physics->balls.at(player->body).AddPosition(-15.0f, 0.0f); }
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		{
+			App->physics->balls.at(player->body).AddPosition(-15.0f, 0.0f);
+			player->direction = -1;
+		}
+
+		for (auto& ground : App->physics->grounds)
+		{
+			if (is_colliding_with_ground(App->physics->balls.at(player->body), ground))
+			{
+				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+				{
+					App->physics->balls.at(player->body).AddPosition(App->physics->balls.at(player->body).x, -100.0f);
+				}
+			}
+		}
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP || App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
 		{ App->physics->balls.at(player->body).AddPosition(0.0F, 0.0f); }
@@ -237,48 +306,45 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		break;
 	}
 
+	if (player->angle <= 90 && player->angle >= 0)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN) 
+		{ player->angle += 5; }
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) 
+		{ player->angle -= 5; }
+	}
+
 	player->posX = METERS_TO_PIXELS(App->physics->balls.at(player->body).x);
 	player->posY = METERS_TO_PIXELS(App->physics->balls.at(player->body).y);
 
+
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
-	{
-		switch (player->weapon)
-		{
-		case ObjectType::GUN:
-			player->weapon = ObjectType::GRENADE;
-			break;
-		case ObjectType::GRENADE:
-			player->weapon = ObjectType::GUN;	// in case more weapons, put next weapon
-			break;
-		default:
-			break;
-		}
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		int a = METERS_TO_PIXELS(2.0f);
-		ObjectType b;
-
-		switch (player->weapon)
-		{
-		case ObjectType::GUN:
-			b = ObjectType::GUN;
-			break;
-		case ObjectType::GRENADE:
-			b = ObjectType::GRENADE;
-			break;
-		default:
-			break;
-		}
-
-		(player->direction == true) ? CreateWeapon(player->posX + a, player->posY, 1, 1, b)
-			: CreateWeapon(player->posX - a, player->posY, -1, 1, b);
-
-		// hacer que espere a que colisione el proyectil 
-		playerTurn = !playerTurn;
-	}
-
+	{ selectWeapon(player); }
+	
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) 
+	{ shoot(player); }
 }
 
+int ModulePlayer::shoot(Worm* player)
+{
+	int a;	// projectile rad
+	switch (player->weapon)
+	{
+	case ObjectType::GUN:
+		a = METERS_TO_PIXELS(2.0f);
+		break;
+	case ObjectType::GRENADE:
+		a = METERS_TO_PIXELS(20.0f);
+		break;
+	default:
+		break;
+	}
 
+	(player->direction == 1) ? player->playerWeapon = CreateWeapon(player->posX + a, player->posY, 1, player->angle, player->weapon)
+		: player->playerWeapon = CreateWeapon(player->posX - a, player->posY, -1, player->angle, player->weapon);
+
+	// hacer que espere a que colisione el proyectil 
+	playerTurn = !playerTurn;
+
+	return 0;
+}

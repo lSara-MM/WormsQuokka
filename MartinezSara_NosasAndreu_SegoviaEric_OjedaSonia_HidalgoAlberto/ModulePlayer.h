@@ -37,41 +37,16 @@ public:
 	bool renderable = true;
 	int id;
 	int hp;
-	bool direction = true;	// true - derecha, false - izquierda
+	int direction = 1;	// 1 - derecha, -1 - izquierda
 	ObjectType type;
 
 	int body;
 
+	int playerWeapon;
 	ObjectType weapon;
+	float angle = 0;
 };
 
-//class Gun
-//{
-//public:
-//	SDL_Texture* graphic;
-//	uint fx;
-//
-//	Gun() : graphic(NULL) {}
-//
-//	Gun(int posX_, int posY_, ObjectType type_, bool render = true) : graphic(NULL)
-//	{
-//		posX = posX_;
-//		posY = posY_;
-//		type = type_;
-//
-//		renderable = render;
-//	}
-//
-//public:
-//	int posX, posY;
-//
-//	bool renderable = true;
-//	//int id;
-//	int range;
-//	ObjectType type;
-//
-//	PhysBall* body;
-//};
 
 class Weapon
 {
@@ -95,7 +70,6 @@ public:
 	int posX, posY;
 
 	bool renderable = true;
-	//int id;
 	float range;	// range of damage
 	ObjectType type;
 
@@ -120,6 +94,9 @@ public:
 	int selectPlayer(int p);
 	void controls(Worm* player, MovementType move);
 
+	void selectWeapon(Worm* player);
+	int shoot(Worm* player);
+
 public:
 
 	//std::vector<PhysBall> listBLUE{};
@@ -136,4 +113,7 @@ public:
 
 	int currentBlue;
 	int currentRed;
+	float timer = 0;
+
+	bool jump = false;
 };

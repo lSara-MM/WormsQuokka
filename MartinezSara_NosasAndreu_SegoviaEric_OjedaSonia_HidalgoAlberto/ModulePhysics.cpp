@@ -454,7 +454,7 @@ update_status ModulePhysics::PostUpdate()
 		}
 
 		//Draw water currents
-		LOG("El agua es %d y su w es %d",water.pixels().x, water.pixels().w)
+		//LOG("El agua es %d y su w es %d",water.pixels().x, water.pixels().w)
 		for (int k = water.pixels().y+  water.pixels().h; k <= water.pixels().y; k -= water.pixels().h /4 ) //Pos y
 		{
 			for (int m = water.pixels().x; m <= water.pixels().x+ water.pixels().w; m += water.pixels().w / 5) //Pos x
@@ -509,7 +509,6 @@ update_status ModulePhysics::PostUpdate()
 			
 
 	}
-	
 	
 
 	// Draw all balls in the scenario
