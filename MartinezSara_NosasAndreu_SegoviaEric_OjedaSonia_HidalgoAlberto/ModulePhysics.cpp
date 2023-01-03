@@ -211,8 +211,70 @@ update_status ModulePhysics::PreUpdate()
 				for (int j = 0; j < t; j++) {
 
 					/*if(balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius && balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius*/
-
+					
 					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true && i != j) {
+
+						if (balls.at(j).player != balls.at(i).player) {
+							losehp = true; 
+							 
+							if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::RED) {
+
+								bodyHP = i; 
+								typeW = ObjectType::GUN;
+								typeP =ObjectType::RED;
+							}
+
+							if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::RED) {
+
+								bodyHP = i;
+								typeW = ObjectType::GRENADE;
+								typeP = ObjectType::RED;
+							}
+
+							if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::RED) {
+
+								bodyHP = j;
+								typeW = ObjectType::GUN;
+								typeP = ObjectType::RED;
+							}
+
+							if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::RED) {
+
+								bodyHP = j;
+								typeW = ObjectType::GRENADE;
+								typeP = ObjectType::RED;
+							}
+
+
+							if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::BLUE) {
+								LOG("bodyHP %d", bodyHP); 
+								bodyHP = j;
+								typeW = ObjectType::GUN;
+								typeP = ObjectType::BLUE;
+							}
+
+							if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::BLUE) {
+
+								bodyHP = j;
+								typeW = ObjectType::GRENADE;
+								typeP = ObjectType::BLUE;
+							}
+
+							if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::BLUE) {
+								LOG("bodyHP %d", bodyHP);
+								bodyHP = i;
+								typeW = ObjectType::GUN;
+								typeP = ObjectType::BLUE;
+							}
+
+							if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::BLUE) {
+
+								bodyHP = i;
+								typeW = ObjectType::GRENADE;
+								typeP = ObjectType::BLUE;
+							}
+						}
+				
 
 						// Sacamos el vector desde el centro de i hacia j
 						float preXj = balls.at(j).x - balls.at(i).x;
@@ -721,9 +783,9 @@ void PhysBall::AddPosition(float x_, float y_)
 //Inspirat en un projecte de l'any passat
 //on està listItem :(
 
-int ModulePhysics::CreateBall(float x_, float y_, float rad_, ObjectType type_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction_, float cRest_, float ax_, float ay_, bool enabled_)
+int ModulePhysics::CreateBall(float x_, float y_, float rad_, ObjectType type_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction_, float cRest_, float ax_, float ay_, bool enabled_, bool play)
 {
-	PhysBall* new_ball = new PhysBall(x_, y_, rad_, type_, mass_, vx_ , vy_, surface_, cl_,  cd_ , b_, cFriction_, cRest_, ax_, ay_, enabled_);
+	PhysBall* new_ball = new PhysBall(x_, y_, rad_, type_,  mass_, vx_ , vy_, surface_, cl_,  cd_ , b_, cFriction_, cRest_, ax_, ay_, enabled_, play);
 	balls.push_back(*new_ball);
 
 	return balls.size() - 1;

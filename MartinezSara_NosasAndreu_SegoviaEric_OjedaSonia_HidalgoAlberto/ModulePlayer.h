@@ -90,6 +90,7 @@ public:
 
 	int CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_ = 100, bool render = true);
 	int CreateWeapon(int posX_, int posY_, int dirX, float dirY, ObjectType type_, bool render = true);
+	void LoseHPplayer(int body, ObjectType type_W, ObjectType type_P);
 
 	int selectPlayer(int p);
 	void controls(Worm* player, MovementType move);

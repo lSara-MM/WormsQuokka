@@ -140,6 +140,12 @@ update_status ModulePlayer::Update()
 	{ LOG("DRAW"); }
 
 	timer++;
+
+	if (App->physics->losehp == true) {
+		LoseHPplayer(App->physics->bodyHP, App->physics->typeW, App->physics->typeP);
+		App->physics->losehp = false; 
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -163,13 +169,13 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, 
 {
 	Worm* new_worm = new Worm(posX_, posY_, type_, hp_, render);
 	new_worm->id = setID++;
-	new_worm->weapon = ObjectType::GUN; // gun by default
+	new_worm->weapon = ObjectType::GUN; // gun by default 
 
 	bool a;
 	(render) ? a = true : a = false;	// if render true, physics true 
 
-	new_worm->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), 1.0f, type_, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0f, 0.0f, a);
-
+	new_worm->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), 1.0f, type_, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0f, 0.0f, a, true);
+	LOG("newWorm: %d", new_worm->body);
 	// nose si aixo servira per a algo, potser si despues 
 	switch (type_)
 	{
@@ -411,4 +417,48 @@ int ModulePlayer::shoot(Worm* player)
 	playerTurn = !playerTurn;
 
 	return 0;
+}
+
+void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) {
+
+	int rest = 1; 
+
+	if (type_W == ObjectType::GUN) {
+
+		rest = 20;
+	}
+
+	if (type_W == ObjectType::GRENADE) {
+
+	    rest = 50;
+	}
+
+	int t = listRedP.size(); 
+
+	if (type_P == ObjectType::RED) {
+
+		for (int i = 0; i < t; i++) {
+
+			if (listRedP.at(i)->body == body) {
+
+				listRedP.at(i)->hp = listRedP.at(i)->hp - rest;
+			}
+		}
+
+	}
+
+	if (type_P == ObjectType::BLUE) {
+
+		for (int i = 0; i < t; i++) {
+
+			if (listBlueP.at(i)->body == body) {
+
+				listBlueP.at(i)->hp = listBlueP.at(i)->hp - rest;
+				LOG("BlueHP: %d", listBlueP.at(i)->hp - rest); 
+			}
+		}
+
+	}
+	
+
 }

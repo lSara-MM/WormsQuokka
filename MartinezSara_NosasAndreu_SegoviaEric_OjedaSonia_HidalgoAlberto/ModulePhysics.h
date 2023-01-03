@@ -22,6 +22,7 @@ enum class integrationMethods
 
 enum class ObjectType
 {
+	PLAYER,
 	RED,
 	BLUE,
 	GUN,
@@ -39,7 +40,7 @@ public:
 	PhysBall() {};
 
 	// x, y, rad, mass, vx, vy, surface, cl, cd, b, friction, restitution, ax, ay, enabled;
-	PhysBall(float x_, float y_, float rad, ObjectType type_ = ObjectType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true)
+	PhysBall(float x_, float y_, float rad, ObjectType type_ = ObjectType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true, bool play = false)
 	{
 		x = x_;
 		y = y_;
@@ -60,6 +61,7 @@ public:
 			
 		physics_enabled = enabled;
 		type = type_;
+		player = play; 
 	}
 
 
@@ -112,6 +114,8 @@ public:
 
 	//variable used to draw wind
 	int iwind = 0;
+
+	bool player; 
 };
 
 
@@ -182,10 +186,16 @@ public:
 	integrationMethods method;
 
 	//problemes amb llista
-	int CreateBall(float x_, float y_, float rad_, ObjectType type_ = ObjectType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true);
+	int CreateBall(float x_, float y_, float rad_, ObjectType type_ = ObjectType::OTHER, float mass_ = 1.0f, float vx_ = 0.0f, float vy_ = 0.0f, float surface_ = 1.0f, float cl_ = 1.0f, float cd_ = 1.0f, float b_ = 1.0f, float cFriction = 0.5f, float cRest = 1.0f, float ax_ = 0.0f, float ay_ = 0.0f, bool enabled = true, bool player = false);
+	//int LoseHP(int body, ObjectType type_W, ObjectType type_P);
 
 	//variable used to draw wind
 	int iwind = 0;
+
+	int bodyHP;
+	ObjectType typeW; 
+	ObjectType typeP; 
+	bool losehp = false;
 
 private:
 };
