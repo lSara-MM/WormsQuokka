@@ -90,6 +90,7 @@ bool ModulePhysics::Start()
 	options[4] = true; //Aero Drag
 	options[5] = false; //Allow change wind with keys
 	options[6] = false; //Allow change current with keys
+	options[7] = false;
 	
 	method = integrationMethods::VERLET;
 

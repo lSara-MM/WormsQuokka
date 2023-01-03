@@ -176,13 +176,14 @@ public:
 
 	//debug
 	bool debug=true;
-	//0 Print wind & currents,
-	//1 Gravity enabled
-	//2 buoyancy Enabled
-	//3 hidro resistance enabled
-	//4 Aero is enabled
+	// 0 Print wind & currents,
+	// 1 Gravity enabled
+	// 2 buoyancy Enabled
+	// 3 hidro resistance enabled
+	// 4 Aero is enabled
 	// 5 Modify wind XOR 6 Modify current
-	bool options[7];
+	// 7 Modify fps value
+	bool options[8];
 	
 	integrationMethods method;
 

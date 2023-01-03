@@ -29,6 +29,7 @@ bool ModuleSceneIntro::Start()
 	App->renderer->blueFont = App->renderer->LoadFont("Fonts/FuenteAzulClaro.png", lookupTable, 1, 38); // 1 = rows 39 = columns
 	App->renderer->greenFont = App->renderer->LoadFont("Fonts/FuenteVerde.png", lookupTable, 1, 38); // 1 = rows 39 = columns
 	endGame = false;
+	frames = 60;
 
 	return ret;
 }
@@ -184,4 +185,30 @@ void ModuleSceneIntro::Debug() {
 		App->physics->options[6] = !App->physics->options[6]; //Allow current changes
 		if (App->physics->options[5]) { App->physics->options[5] = !App->physics->options[5]; }
 	}
+
+	// FPS Change
+
+	else if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN) {
+		App->physics->options[7]= !App->physics->options[7];//allow fps changes
+		LOG("fps change enables");
+	}
+
+	if (App->physics->options[7])
+	{
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && frames<120)
+		{
+			frames += 5;
+			App->time = 1000 / frames;
+			LOG("frames %d", frames);
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && frames > 5)
+		{
+			frames -= 5;
+			App->time = 1000 / frames;
+			LOG("frames %d", frames);
+		}
+		
+	}
+
 }

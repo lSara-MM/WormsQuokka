@@ -62,4 +62,6 @@ public:
  
 	bool endGame;	// true when a team has lost or draw
 	int result;		//	-1 draw / 0 Blue / 1 red 
+
+	int frames;
 };
