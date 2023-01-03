@@ -69,6 +69,7 @@ bool ModulePlayer::Start()
 
 	timer = 0;
 	jump = false;
+
 	return true;
 }
 
@@ -235,7 +236,7 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, 
 	return new_worm->body;
 }
 
-int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, ObjectType type_, bool render)
+int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, float force, ObjectType type_, bool render)
 {
 	Weapon* new_gun = new Weapon(posX_, posY_, type_, render);
 	//new_gun->id = setID++;
@@ -246,11 +247,13 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, Objec
 	{ 
 		new_gun->range = 2; 
 		vx = 30.0f * dirX;		vy = -1 * dirY;		mass = 10.0f;
+		//vx = force * dirX;		vy = -force * dirY;		mass = 10.0f;// no acaba d'anar bé
 	}
 	if (type_ == ObjectType::GRENADE) 
 	{ 
 		new_gun->range = 20; 
 		vx = 10.0f * dirX;		vy = -5 * dirY;		mass = 50.0f;
+		//vx = force * dirX;		vy = -force * dirY;		mass = 50.0f;
 	}
 
 	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 0.3, 0.1f, 0.2f, 0.2f);
@@ -427,13 +430,42 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN) 
 	{ selectWeapon(player); }
 	
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) 
-	{ shoot(player); }
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
+	{
+		player->forceApplied += 0.5f;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 
+	{ 
+		if (player->forceApplied > 30.0f) {//provisional threshold
+
+			player->forceApplied = 30.0f;
+			
+		}
+
+		shoot(player); 
+
+		LOG("force %f", player->forceApplied);
+
+		player->forceApplied = 0;
+	}
 
 	// App->renderer->DrawLine(player->posX, player->posY, player->posX + cos(3.14 * player->angle / 180) * 50 * player->direction, player->posY - sin(3.14 * player->angle / 180) * 50, 0, 255, 100);
 	// en vdd este no es acurate perque no se perque no dispara recte cap amunt totalment :/
-
 	App->renderer->DrawLine(player->posX, player->posY, player->posX + 50 * player->direction, player->posY - player->angle, 0, 255, 100);
+
+	//fer dibuix amb efecte força no acaba d'anar
+	/*if (player->forceApplied < 5) {
+
+		App->renderer->DrawLine(player->posX, player->posY, player->posX + 50 * player->direction, player->posY - 50 * player->angle, 0, 255, 100);
+
+	}
+
+	else {
+
+		App->renderer->DrawLine(player->posX, player->posY, player->posX + player->forceApplied * 10 * player->direction, player->posY - player->forceApplied * 10 * player->angle, 0, 255, 100);
+
+	}*/
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) 
 	{ CleanUp(); }
@@ -460,8 +492,8 @@ int ModulePlayer::shoot(Worm* player)
 		break;
 	}
 
-	(player->direction == 1) ? player->playerWeapon = CreateWeapon(player->posX + a, player->posY, 1, player->angle, player->weapon)
-		: player->playerWeapon = CreateWeapon(player->posX - a, player->posY, -1, player->angle, player->weapon);
+	(player->direction == 1) ? player->playerWeapon = CreateWeapon(player->posX + a, player->posY, 1, player->angle, player->forceApplied, player->weapon)
+		: player->playerWeapon = CreateWeapon(player->posX - a, player->posY, -1, player->angle, player->forceApplied, player->weapon);
 
 	// hacer que espere a que colisione el proyectil 
 	playerTurn = !playerTurn;
