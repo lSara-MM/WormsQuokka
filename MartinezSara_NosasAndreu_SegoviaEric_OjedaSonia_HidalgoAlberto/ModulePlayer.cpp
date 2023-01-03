@@ -440,7 +440,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 	if (App->physics->debug)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN) 
+		if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) 
 		{ (player->type == ObjectType::BLUE) ? listBlueP.at(player->id)->hp = 0 : listRedP.at(player->id)->hp = 0; }
 	}
 }
