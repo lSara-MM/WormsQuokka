@@ -88,6 +88,8 @@ bool ModulePhysics::Start()
 	options[2] = true; //Bouyancy
 	options[3] = true; //Hidro Drag
 	options[4] = true; //Aero Drag
+	options[5] = false; //Allow change wind with keys
+	options[6] = false; //Allow change current with keys
 	
 	method = integrationMethods::VERLET;
 
@@ -96,6 +98,24 @@ bool ModulePhysics::Start()
 
 update_status ModulePhysics::PreUpdate()
 {
+	if(options[5])
+	{ 
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) { atmosphere.windx += 0.1F; }
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) { atmosphere.windx -= 0.1F; }
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) { atmosphere.windy += 0.1F; }
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) { atmosphere.windy -= 0.1F; }
+
+
+	}
+
+	if (options[6])
+	{
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) { water.vx += 0.1F; }
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) { water.vx -= 0.1F; }
+		//if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) { water.vy += 0.1F; }
+		//if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) { water.vy -= 0.1F; }
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
 	{
 		float posX = PIXEL_TO_METERS(App->input->GetMouseX());
@@ -534,32 +554,110 @@ update_status ModulePhysics::PostUpdate()
 		App->renderer->DrawQuad(ground.pixels(), color_r, color_g, color_b);
 	}
 
+	if (!debug)
+	{
+		App->renderer->BlitText(10, 10, App->renderer->blueFont, "PRESS F1 TO ACTIVATE DEBUG");
+	}
+
 	if (debug)
 	{
+		//LADO IZQUIERDO
 		App->renderer->BlitText(10, 10, App->renderer->blueFont, "DEBUG MODE ACTIVE:");
+		
+		if (options[0]){App->renderer->BlitText(26, 20, App->renderer->blueFont, "1: SHOW OR HIDE WIND AND CURRENT ON ");}
+		if (!options[0]) { App->renderer->BlitText(26, 20, App->renderer->blueFont, "1: SHOW OR HIDE WIND AND CURRENT OFF"); }
+		if (options[1]) { App->renderer->BlitText(26, 30, App->renderer->blueFont, "2: ENABLE OR DISABLE GRAVITY ON"); }
+		if (!options[1]) { App->renderer->BlitText(26, 30, App->renderer->blueFont, "2: ENABLE OR DISABLE GRAVITY OFF"); }
+		if (options[2]) { App->renderer->BlitText(26, 40, App->renderer->blueFont, "3: ENABLE OR DISABLE BUOYANCY ON"); }
+		if (!options[2]) { App->renderer->BlitText(26, 40, App->renderer->blueFont, "3: ENABLE OR DISABLE BUOYANCY OFF"); }
+		if (options[3]) { App->renderer->BlitText(26, 50, App->renderer->blueFont, "4: ENABLE OR DISABLE HYDRO DRAG ON"); }
+		if (!options[3]) { App->renderer->BlitText(26, 50, App->renderer->blueFont, "4: ENABLE OR DISABLE HYDRO DRAG OFF"); }
+		if (options[4]) { App->renderer->BlitText(26, 60, App->renderer->blueFont, "5: ENABLE OR DISABLE AERO DRAG ON"); }
+		if (!options[4]) { App->renderer->BlitText(26, 60, App->renderer->blueFont, "5: ENABLE OR DISABLE AERO DRAG OFF"); }
+		if (options[5]) { App->renderer->BlitText(26, 70, App->renderer->blueFont, "6: CHANGE WIND VELOCITY USING KEYS ON"); }
+		if (!options[5]) { App->renderer->BlitText(26, 70, App->renderer->blueFont, "6: CHANGE WIND VELOCITY USING KEYS OFF"); }
+		if (options[6]) { App->renderer->BlitText(26, 80, App->renderer->blueFont, "7: CHANGE CURRENT VELOCITY USING KEYS ON"); }
+		if (!options[6]) { App->renderer->BlitText(26, 80, App->renderer->blueFont, "7: CHANGE CURRENT VELOCITY USING KEYS OFF"); }
+		
+		//LADO CENTRAL 
+		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 20, App->renderer->blueFont, "B:CREATE BALL ");
+		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 30, App->renderer->blueFont, "V:CREATE BALL ");
+		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 40, App->renderer->blueFont, "C:CREATE BALL ");
+		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 50, App->renderer->blueFont, "M:INCREASE ALL BALLS RADIUS ");
+		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 60, App->renderer->blueFont, "N:REDUCE ALL BALLS RADIUS ");
 
-		App->renderer->BlitText(26, 20, App->renderer->blueFont, "1: SHOW OR HIDE WIND AND CURRENT ");
-		App->renderer->BlitText(26, 30, App->renderer->blueFont, "2: ENABLE OR DISABLE GRAVITY ");
-		App->renderer->BlitText(26, 40, App->renderer->blueFont, "3: ENABLE OR DISABLE BUOYANCY");
-		App->renderer->BlitText(26, 50, App->renderer->blueFont, "4: ENABLE OR DISABLE HYDRO DRAG ");
-		App->renderer->BlitText(26, 60, App->renderer->blueFont, "5: ENABLE OR DISABLE AERO DRAG ");
 
-		//LADO OPUESTO PANTALLA
-		App->renderer->BlitText(SCREEN_WIDTH - 40 * 8, 20, App->renderer->blueFont, "INTEGRATION METHOD: ");
+		//LADO DERECHO PANTALLA
+
+		//Integration method
+		App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 20, App->renderer->blueFont, "INTEGRATION METHOD: ");
 		switch (method)
 		{
 		case integrationMethods::BACKWARDS_EULER:
-			App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, App->renderer->greenFont, "BACKWARDS");
+			App->renderer->BlitText(SCREEN_WIDTH - 19 * 8, 16, App->renderer->greenFont, "BACKWARDS");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 40, App->renderer->blueFont, "F3: CHANGE TO FOWARDS EULER ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 50, App->renderer->blueFont, "F4: CHANGE TO VERLET ");
 			break;
 		case integrationMethods::FORWARDS_EULER:
-			App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, App->renderer->greenFont, "FOWARDS");
+			App->renderer->BlitText(SCREEN_WIDTH - 19 * 8, 16, App->renderer->greenFont, "FOWARDS");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 40, App->renderer->blueFont, "F2: CHANGE TO BACWARDS EULER ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 50, App->renderer->blueFont, "F4: CHANGE TO VERLET ");
 			break;
 		case integrationMethods::VERLET:
-			App->renderer->BlitText(SCREEN_WIDTH - 18 * 8, 20, App->renderer->greenFont, "VERLET");
+			App->renderer->BlitText(SCREEN_WIDTH - 19 * 8, 16, App->renderer->greenFont, "VERLET");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 40, App->renderer->blueFont, "F2: CHANGE TO BACWARDS EULER ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 50, App->renderer->blueFont, "F3: CHANGE TO FOWARDS EULER ");
 			break;
 		default:
 			break;
 		}
+
+		//Movement type
+		App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 70, App->renderer->blueFont, "PLAYER MOVEMENT MODE: ");
+		switch (App->player->movement)
+		{
+		case MovementType::APPLY_FORCE:
+			App->renderer->BlitText(SCREEN_WIDTH - 17 * 8, 66, App->renderer->greenFont, "FORCE");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 90, App->renderer->blueFont, "F6: CHANGE TO VELOCITY MOVEMENT ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 100, App->renderer->blueFont, "F7: CHANGE TO POSITION MOVEMENT ");
+			break;
+		case MovementType::APPLY_VELOCITY:
+			App->renderer->BlitText(SCREEN_WIDTH - 17 * 8, 66, App->renderer->greenFont, "VELOCITY");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 90, App->renderer->blueFont, "F5: CHANGE TO FORCE MOVEMENT ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 100, App->renderer->blueFont, "F7: CHANGE TO POSITION MOVEMENT ");
+			break;
+		case MovementType::CHANGE_POSITION:
+			App->renderer->BlitText(SCREEN_WIDTH - 17 * 8, 66, App->renderer->greenFont, "POSITION");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 90, App->renderer->blueFont, "F5: CHANGE TO FORCE MOVEMENT ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 100, App->renderer->blueFont, "F6: CHANGE TO VELOCITY MOVEMENT ");
+			break;
+		default:
+			break;
+		}
+
+		//Delta time
+		App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 120, App->renderer->blueFont, "DELTA TIME MODE: ");
+		switch (App->timeControl)
+		{
+		case DeltaTimeControl::FIXED_DELTATIME:
+			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "FIXED");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F9: CHANGE TO FIXED DELAY ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO POSITION MOVEMENT ");
+			break;
+		case DeltaTimeControl::FIXED_DELTATIME_DELAY:
+			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "FIXED DELAY");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F8: CHANGE TO FIXED ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO POSITION MOVEMENT ");
+			break;
+		case DeltaTimeControl::VARIABLE_DELTATIME:
+			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "VARIABLE");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F8: CHANGE TO FIXED  ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F9: CHANGE TO FIXED DELAY ");
+			break;
+		default:
+			break;
+		}
+
 	}
 	
 

@@ -174,4 +174,14 @@ void ModuleSceneIntro::Debug() {
 		LOG("Variable delta time");
 
 	}
+	else if(App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN && App->physics->debug == true)
+	{
+		App->physics->options[5] = !App->physics->options[5]; //Allow wind changes
+		if (App->physics->options[6]) {	App->physics->options[6] = !App->physics->options[6];}
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN && App->physics->debug == true)
+	{
+		App->physics->options[6] = !App->physics->options[6]; //Allow current changes
+		if (App->physics->options[5]) { App->physics->options[5] = !App->physics->options[5]; }
+	}
 }

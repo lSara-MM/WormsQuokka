@@ -181,7 +181,8 @@ public:
 	//2 buoyancy Enabled
 	//3 hidro resistance enabled
 	//4 Aero is enabled
-	bool options[5];
+	// 5 Modify wind XOR 6 Modify current
+	bool options[7];
 	
 	integrationMethods method;
 
