@@ -16,6 +16,8 @@ Tab: Cambiar a la siguiente arma
 M,N: Auemntar o disminuir tamaño de todas las bolas (para debug) 
 B,V,C: Crear bolas, B es la blanca mediana, V es el proyectil pequeño y C es la granada
 
+R: restart level
+
 F1 (Temporal?): Entrar en modo debug (Also cambia de integrador)
 
 REPARTICION DE TAREAS

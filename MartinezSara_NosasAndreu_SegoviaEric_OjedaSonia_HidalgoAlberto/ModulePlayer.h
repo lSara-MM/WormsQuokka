@@ -99,9 +99,6 @@ public:
 	int shoot(Worm* player);
 
 public:
-
-	//std::vector<PhysBall> listBLUE{};
-	//std::vector<PhysBall> listRED{};
 	 
 	std::vector<int> listPlayers{};
 	std::vector<Worm*> listBlueP{};

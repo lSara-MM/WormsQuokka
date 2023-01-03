@@ -96,7 +96,6 @@ bool ModulePhysics::Start()
 
 update_status ModulePhysics::PreUpdate()
 {
-	
 	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
 	{
 		float posX = PIXEL_TO_METERS(App->input->GetMouseX());
@@ -211,7 +210,10 @@ update_status ModulePhysics::PreUpdate()
 				for (int j = 0; j < t; j++) {
 
 					/*if(balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius && balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius*/
-					
+					if (!balls.at(i).physics_enabled || !balls.at(j).physics_enabled)
+					{
+						continue;
+					}
 					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true && i != j) {
 
 						if (balls.at(j).player != balls.at(i).player) {

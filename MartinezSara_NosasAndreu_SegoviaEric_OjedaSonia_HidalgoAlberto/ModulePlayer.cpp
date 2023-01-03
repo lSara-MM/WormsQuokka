@@ -47,6 +47,8 @@ bool ModulePlayer::Start()
 	////listPlayers.emplace_back(num);
 	//listRedP.emplace_back(num);
 
+	setID = 0;
+
 	// Blue team
 	CreatePlayer(100, 200, ObjectType::BLUE);
 	CreatePlayer(200, 200, ObjectType::BLUE);
@@ -164,6 +166,8 @@ bool ModulePlayer::CleanUp()
 	listBlueP.clear();
 	listRedP.clear();
 
+	App->physics->CleanUp();
+	Start();
 	return true;
 }
 
@@ -215,7 +219,7 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, Objec
 		vx = 10.0f * dirX;		vy = -5 * dirY;		mass = 50.0f;
 	}
 
-	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 0.3f, 0.5f, 0.1f);
+	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 0.3, 0.1f, 0.2f, 0.2f);
 
 	return new_gun->body;
 }
@@ -261,7 +265,6 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		{
 			App->physics->balls.at(player->body).ApplyForce(1500.0f, 0.0f);
 			player->direction = 1;
-			listBlueP.at(currentBlue);
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
@@ -397,6 +400,9 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	// en vdd este no es acurate perque no se perque no dispara recte cap amunt totalment :/
 
 	App->renderer->DrawLine(player->posX, player->posY, player->posX + 50 * player->direction, player->posY - player->angle, 0, 255, 100);
+
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) 
+	{ CleanUp(); }
 }
 
 int ModulePlayer::shoot(Worm* player)
@@ -446,6 +452,7 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 			if (listRedP.at(i)->body == body) {
 
 				listRedP.at(i)->hp = listRedP.at(i)->hp - rest;
+
 			}
 		}
 
@@ -463,6 +470,4 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 		}
 
 	}
-	
-
 }
