@@ -206,6 +206,11 @@ update_status ModulePhysics::PreUpdate()
 			// Hydrodynamic forces (only when in water)
 			if (is_colliding_with_water(ball, water))
 			{
+				if (ball.type == ObjectType::GUN || ball.type == ObjectType::GRENADE) {
+
+					ball.type = ObjectType::OTHER;
+
+				}
 				// Hydrodynamic Drag force
 				if (options[3])
 				{
@@ -245,6 +250,7 @@ update_status ModulePhysics::PreUpdate()
 								bodyHP = i; 
 								typeW = ObjectType::GUN;
 								typeP =ObjectType::RED;
+								balls.at(j).type = ObjectType::OTHER;
 							}
 
 							if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::RED) {
@@ -252,6 +258,7 @@ update_status ModulePhysics::PreUpdate()
 								bodyHP = i;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::RED;
+								balls.at(j).type = ObjectType::OTHER;
 							}
 
 							if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::RED) {
@@ -259,6 +266,7 @@ update_status ModulePhysics::PreUpdate()
 								bodyHP = j;
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::RED;
+								balls.at(i).type = ObjectType::OTHER;
 							}
 
 							if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::RED) {
@@ -266,6 +274,7 @@ update_status ModulePhysics::PreUpdate()
 								bodyHP = j;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::RED;
+								balls.at(i).type = ObjectType::OTHER;
 							}
 
 
@@ -274,6 +283,7 @@ update_status ModulePhysics::PreUpdate()
 								bodyHP = j;
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::BLUE;
+								balls.at(i).type = ObjectType::OTHER;
 							}
 
 							if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::BLUE) {
@@ -281,6 +291,7 @@ update_status ModulePhysics::PreUpdate()
 								bodyHP = j;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::BLUE;
+								balls.at(i).type = ObjectType::OTHER;
 							}
 
 							if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::BLUE) {
@@ -288,6 +299,7 @@ update_status ModulePhysics::PreUpdate()
 								bodyHP = i;
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::BLUE;
+								balls.at(j).type = ObjectType::OTHER;
 							}
 
 							if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::BLUE) {
@@ -295,6 +307,7 @@ update_status ModulePhysics::PreUpdate()
 								bodyHP = i;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::BLUE;
+								balls.at(j).type = ObjectType::OTHER;
 							}
 						}
 				
@@ -451,6 +464,12 @@ update_status ModulePhysics::PreUpdate()
 			// Solve collision between ball and ground
 			if (is_colliding_with_ground(ball, ground))
 			{
+				if (ball.type == ObjectType::GUN || ball.type == ObjectType::GRENADE) {
+			
+					ball.type = ObjectType::OTHER; 
+				 
+				}
+
 				if (ball.x >= (ground.x + ground.w))
 				{
 					ball.x = ground.x + ground.w + ball.radius;

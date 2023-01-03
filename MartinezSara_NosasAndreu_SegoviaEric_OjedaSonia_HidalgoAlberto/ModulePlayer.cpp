@@ -536,8 +536,7 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 
 			if (listBlueP.at(i)->body == body) {
 
-				listBlueP.at(i)->hp = listBlueP.at(i)->hp - rest;
-				LOG("BlueHP: %d", listBlueP.at(i)->hp - rest); 
+				listBlueP.at(i)->hp = listBlueP.at(i)->hp - rest; 
 			}
 		}
 
