@@ -25,15 +25,11 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	rect.x = 200;
-	rect.y = 200;
-	rect.w = 100;
-	rect.h = 100;
-
 	char lookupTable[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 :" };
 	App->renderer->blueFont = App->renderer->LoadFont("Fonts/FuenteAzulClaro.png", lookupTable, 1, 38); // 1 = rows 39 = columns
 	App->renderer->greenFont = App->renderer->LoadFont("Fonts/FuenteVerde.png", lookupTable, 1, 38); // 1 = rows 39 = columns
-	
+	endGame = false;
+
 	return ret;
 }
 
@@ -55,16 +51,38 @@ update_status ModuleSceneIntro::Update()
 
 	Debug();
 
-	App->renderer->DrawQuad(rect, 0, 255, 255, 255); 
-	App->renderer->DrawCircle(x, y, rad, 0, 255, 255, 255); 
+	if (endGame)
+	{
+		switch (result)
+		{
+		case -1:
+			LOG("DRAW");
+			App->renderer->BlitText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 50, App->renderer->greenFont, "DRAW");
+			break;
 
-	App->renderer->BlitText(100, 100, App->renderer->blueFont, "A");
+		case 0:
+			LOG("RED team wins");
+			App->renderer->BlitText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 50, App->renderer->greenFont, "RED TEAM WINS");
+			break;
 
+		case 1:
+			LOG("BLUE team wins");
+			App->renderer->BlitText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 50, App->renderer->greenFont, "BLUE TEAM WINS");
+			break;
+		default:
+			break;
+		}
+		
+		App->renderer->BlitText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, App->renderer->blueFont, "PRESS ENTER TO PLAY AGAIN");
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+		{
+			App->player->CleanUp();
+		}
+	}
 	return UPDATE_CONTINUE;
 }
 
 void ModuleSceneIntro::Debug() {
-
 
 	//"Nomenclatura": Bools con 1,2,3...,0 , multiple opcion con F1,F2...,F12
 

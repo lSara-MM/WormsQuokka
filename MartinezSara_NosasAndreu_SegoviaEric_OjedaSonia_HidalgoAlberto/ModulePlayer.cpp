@@ -65,113 +65,124 @@ bool ModulePlayer::Start()
 
 	deadBlue = 0;
 	deadRed = 0;
+	App->scene_intro->endGame = false;
+
+	timer = 0;
+	jump = false;
 	return true;
 }
 
 //Player control
 update_status ModulePlayer::Update()
 {
-	// Select player
-	if (playerTurn)	// Blue turn
-	{
-		currentBlue = selectPlayer(currentBlue);
-		controls(listBlueP.at(currentBlue), movement);
-	}
-	else // Red turn
-	{
-		currentRed = selectPlayer(currentRed);
-		controls(listRedP.at(currentRed), movement);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-	{
-		listBlueP.at(currentBlue)->hp = 0;
-	}
-
-	// Check hp
-	int dead = 0;
-	for (auto& Worm : listBlueP)
-	{
-		Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
-		Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
-
-		if (listBlueP.at(Worm->id)->hp <= 0)
+	if (!App->scene_intro->endGame)
+	{	
+		// Select player
+		if (playerTurn)	// Blue turn
 		{
-			App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
-			App->physics->balls.at(listBlueP.at(Worm->id)->body).physics_enabled = false;
-			
-			for (int i = currentBlue + 1; i < listBlueP.size(); i++)
+			currentBlue = selectPlayer(currentBlue);
+			controls(listBlueP.at(currentBlue), movement);
+		}
+		else // Red turn
+		{
+			currentRed = selectPlayer(currentRed);
+			controls(listRedP.at(currentRed), movement);
+		}
+
+		// Check hp
+		int dead = 0;
+		for (auto& Worm : listBlueP)
+		{
+			Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
+			Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
+
+			if (listBlueP.at(Worm->id)->hp <= 0)
 			{
-				if (listBlueP.at(i)->hp > 0)
+				App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
+				App->physics->balls.at(listBlueP.at(Worm->id)->body).physics_enabled = false;
+
+				for (int i = currentBlue + 1; i < listBlueP.size(); i++)
 				{
-					currentBlue = i;
-					break;
+					if (listBlueP.at(i)->hp > 0)
+					{
+						currentBlue = i;
+						break;
+					}
+					if (i >= listBlueP.size()) { currentBlue = 0; }
 				}
-				if (i >= listBlueP.size()) { currentBlue = 0; }
+				dead++;
+				deadBlue = dead;
 			}
-			dead++;
-			deadBlue = dead;
-		}
-		else
-		{
-			// strings to const char*
-			string s_hp = std::to_string(Worm->hp);
-			const char* ch_hp = s_hp.c_str();
-
-			App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
-		}
-	}
-
-	dead = 0;
-	for (auto& Worm : listRedP)
-	{
-		Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
-		Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
-
-		if (listRedP.at(Worm->id)->hp <= 0)
-		{
-			App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
-			App->physics->balls.at(listRedP.at(Worm->id)->body).physics_enabled = false;
-			
-			for (int i = currentRed + 1; i < listRedP.size(); i++)
+			else
 			{
-				if (listRedP.at(i)->hp > 0)
-				{
-					currentRed = i;
-					break;
-				}
-				if (i >= listRedP.size()) { currentRed = 0; }
+				// strings to const char*
+				string s_hp = std::to_string(Worm->hp);
+				const char* ch_hp = s_hp.c_str();
+
+				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
 			}
-			dead++;
-			deadRed = dead;
 		}
-		else
+
+		dead = 0;
+		for (auto& Worm : listRedP)
 		{
-			// strings to const char*
-			string s_hp = std::to_string(Worm->hp);
-			const char* ch_hp = s_hp.c_str();
+			Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
+			Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
 
-			App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+			if (listRedP.at(Worm->id)->hp <= 0)
+			{
+				App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
+				App->physics->balls.at(listRedP.at(Worm->id)->body).physics_enabled = false;
+
+				for (int i = currentRed + 1; i < listRedP.size(); i++)
+				{
+					if (listRedP.at(i)->hp > 0)
+					{
+						currentRed = i;
+						break;
+					}
+					if (i >= listRedP.size()) { currentRed = 0; }
+				}
+				dead++;
+				deadRed = dead;
+			}
+			else
+			{
+				// strings to const char*
+				string s_hp = std::to_string(Worm->hp);
+				const char* ch_hp = s_hp.c_str();
+
+				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+			}
 		}
-	}
 
 
 
-	// Win/Lose conditions
-	if (deadBlue == listBlueP.size() && deadRed < listRedP.size())
-	{ LOG("RED team wins"); }
+		// Win/Lose conditions
+		if (deadBlue == listBlueP.size() && deadRed < listRedP.size())
+		{
+			App->scene_intro->endGame = true;
+			App->scene_intro->result = 0;
+		}
 
-	if (deadBlue < listBlueP.size() && deadRed == listRedP.size())
-	{ LOG("BLUE team wins"); }
-	
-	if (deadBlue == listBlueP.size() && deadRed == listRedP.size())
-	{ LOG("DRAW"); }
+		if (deadBlue < listBlueP.size() && deadRed == listRedP.size())
+		{
+			App->scene_intro->endGame = true;
+			App->scene_intro->result = 1;
+		}
 
-	timer++;
+		if (deadBlue == listBlueP.size() && deadRed == listRedP.size())
+		{
+			App->scene_intro->endGame = true;
+			App->scene_intro->result = -1;
+		}
 
-	if (App->physics->losehp == true) {
-		LoseHPplayer(App->physics->bodyHP, App->physics->typeW, App->physics->typeP);
-		App->physics->losehp = false; 
+		timer++;
+
+		if (App->physics->losehp == true) {
+			LoseHPplayer(App->physics->bodyHP, App->physics->typeW, App->physics->typeP);
+			App->physics->losehp = false;
+		}
 	}
 
 	return UPDATE_CONTINUE;
@@ -194,7 +205,6 @@ bool ModulePlayer::CleanUp()
 	Start();
 	return true;
 }
-
 
 int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, bool render)
 {
@@ -427,6 +437,12 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) 
 	{ CleanUp(); }
+
+	if (App->physics->debug)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN) 
+		{ (player->type == ObjectType::BLUE) ? listBlueP.at(player->id)->hp = 0 : listRedP.at(player->id)->hp = 0; }
+	}
 }
 
 int ModulePlayer::shoot(Worm* player)

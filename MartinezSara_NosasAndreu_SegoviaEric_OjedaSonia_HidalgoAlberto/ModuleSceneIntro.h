@@ -60,7 +60,6 @@ public:
 
 	uint player_lose_fx;
  
-	SDL_Rect rect; 
-
-	int x = 500, y = 200, rad = 100;
+	bool endGame;	// true when a team has lost or draw
+	int result;		//	-1 draw / 0 Blue / 1 red 
 };

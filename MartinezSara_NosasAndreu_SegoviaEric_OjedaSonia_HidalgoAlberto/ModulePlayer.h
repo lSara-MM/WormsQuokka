@@ -47,7 +47,6 @@ public:
 	float angle = 0;
 };
 
-
 class Weapon
 {
 public:
@@ -114,7 +113,6 @@ public:
 	int deadBlue;
 	int deadRed;
 
-	float timer = 0;
-
-	bool jump = false;
+	float timer;
+	bool jump;
 };
