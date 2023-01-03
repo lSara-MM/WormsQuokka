@@ -96,7 +96,15 @@ update_status ModulePlayer::Update()
 			App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
 			App->physics->balls.at(listBlueP.at(Worm->id)->body).physics_enabled = false;
 			
-			(currentBlue == 0) ? currentBlue = 1 : currentBlue = 0;
+			for (int i = currentBlue + 1; i < listBlueP.size(); i++)
+			{
+				if (listBlueP.at(i)->hp > 0)
+				{
+					currentBlue = i;
+					break;
+				}
+				if (i >= listBlueP.size()) { currentBlue = 0; }
+			}			
 		}
 		else
 		{
@@ -119,7 +127,15 @@ update_status ModulePlayer::Update()
 			App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
 			App->physics->balls.at(listRedP.at(Worm->id)->body).physics_enabled = false;
 			
-			(currentRed == 0) ? currentRed = 1 : currentRed = 0;
+			for (int i = currentRed + 1; i < listRedP.size(); i++)
+			{
+				if (listRedP.at(i)->hp > 0)
+				{
+					currentRed = i;
+					break;
+				}
+				if (i >= listRedP.size()) { currentRed = 0; }
+			}
 		}
 		else
 		{
@@ -382,7 +398,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		}
 	}
 
-	if (player->angle > 0)
+	if (player->angle > -90)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
 		{
