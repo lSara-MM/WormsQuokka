@@ -62,6 +62,9 @@ bool ModulePlayer::Start()
 	playerTurn = true;
 	currentBlue = 0;
 	currentRed = 0;
+
+	deadBlue = 0;
+	deadRed = 0;
 	return true;
 }
 
@@ -71,12 +74,12 @@ update_status ModulePlayer::Update()
 	// Select player
 	if (playerTurn)	// Blue turn
 	{
-		currentBlue = selectPlayer(ObjectType::BLUE, currentBlue);
+		currentBlue = selectPlayer(currentBlue);
 		controls(listBlueP.at(currentBlue), movement);
 	}
 	else // Red turn
 	{
-		currentRed = selectPlayer(ObjectType::RED, currentRed);
+		currentRed = selectPlayer(currentRed);
 		controls(listRedP.at(currentRed), movement);
 	}
 
@@ -86,6 +89,7 @@ update_status ModulePlayer::Update()
 	}
 
 	// Check hp
+	int dead = 0;
 	for (auto& Worm : listBlueP)
 	{
 		Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
@@ -104,7 +108,9 @@ update_status ModulePlayer::Update()
 					break;
 				}
 				if (i >= listBlueP.size()) { currentBlue = 0; }
-			}			
+			}
+			dead++;
+			deadBlue = dead;
 		}
 		else
 		{
@@ -116,7 +122,7 @@ update_status ModulePlayer::Update()
 		}
 	}
 
-
+	dead = 0;
 	for (auto& Worm : listRedP)
 	{
 		Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
@@ -136,6 +142,8 @@ update_status ModulePlayer::Update()
 				}
 				if (i >= listRedP.size()) { currentRed = 0; }
 			}
+			dead++;
+			deadRed = dead;
 		}
 		else
 		{
@@ -150,13 +158,13 @@ update_status ModulePlayer::Update()
 
 
 	// Win/Lose conditions
-	if (listBlueP.empty() && !listRedP.empty())
+	if (deadBlue == listBlueP.size() && deadRed < listRedP.size())
 	{ LOG("RED team wins"); }
 
-	if (listRedP.empty() && !listBlueP.empty())
+	if (deadBlue < listBlueP.size() && deadRed == listRedP.size())
 	{ LOG("BLUE team wins"); }
 	
-	if (listRedP.empty() && listBlueP.empty()) 
+	if (deadBlue == listBlueP.size() && deadRed == listRedP.size())
 	{ LOG("DRAW"); }
 
 	timer++;
@@ -241,7 +249,7 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, Objec
 }
 
 
-int ModulePlayer::selectPlayer(ObjectType t, int p)
+int ModulePlayer::selectPlayer(int p)
 {
 	// Depende del num de players, se puede hacer general pero nose, por ahora parece mas comodo asi
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)

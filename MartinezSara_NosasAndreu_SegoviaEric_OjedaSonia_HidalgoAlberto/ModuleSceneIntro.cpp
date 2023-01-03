@@ -42,6 +42,8 @@ bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
 	
+	App->renderer->UnLoadFont(App->renderer->blueFont);
+	App->renderer->UnLoadFont(App->renderer->greenFont);
 	return true;
 }
 
