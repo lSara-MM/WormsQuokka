@@ -482,11 +482,11 @@ update_status ModulePhysics::PreUpdate()
 				}
 
 
-				else if (ball.x <= ground.x)
+				else if ((ball.x + (ball.radius + ball.radius)) <= ground.x)
 				{
 					ball.x = ground.x - ball.radius;
 					if (abs(ball.vx) <= 0.2f) { ball.vx = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
-					ball.vx = -ball.vx;
+					ball.vx = -ball.vx*1.2f;
 					ball.vx *= ball.coef_friction;
 					ball.vy *= ball.coef_restitution;
 				}
