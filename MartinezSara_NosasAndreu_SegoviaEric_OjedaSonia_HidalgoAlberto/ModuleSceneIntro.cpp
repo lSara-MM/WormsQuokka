@@ -91,7 +91,7 @@ void ModuleSceneIntro::Debug() {
 
 	//"Nomenclatura": Bools con 1,2,3...,0 , multiple opcion con F1,F2...,F12
 
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->physics->debug==true)
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && App->physics->debug == true)
 	{
 		App->physics->method = integrationMethods::BACKWARDS_EULER;
 		LOG("Backwards Euler");
@@ -110,7 +110,7 @@ void ModuleSceneIntro::Debug() {
 	}
 
 	else if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{ 
+	{
 		App->physics->options[0] = !App->physics->options[0];
 	}
 
@@ -179,10 +179,10 @@ void ModuleSceneIntro::Debug() {
 		LOG("Variable delta time");
 
 	}
-	else if(App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN && App->physics->debug == true)
+	else if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN && App->physics->debug == true)
 	{
 		App->physics->options[5] = !App->physics->options[5]; //Allow wind changes
-		if (App->physics->options[6]) {	App->physics->options[6] = !App->physics->options[6];}
+		if (App->physics->options[6]) { App->physics->options[6] = !App->physics->options[6]; }
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN && App->physics->debug == true)
 	{
@@ -193,7 +193,7 @@ void ModuleSceneIntro::Debug() {
 	// FPS Change
 
 	else if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN) {
-		App->physics->options[7]= !App->physics->options[7];//allow fps changes
+		App->physics->options[7] = !App->physics->options[7];//allow fps changes
 		LOG("fps change enables");
 	}
 
@@ -202,7 +202,7 @@ void ModuleSceneIntro::Debug() {
 	if (App->physics->options[7])
 	{
 		App->renderer->BlitText(26, 90, App->renderer->blueFont, "8: CHANGE FPS VALUE USING KEYS ON");
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && frames<120)
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && frames < 120)
 		{
 			frames += 5;
 			App->time = 1000 / frames;
@@ -215,7 +215,7 @@ void ModuleSceneIntro::Debug() {
 			App->time = 1000 / frames;
 			LOG("frames %d", frames);
 		}
-		
+
 	}
 
 	App->renderer->BlitText(10, 110, App->renderer->blueFont, "STATUS:");//Valores fps, valores bala/player, etc...
@@ -223,4 +223,79 @@ void ModuleSceneIntro::Debug() {
 	string f_num = std::to_string(frames);
 	const char* f = f_num.c_str();
 	App->renderer->BlitText(60, 120, App->renderer->blueFont, f);
+
+
+	if (App->player->playerTurn)	// Blue turn
+	{
+		if (App->player->listBlueP.at(App->player->currentBlue)->playerWeapon != 0) {
+
+			App->renderer->BlitText(26, 130, App->renderer->blueFont, "PosX:");
+			string posx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).x);
+			const char* x = posx.c_str();
+			App->renderer->BlitText(60, 130, App->renderer->blueFont, x);
+
+			App->renderer->BlitText(26, 140, App->renderer->blueFont, "PosY:");
+			string posy = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).y);
+			const char* y = posy.c_str();
+			App->renderer->BlitText(60, 140, App->renderer->blueFont, y);
+
+			App->renderer->BlitText(26, 150, App->renderer->blueFont, "VelX:");
+			string velx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).vx);
+			const char* vx = velx.c_str();
+			App->renderer->BlitText(60, 150, App->renderer->blueFont, vx);
+
+			App->renderer->BlitText(26, 160, App->renderer->blueFont, "VelY:");
+			string vely = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).vy);
+			const char* vy = vely.c_str();
+			App->renderer->BlitText(60, 160, App->renderer->blueFont, vy);
+
+			App->renderer->BlitText(26, 170, App->renderer->blueFont, "AccX:");
+			string accx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).ax);
+			const char* ax = accx.c_str();
+			App->renderer->BlitText(60, 170, App->renderer->blueFont, ax);
+
+			App->renderer->BlitText(26, 180, App->renderer->blueFont, "AccY:");
+			string accy = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).ay);
+			const char* ay = accy.c_str();
+			App->renderer->BlitText(60, 180, App->renderer->blueFont, ay);
+
+		}
+
+	}
+	else if (!App->player->playerTurn) // Red turn
+	{
+		if (App->player->listRedP.at(App->player->currentRed)->playerWeapon != 0) {
+
+			App->renderer->BlitText(26, 130, App->renderer->blueFont, "PosX:");
+			string posx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).x);
+			const char* x = posx.c_str();
+			App->renderer->BlitText(60, 130, App->renderer->blueFont, x);
+
+			App->renderer->BlitText(26, 140, App->renderer->blueFont, "PosY:");
+			string posy = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).y);
+			const char* y = posy.c_str();
+			App->renderer->BlitText(60, 140, App->renderer->blueFont, y);
+
+			App->renderer->BlitText(26, 150, App->renderer->blueFont, "VelX:");
+			string velx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).vx);
+			const char* vx = velx.c_str();
+			App->renderer->BlitText(60, 150, App->renderer->blueFont, vx);
+
+			App->renderer->BlitText(26, 160, App->renderer->blueFont, "VelY:");
+			string vely = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).vy);
+			const char* vy = vely.c_str();
+			App->renderer->BlitText(60, 160, App->renderer->blueFont, vy);
+
+			App->renderer->BlitText(26, 170, App->renderer->blueFont, "AccX:");
+			string accx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).ax);
+			const char* ax = accx.c_str();
+			App->renderer->BlitText(60, 170, App->renderer->blueFont, ax);
+
+			App->renderer->BlitText(26, 180, App->renderer->blueFont, "AccY:");
+			string accy = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).ay);
+			const char* ay = accy.c_str();
+			App->renderer->BlitText(60, 180, App->renderer->blueFont, ay);
+
+		}
+	}
 }

@@ -900,8 +900,6 @@ void PhysBall::AddPosition(float x_, float y_)
 
 //Create ball
 //És el mateix que el constructor, però retorna la posició de l'element a la llista, necessari per fer coses amb player
-//Inspirat en un projecte de l'any passat
-//on està listItem :(
 
 int ModulePhysics::CreateBall(float x_, float y_, float rad_, ObjectType type_, float mass_, float vx_, float vy_, float surface_, float cl_, float cd_, float b_, float cFriction_, float cRest_, float ax_, float ay_, bool enabled_, bool play)
 {
