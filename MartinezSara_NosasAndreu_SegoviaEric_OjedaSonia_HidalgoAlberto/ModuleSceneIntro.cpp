@@ -8,6 +8,10 @@
 
 #include "SString.h"
 
+#include <iostream>
+using namespace std;
+#include <sstream>
+
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	graphics = NULL;
@@ -193,16 +197,19 @@ void ModuleSceneIntro::Debug() {
 		LOG("fps change enables");
 	}
 
+	if (!App->physics->options[7]) { App->renderer->BlitText(26, 90, App->renderer->blueFont, "8: CHANGE FPS VALUE USING KEYS OFF"); }
+
 	if (App->physics->options[7])
 	{
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && frames<120)
+		App->renderer->BlitText(26, 90, App->renderer->blueFont, "8: CHANGE FPS VALUE USING KEYS ON");
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && frames<120)
 		{
 			frames += 5;
 			App->time = 1000 / frames;
 			LOG("frames %d", frames);
 		}
 
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && frames > 5)
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN && frames > 5)
 		{
 			frames -= 5;
 			App->time = 1000 / frames;
@@ -211,4 +218,9 @@ void ModuleSceneIntro::Debug() {
 		
 	}
 
+	App->renderer->BlitText(10, 110, App->renderer->blueFont, "STATUS:");//Valores fps, valores bala/player, etc...
+	App->renderer->BlitText(26, 120, App->renderer->blueFont, "FPS:");
+	string f_num = std::to_string(frames);
+	const char* f = f_num.c_str();
+	App->renderer->BlitText(60, 120, App->renderer->blueFont, f);
 }
