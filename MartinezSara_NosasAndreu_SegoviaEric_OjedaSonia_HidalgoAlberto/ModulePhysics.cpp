@@ -469,6 +469,7 @@ update_status ModulePhysics::PreUpdate()
 				if (ball.type == ObjectType::GUN || ball.type == ObjectType::GRENADE) {
 			
 					ball.type = ObjectType::OTHER; 
+					typeW = ObjectType::OTHER;
 				 
 				}
 

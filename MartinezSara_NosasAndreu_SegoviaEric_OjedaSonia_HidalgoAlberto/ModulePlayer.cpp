@@ -503,7 +503,7 @@ int ModulePlayer::shoot(Worm* player)
 
 void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) {
 
-	int rest = 1; 
+	int rest = 0; 
 
 	if (type_W == ObjectType::GUN) {
 
