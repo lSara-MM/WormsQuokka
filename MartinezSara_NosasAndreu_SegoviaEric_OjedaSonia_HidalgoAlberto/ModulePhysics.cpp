@@ -33,7 +33,7 @@ bool ModulePhysics::Start()
 	ground1.x = 28.0f; // [m]
 	ground1.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
 	ground1.w = 10.0f; // [m]
-	ground1.h = 6.0f; // [m]
+	ground1.h = 9.0f; // [m]
 
 	grounds.emplace_back(ground1);
 
@@ -41,7 +41,7 @@ bool ModulePhysics::Start()
 	ground2.x = 35.0f; // [m]
 	ground2.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
 	ground2.w = 30.0f; // [m]
-	ground2.h = 10.0f; // [m]
+	ground2.h = 12.0f; // [m]
 
 	grounds.emplace_back(ground2);
 
@@ -435,7 +435,7 @@ update_status ModulePhysics::PreUpdate()
 
 			}
 
-			if(ball.y  >= PIXEL_TO_METERS(SCREEN_HEIGHT))
+			if (ball.y >= PIXEL_TO_METERS(SCREEN_HEIGHT))
 			{
 				// TP ball to ground surface
 				ball.y -= ball.radius;
@@ -448,12 +448,14 @@ update_status ModulePhysics::PreUpdate()
 
 			}
 
+			//In case the ball gets out of the screen
+			if ((ball.x) >= PIXEL_TO_METERS(SCREEN_WIDTH)) { ball.x = PIXEL_TO_METERS(SCREEN_WIDTH) - ball.radius; }
+
 			if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
 			{
-				//In case the ball gets out of the screen
-				if ((ball.x) >= PIXEL_TO_METERS(SCREEN_WIDTH)) { ball.x = PIXEL_TO_METERS(SCREEN_WIDTH)-ball.radius; }
 
-				ball.vx = -ball.vx;
+
+				ball.vx = -ball.vx * 1.2f;
 
 				// FUYM non-elasticity
 				ball.vx *= ball.coef_friction;
@@ -470,30 +472,33 @@ update_status ModulePhysics::PreUpdate()
 				 
 				}
 
-				if (ball.x >= (ground.x + ground.w))
-				{
-					ball.x = ground.x + ground.w + ball.radius;
-					
-					if (abs(ball.vx)<=0.2f){ball.vx = 0;} //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
+				if (METERS_TO_PIXELS(ball.y) <= (METERS_TO_PIXELS(ground.y) + METERS_TO_PIXELS(ground.h)))
+				{/*
+					LOG("MOUSEY: %d", App->input->GetMouseY());
+					LOG("GROUND: %d", METERS_TO_PIXELS(ground.y));
+					LOG("BALL: %d", METERS_TO_PIXELS(ball.y));
+					LOG("Diference: %d", METERS_TO_PIXELS(ground.y) + METERS_TO_PIXELS(ball.radius));
+					LOG("Size: %d", ((METERS_TO_PIXELS(ground.y) - METERS_TO_PIXELS(ground.h)) + METERS_TO_PIXELS(ball.radius)));*/
 
-					ball.vx = -ball.vx;
-					ball.vx *= ball.coef_friction;
-					ball.vy *= ball.coef_restitution;
-				}
-
-
-				else if ((ball.x + (ball.radius + ball.radius)) <= ground.x)
-				{
-					ball.x = ground.x - ball.radius;
-					if (abs(ball.vx) <= 0.2f) { ball.vx = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
-					ball.vx = -ball.vx*1.2f;
-					ball.vx *= ball.coef_friction;
-					ball.vy *= ball.coef_restitution;
-				}
-				else
-				{
-					if (ball.y >= (ground.y - ground.h * 2))
+					if (((METERS_TO_PIXELS(ground.y) - METERS_TO_PIXELS(ground.h)) + METERS_TO_PIXELS(ball.radius + 20)) >= METERS_TO_PIXELS(ball.y))
 					{
+						if (ball.type == ObjectType::GRENADE)
+						{
+							if (((METERS_TO_PIXELS(ground.y) - METERS_TO_PIXELS(ground.h)) + METERS_TO_PIXELS(ball.radius + 500)) >= METERS_TO_PIXELS(ball.y))
+							{
+								// TP ball to ground surface
+								ball.y = ground.y - ground.h - ball.radius;
+
+								// Elastic bounce with ground
+								if (abs(ball.vy) <= 0.4f) { ball.vy = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
+								ball.vy = -ball.vy;
+
+								// FUYM non-elasticity
+								ball.vx *= ball.coef_friction;
+								ball.vy *= ball.coef_restitution;
+							}
+							break;
+						}
 						// TP ball to ground surface
 						ball.y = ground.y - ground.h - ball.radius;
 
@@ -502,6 +507,27 @@ update_status ModulePhysics::PreUpdate()
 						ball.vy = -ball.vy;
 
 						// FUYM non-elasticity
+						ball.vx *= ball.coef_friction;
+						ball.vy *= ball.coef_restitution;
+					}
+					else if ((ball.x + ball.radius * 2) <= (ground.x + ground.w / 2))
+					{
+						if ((ball.x + ball.radius) >= ground.x)
+						{
+							ball.x = ground.x - ball.radius;
+							if (abs(ball.vx) <= 0.2f) { ball.vx = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
+							ball.vx = -ball.vx * 1.2f;
+							ball.vx *= ball.coef_friction;
+							ball.vy *= ball.coef_restitution;
+						}
+					}
+					else if (METERS_TO_PIXELS(ball.x) <= (METERS_TO_PIXELS(ground.x) + METERS_TO_PIXELS(ground.w) + METERS_TO_PIXELS(ball.radius)))
+					{
+						ball.x = ground.x + ground.w + ball.radius;
+
+						if (abs(ball.vx) <= 0.2f) { ball.vx = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
+
+						ball.vx = -ball.vx;
 						ball.vx *= ball.coef_friction;
 						ball.vy *= ball.coef_restitution;
 					}
