@@ -197,11 +197,13 @@ void ModuleSceneIntro::Debug() {
 		LOG("fps change enables");
 	}
 
-	if (!App->physics->options[7]) { App->renderer->BlitText(26, 90, App->renderer->blueFont, "8: CHANGE FPS VALUE USING KEYS OFF"); }
+	if (!App->physics->options[7]) { if (App->physics->debug) { App->renderer->BlitText(26, 90, App->renderer->blueFont, "8: CHANGE FPS VALUE USING KEYS OFF"); } }
 
 	if (App->physics->options[7])
 	{
+		if (App->physics->debug)
 		App->renderer->BlitText(26, 90, App->renderer->blueFont, "8: CHANGE FPS VALUE USING KEYS ON");
+
 		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && frames < 120)
 		{
 			frames += 5;

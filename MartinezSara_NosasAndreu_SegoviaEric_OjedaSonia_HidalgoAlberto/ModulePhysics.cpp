@@ -154,6 +154,7 @@ update_status ModulePhysics::PreUpdate()
 			if (!ball.physics_enabled)
 			{
 				continue;
+				
 			}
 
 			// Step #0: Clear old values
@@ -167,7 +168,7 @@ update_status ModulePhysics::PreUpdate()
 			// ----------------------------------------------------------------------------------------
 
 			// Gravity force
-			if (options[1] = true)
+			if (options[1] == true || !(ball.type==ObjectType::MISSILE))
 			{
 				float fgx = ball.mass * 0.0f;
 				float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
@@ -207,7 +208,7 @@ update_status ModulePhysics::PreUpdate()
 			// Hydrodynamic forces (only when in water)
 			if (is_colliding_with_water(ball, water))
 			{
-				if (ball.type == ObjectType::GUN || ball.type == ObjectType::GRENADE) {
+				if (ball.type == ObjectType::GUN || ball.type == ObjectType::GRENADE || ball.type == ObjectType::MISSILE) {
 
 					ball.type = ObjectType::OTHER;
 
