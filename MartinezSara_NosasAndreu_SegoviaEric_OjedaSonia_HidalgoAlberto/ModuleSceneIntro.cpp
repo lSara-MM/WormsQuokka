@@ -222,39 +222,47 @@ void ModuleSceneIntro::Debug() {
 	App->renderer->BlitText(26, 120, App->renderer->blueFont, "FPS:");
 	string f_num = std::to_string(frames);
 	const char* f = f_num.c_str();
+
 	App->renderer->BlitText(60, 120, App->renderer->blueFont, f);
 
 
-	if (App->player->playerTurn)	// Blue turn
+	App->renderer->BlitText(26, 130, App->renderer->blueFont, "PosX: ");
+
+	App->renderer->BlitText(26, 140, App->renderer->blueFont, "PosY: ");
+
+	App->renderer->BlitText(26, 150, App->renderer->blueFont, "VelX: ");
+	
+	App->renderer->BlitText(26, 160, App->renderer->blueFont, "VelY: ");
+
+	App->renderer->BlitText(26, 170, App->renderer->blueFont, "AccX: ");
+
+	App->renderer->BlitText(26, 180, App->renderer->blueFont, "AccY: ");
+
+
+	if (!App->player->playerTurn)	
 	{
 		if (App->player->listBlueP.at(App->player->currentBlue)->playerWeapon != 0) {
 
-			App->renderer->BlitText(26, 130, App->renderer->blueFont, "PosX:");
 			string posx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).x);
 			const char* x = posx.c_str();
 			App->renderer->BlitText(60, 130, App->renderer->blueFont, x);
 
-			App->renderer->BlitText(26, 140, App->renderer->blueFont, "PosY:");
 			string posy = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).y);
 			const char* y = posy.c_str();
 			App->renderer->BlitText(60, 140, App->renderer->blueFont, y);
 
-			App->renderer->BlitText(26, 150, App->renderer->blueFont, "VelX:");
 			string velx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).vx);
 			const char* vx = velx.c_str();
 			App->renderer->BlitText(60, 150, App->renderer->blueFont, vx);
 
-			App->renderer->BlitText(26, 160, App->renderer->blueFont, "VelY:");
 			string vely = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).vy);
 			const char* vy = vely.c_str();
 			App->renderer->BlitText(60, 160, App->renderer->blueFont, vy);
 
-			App->renderer->BlitText(26, 170, App->renderer->blueFont, "AccX:");
 			string accx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).ax);
 			const char* ax = accx.c_str();
 			App->renderer->BlitText(60, 170, App->renderer->blueFont, ax);
 
-			App->renderer->BlitText(26, 180, App->renderer->blueFont, "AccY:");
 			string accy = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).ay);
 			const char* ay = accy.c_str();
 			App->renderer->BlitText(60, 180, App->renderer->blueFont, ay);
@@ -262,36 +270,31 @@ void ModuleSceneIntro::Debug() {
 		}
 
 	}
-	else if (!App->player->playerTurn) // Red turn
+
+	else if (App->player->playerTurn) 
 	{
 		if (App->player->listRedP.at(App->player->currentRed)->playerWeapon != 0) {
 
-			App->renderer->BlitText(26, 130, App->renderer->blueFont, "PosX:");
 			string posx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).x);
 			const char* x = posx.c_str();
 			App->renderer->BlitText(60, 130, App->renderer->blueFont, x);
 
-			App->renderer->BlitText(26, 140, App->renderer->blueFont, "PosY:");
 			string posy = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).y);
 			const char* y = posy.c_str();
 			App->renderer->BlitText(60, 140, App->renderer->blueFont, y);
 
-			App->renderer->BlitText(26, 150, App->renderer->blueFont, "VelX:");
 			string velx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).vx);
 			const char* vx = velx.c_str();
 			App->renderer->BlitText(60, 150, App->renderer->blueFont, vx);
 
-			App->renderer->BlitText(26, 160, App->renderer->blueFont, "VelY:");
 			string vely = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).vy);
 			const char* vy = vely.c_str();
 			App->renderer->BlitText(60, 160, App->renderer->blueFont, vy);
 
-			App->renderer->BlitText(26, 170, App->renderer->blueFont, "AccX:");
 			string accx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).ax);
 			const char* ax = accx.c_str();
 			App->renderer->BlitText(60, 170, App->renderer->blueFont, ax);
 
-			App->renderer->BlitText(26, 180, App->renderer->blueFont, "AccY:");
 			string accy = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).ay);
 			const char* ay = accy.c_str();
 			App->renderer->BlitText(60, 180, App->renderer->blueFont, ay);
