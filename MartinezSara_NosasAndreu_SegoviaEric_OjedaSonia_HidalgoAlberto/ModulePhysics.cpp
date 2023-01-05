@@ -549,6 +549,7 @@ update_status ModulePhysics::PostUpdate()
 		debug = !debug;
 	}
 
+	
 
 	// Colors
 	int color_r, color_g, color_b;
@@ -795,21 +796,20 @@ void compute_hydrodynamic_buoyancy(float& fx, float& fy, const PhysBall& ball, c
 {
 	// Compute submerged area (assume ball is a rectangle, for simplicity)
 	float water_top_level = water.y - water.h; // Water top level y
-	float h = 2.0f * ball.radius; // Ball "hitbox" height
-	float sub = (water_top_level - ball.y - ball.radius); //Radio sumergido
-	float surf = h*h*acosf((h-sub)/h)-(h-sub)*sqrtf(2*h*sub-sub*sub); // Submerged surface
+	float sub = (ball.y + abs(ball.radius))-water_top_level; //Altura de la pelota sumergida en el agua
+	float surf = 4.0F; // Submerged surface
+
+	/*h*h*acosf((h-sub)/h)-(h-sub)*sqrtf(2*h*sub-sub*sub)*/ //Formula area
 	
-	if ((ball.y) > water_top_level && (ball.y + ball.radius) < water_top_level) { surf = ((ball.radius) * (ball.radius) * PI) - (ball.radius - (water_top_level - ball.y)) * (ball.radius - (water_top_level - ball.y) * PI / 2); } //Half of more the sphere submerged [Total area-non sumerged area]
+	if (ball.y - abs(ball.radius) < water_top_level) { surf = abs(ball.radius) * abs(ball.radius) * acosf( ( abs(ball.radius) - sub ) / abs(ball.radius) ) - (abs(ball.radius) - sub) * sqrtf(2 * abs(ball.radius) * sub - (sub * sub)); } //Not all submerged
 	
-	
-	
-	if ((ball.y + ball.radius) <= water_top_level) surf = ((ball.radius) * (ball.radius) * PI); // If ball completely submerged, use just all ball area
+	if ((ball.y - abs(ball.radius)) >= water_top_level) surf = (abs(ball.radius) * abs(ball.radius) * PI); // If ball completely submerged, use just all ball area
 	//surf *= 0.4; // FUYM to adjust values (should compute the area of circle segment correctly instead; I'm too lazy for that)
 
 	// Compute Buoyancy force
-	double fbuoyancy_modulus = water.density * 10.0 * surf * 0.5; // Buoyancy force (modulus) [Density*gravity*volume(surface realmente*FUYM coeficient)]
+	double fbuoyancy_modulus = water.density * 10.0 * surf ; // Buoyancy force (modulus) [Density*gravity*volume(surface realmente*FUYM coeficient)]
 	fx = 0.0; // Buoyancy is parallel to pressure gradient
-	fy = fbuoyancy_modulus; // Buoyancy is parallel to pressure gradient
+	fy = -fbuoyancy_modulus; // Buoyancy is parallel to pressure gradient
 }
 
 

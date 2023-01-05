@@ -245,7 +245,7 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, float
 
 	if (type_ == ObjectType::GUN) 
 	{ 
-		new_gun->range = 2; 
+		new_gun->range = 3; 
 		vx = 30.0f * dirX;		vy = -1 * dirY;		mass = 10.0f;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 10.0f;// no acaba d'anar bé
 	}
@@ -483,7 +483,7 @@ int ModulePlayer::shoot(Worm* player)
 	switch (player->weapon)
 	{
 	case ObjectType::GUN:
-		a = METERS_TO_PIXELS(2.0f);
+		a = METERS_TO_PIXELS(3.0f);
 		break;
 	case ObjectType::GRENADE:
 		a = METERS_TO_PIXELS(20.0f);
