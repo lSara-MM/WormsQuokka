@@ -255,6 +255,12 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, float
 		vx = 10.0f * dirX;		vy = -5 * dirY;		mass = 50.0f;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 50.0f;
 	}
+	if (type_ == ObjectType::MISSILE)
+	{
+		new_gun->range = 5;
+		vx = 10.0f * dirX;		vy = -5 * dirY;		mass = 30.0f;
+		//vx = force * dirX;		vy = -force * dirY;		mass = 50.0f;
+	}
 
 	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 0.3, 0.1f, 0.2f, 0.2f);
 
@@ -284,7 +290,10 @@ void ModulePlayer::selectWeapon(Worm* player)
 		player->weapon = ObjectType::GRENADE;
 		break;
 	case ObjectType::GRENADE:
-		player->weapon = ObjectType::GUN;	// in case more weapons, put next weapon
+		player->weapon = ObjectType::MISSILE;	// in case more weapons, put next weapon
+		break;
+	case ObjectType::MISSILE:
+		player->weapon = ObjectType::GUN;	
 		break;
 	default:
 		break;
@@ -453,7 +462,29 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	// App->renderer->DrawLine(player->posX, player->posY, player->posX + cos(3.14 * player->angle / 180) * 50 * player->direction, player->posY - sin(3.14 * player->angle / 180) * 50, 0, 255, 100);
 	// en vdd este no es acurate perque no se perque no dispara recte cap amunt totalment :/
 	App->renderer->DrawLine(player->posX, player->posY, player->posX + 50 * player->direction, player->posY - player->angle, 0, 255, 100);
-
+	const char* weaponName= "NONE";
+	int margin = 1;
+	switch (player->weapon)
+	{
+	case ObjectType::GUN:
+		weaponName = "GUN";
+		margin = 2;
+		break;
+	case ObjectType::GRENADE:
+		weaponName = "GRENADE";
+		margin = 1;
+		break;
+	case ObjectType::MISSILE:
+		weaponName = "MISSILE";
+		margin = 1;
+		break;
+	case ObjectType::OTHER:
+		break;
+	default:
+		weaponName = "EROR 404";
+		break;
+	}
+	App->renderer->BlitText(player->posX- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)/ margin, player->posY- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)-10, App->renderer->blueFont, weaponName);
 	//fer dibuix amb efecte força no acaba d'anar
 	/*if (player->forceApplied < 5) {
 
@@ -488,6 +519,9 @@ int ModulePlayer::shoot(Worm* player)
 	case ObjectType::GRENADE:
 		a = METERS_TO_PIXELS(20.0f);
 		break;
+	case ObjectType::MISSILE:
+		a = METERS_TO_PIXELS(5.0f);
+		break;
 	default:
 		break;
 	}
@@ -513,6 +547,11 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 	if (type_W == ObjectType::GRENADE) {
 
 	    rest = 50;
+	}
+
+	if (type_W == ObjectType::GRENADE) {
+
+		rest = 35;
 	}
 
 	int t = listRedP.size(); 

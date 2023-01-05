@@ -27,6 +27,7 @@ enum class ObjectType
 	BLUE,
 	GUN,
 	GRENADE,
+	MISSILE,
 	OTHER
 };
 
