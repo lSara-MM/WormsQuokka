@@ -6,6 +6,7 @@
 
 #define PI 3.14159265f
 
+
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	debug = true;
@@ -795,11 +796,12 @@ void compute_hydrodynamic_buoyancy(float& fx, float& fy, const PhysBall& ball, c
 	// Compute submerged area (assume ball is a rectangle, for simplicity)
 	float water_top_level = water.y - water.h; // Water top level y
 	float h = 2.0f * ball.radius; // Ball "hitbox" height
-	float surf = h * (water_top_level - ball.y-ball.radius); // Submerged surface
+	float sub = (water_top_level - ball.y - ball.radius); //Radio sumergido
+	float surf = h*h*acosf((h-sub)/h)-(h-sub)*sqrtf(2*h*sub-sub*sub); // Submerged surface
 	
 	if ((ball.y) > water_top_level && (ball.y + ball.radius) < water_top_level) { surf = ((ball.radius) * (ball.radius) * PI) - (ball.radius - (water_top_level - ball.y)) * (ball.radius - (water_top_level - ball.y) * PI / 2); } //Half of more the sphere submerged [Total area-non sumerged area]
 	
-	if ((ball.y) <= water_top_level) { surf = ((ball.y - water_top_level + ball.radius) * (ball.y - water_top_level + ball.radius) * PI/2); } //Half of less the sphere submerged
+	
 	
 	if ((ball.y + ball.radius) <= water_top_level) surf = ((ball.radius) * (ball.radius) * PI); // If ball completely submerged, use just all ball area
 	//surf *= 0.4; // FUYM to adjust values (should compute the area of circle segment correctly instead; I'm too lazy for that)
