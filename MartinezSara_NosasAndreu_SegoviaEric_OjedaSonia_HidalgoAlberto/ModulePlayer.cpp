@@ -540,7 +540,7 @@ int ModulePlayer::shoot(Worm* player)
 	switch (player->weapon)
 	{
 	case ObjectType::GUN:
-		a = METERS_TO_PIXELS(2.0f);
+		a = METERS_TO_PIXELS(0.5f);
 		break;
 	case ObjectType::GRENADE:
 		a = METERS_TO_PIXELS(6.0f);
@@ -552,13 +552,29 @@ int ModulePlayer::shoot(Worm* player)
 		break;
 	}
 
-	float ang = player->angle * RADTODEG;
+	float ang = player->angle * DEGTORAD;
 	float co = cos(ang);
 	float si = sin(ang);
 
-	(player->direction == 1) ? player->playerWeapon = CreateWeapon(player->posX + a*co, player->posY+a*si, 1,player->angle, player->forceApplied, player->weapon)
-		: player->playerWeapon = CreateWeapon(player->posX - a * co, player->posY+a * si, -1,player->angle, player->forceApplied, player->weapon);
+	//LOG("Player angle: %f", player->angle);
+	//LOG("Rad bullet: %d", a);
+	//LOG("Angle: %f", ang);
+	//LOG("Cos: %f", co);
+	//LOG("Sin: %f", si);
 
+	if (player->angle == 180 || player->angle == 0) {
+		(player->direction == 1) ? player->playerWeapon = CreateWeapon((player->posX + a) + METERS_TO_PIXELS(co), (player->posY) - METERS_TO_PIXELS(si), 1, player->angle, player->forceApplied, player->weapon)
+			: player->playerWeapon = CreateWeapon((player->posX - a) - METERS_TO_PIXELS(co), (player->posY - a) - METERS_TO_PIXELS(si), -1, player->angle, player->forceApplied, player->weapon);
+	}
+	else if (player->angle < 180 && player->angle > 0) {
+		(player->direction == 1) ? player->playerWeapon = CreateWeapon((player->posX + a) + METERS_TO_PIXELS(co), (player->posY - a) - METERS_TO_PIXELS(si), 1, player->angle, player->forceApplied, player->weapon)
+			: player->playerWeapon = CreateWeapon((player->posX - a) - METERS_TO_PIXELS(co), (player->posY - a) - METERS_TO_PIXELS(si), -1, player->angle, player->forceApplied, player->weapon);
+	}
+	else {
+		(player->direction == 1) ? player->playerWeapon = CreateWeapon((player->posX + a) + METERS_TO_PIXELS(co), (player->posY + a) - METERS_TO_PIXELS(si), 1, player->angle, player->forceApplied, player->weapon)
+			: player->playerWeapon = CreateWeapon((player->posX - a) - METERS_TO_PIXELS(co), (player->posY + a) - METERS_TO_PIXELS(si), -1, player->angle, player->forceApplied, player->weapon);
+	}
+	
 	// hacer que espere a que colisione el proyectil 
 	playerTurn = !playerTurn;
 
