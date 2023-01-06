@@ -4,7 +4,7 @@
 #include "math.h"
 #include <cmath>
 
-#define PI 3.14159265f
+#define  PI 3.14159265f
 
 
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -132,14 +132,14 @@ update_status ModulePhysics::PreUpdate()
 	{
 		float posX = App->input->GetMouseX();
 		float posY = App->input->GetMouseY();
-		App->player->CreateWeapon(posX, posY, 1, 1,1, ObjectType::GUN);//change force
+		App->player->CreateWeapon(posX, posY, 1,1,1, ObjectType::GUN);//change force
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 	{
 		float posX = App->input->GetMouseX();
 		float posY = App->input->GetMouseY();
-		App->player->CreateWeapon(posX, posY, 1, 1,1, ObjectType::GRENADE);
+		App->player->CreateWeapon(posX, posY, 1,1, 1, ObjectType::GRENADE);
 	}
 
 	// Process all balls in the scenario
@@ -737,6 +737,9 @@ update_status ModulePhysics::PostUpdate()
 				break;
 			case ObjectType::GRENADE:
 				color_r = 0; color_g = 255; color_b = 0;
+				break;
+			case ObjectType::MISSILE:
+				color_r = 0; color_g = 255; color_b = 255;
 				break;
 			case ObjectType::OTHER:
 				color_r = 255; color_g = 255; color_b = 255;

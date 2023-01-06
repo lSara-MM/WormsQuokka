@@ -7,6 +7,9 @@
 using namespace std;
 #include <sstream>
 
+#define DEG_TO_RAD 0.0174532925
+
+
 
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -236,29 +239,37 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, 
 	return new_worm->body;
 }
 
-int ModulePlayer::CreateWeapon(int posX_, int posY_, int dirX, float dirY, float force, ObjectType type_, bool render)
+int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir,float angle, float force, ObjectType type_, bool render)
 {
 	Weapon* new_gun = new Weapon(posX_, posY_, type_, render);
 	//new_gun->id = setID++;
 	
-	int vx, vy, mass;
+	float vx, vy, mass;
+
+	float dirX = dir* cos(angle * DEG_TO_RAD);
+	float dirY = -sin(angle * DEG_TO_RAD);
+
+	//force actua como un impulso ya que es una fuerza instantnea
 
 	if (type_ == ObjectType::GUN) 
 	{ 
 		new_gun->range = 3; 
-		vx = 30.0f * dirX;		vy = -1 * dirY;		mass = 10.0f;
+		mass = 10.0f;
+		vx = force/mass * dirX;		vy = force / mass * dirY;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 10.0f;// no acaba d'anar bé
 	}
 	if (type_ == ObjectType::GRENADE) 
 	{ 
-		new_gun->range = 20; 
-		vx = 10.0f * dirX;		vy = -5 * dirY;		mass = 50.0f;
+		new_gun->range = 10;
+		mass = 50.0f;
+		vx = force / mass * dirX;		vy = force / mass * dirY;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 50.0f;
 	}
 	if (type_ == ObjectType::MISSILE)
 	{
 		new_gun->range = 5;
-		vx = 10.0f * dirX;		vy = -5 * dirY;		mass = 30.0f;
+		mass = 30.0f;
+		vx = force / mass * dirX;		vy = force / mass * dirY;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 50.0f;
 	}
 
@@ -423,8 +434,8 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	if (player->angle < 90)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
-		{
-			player->angle += 15;
+		{			player->angle += 15;
+
 		}
 	}
 
@@ -439,29 +450,44 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN) 
 	{ selectWeapon(player); }
 	
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT && player->forceApplied <= 500.0f)
 	{
-		player->forceApplied += 0.5f;
+		player->forceApplied += 10.0f;
+
+		//PARA COMPROBAR LA FORECEAPLIED
+
+		//// strings to const char*
+		//string s_hp = std::to_string(player->forceApplied);
+		//const char* fuersa = s_hp.c_str();
+
+		//App->renderer->BlitText(100, 100, App->renderer->greenFont, fuersa);
+
+		//string max = std::to_string(20.0f);
+		//const char* maximo = max.c_str();
+		//App->renderer->BlitText(100, 120, App->renderer->greenFont, maximo);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 
 	{ 
-		if (player->forceApplied > 30.0f) {//provisional threshold
-
-			player->forceApplied = 30.0f;
-			
-		}
 
 		shoot(player); 
 
 		LOG("force %f", player->forceApplied);
+
+		
 
 		player->forceApplied = 0;
 	}
 
 	// App->renderer->DrawLine(player->posX, player->posY, player->posX + cos(3.14 * player->angle / 180) * 50 * player->direction, player->posY - sin(3.14 * player->angle / 180) * 50, 0, 255, 100);
 	// en vdd este no es acurate perque no se perque no dispara recte cap amunt totalment :/
-	App->renderer->DrawLine(player->posX, player->posY, player->posX + 50 * player->direction, player->posY - player->angle, 0, 255, 100);
+
+	float cosinus = cos(player->angle* DEG_TO_RAD);
+	float Sinus = sin(player->angle* DEG_TO_RAD);
+
+	App->renderer->DrawLine(player->posX, player->posY, player->posX + (player->forceApplied/3+40) * cosinus*player->direction, player->posY - (player->forceApplied/3+40) *Sinus, 100, 255, 100);
+	
+	//Actual weapon
 	const char* weaponName= "NONE";
 	int margin = 1;
 	switch (player->weapon)
@@ -514,20 +540,24 @@ int ModulePlayer::shoot(Worm* player)
 	switch (player->weapon)
 	{
 	case ObjectType::GUN:
-		a = METERS_TO_PIXELS(3.0f);
+		a = METERS_TO_PIXELS(2.0f);
 		break;
 	case ObjectType::GRENADE:
-		a = METERS_TO_PIXELS(20.0f);
+		a = METERS_TO_PIXELS(6.0f);
 		break;
 	case ObjectType::MISSILE:
-		a = METERS_TO_PIXELS(5.0f);
+		a = METERS_TO_PIXELS(3.0f);
 		break;
 	default:
 		break;
 	}
 
-	(player->direction == 1) ? player->playerWeapon = CreateWeapon(player->posX + a, player->posY, 1, player->angle, player->forceApplied, player->weapon)
-		: player->playerWeapon = CreateWeapon(player->posX - a, player->posY, -1, player->angle, player->forceApplied, player->weapon);
+	float ang = player->angle * RADTODEG;
+	float co = cos(ang);
+	float si = sin(ang);
+
+	(player->direction == 1) ? player->playerWeapon = CreateWeapon(player->posX + a*co, player->posY+a*si, 1,player->angle, player->forceApplied, player->weapon)
+		: player->playerWeapon = CreateWeapon(player->posX - a * co, player->posY+a * si, -1,player->angle, player->forceApplied, player->weapon);
 
 	// hacer que espere a que colisione el proyectil 
 	playerTurn = !playerTurn;
