@@ -48,9 +48,9 @@ bool ModulePhysics::Start()
 
 	// Create Water
 	water = Water();
-	water.x = ground.x + ground.w; // Start where ground ends [m]
+	water.x = 0; // All screen in case the water level increase [m]
 	water.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
-	water.w = 30.0f; // [m]
+	water.w = PIXEL_TO_METERS(SCREEN_WIDTH); // [m]
 	water.h = 5.0f; // [m]
 	water.density = 50.0f; // [kg/m^3]
 	water.vx = -1.0f; // [m/s]
@@ -91,7 +91,7 @@ bool ModulePhysics::Start()
 	options[4] = true; //Aero Drag
 	options[5] = false; //Allow change wind with keys
 	options[6] = false; //Allow change current with keys
-	options[7] = false;
+	options[7] = false; // Change FPS using keys
 	
 	method = integrationMethods::VERLET;
 
@@ -100,6 +100,28 @@ bool ModulePhysics::Start()
 
 update_status ModulePhysics::PreUpdate()
 {
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
+		//Reset water
+		water.x = 0; // [m]
+		water.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
+		water.w = PIXEL_TO_METERS(SCREEN_WIDTH); // [m]
+		water.h = 5.0f; // [m]
+		water.density = 50.0f; // [kg/m^3]
+		water.vx = -1.0f; // [m/s]
+		water.vy = 0.0f; // [m/s]
+
+		//Reset wind
+		atmosphere.windx = 5.0f; // [m/s]
+		atmosphere.windy = 0.0f; // [m/s]
+		atmosphere.density = 1.0f; // [kg/m^3]
+
+	}
+
+
+
+
+
 	if(options[5])
 	{ 
 		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) { atmosphere.windx += 0.1F; }
@@ -114,8 +136,8 @@ update_status ModulePhysics::PreUpdate()
 	{
 		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) { water.vx += 0.1F; }
 		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) { water.vx -= 0.1F; }
-		//if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) { water.vy += 0.1F; }
-		//if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) { water.vy -= 0.1F; }
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) { water.h += 0.1F; }
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) { water.h -= 0.1F; }
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
