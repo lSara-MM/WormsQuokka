@@ -259,124 +259,136 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::GUN;
 								typeP =ObjectType::RED;
 								balls.at(j).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + j);
 							}
 
-							if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::RED) {
+							else if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::RED) {
 
 								bodyHP = i;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::RED;
 								balls.at(j).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + j);
 							}
 
-							if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::RED) {
+							else if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::RED) {
 
 								bodyHP = j;
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::RED;
 								balls.at(i).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + i);
 							}
 
-							if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::RED) {
+							else if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::RED) {
 
 								bodyHP = j;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::RED;
 								balls.at(i).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + i);
 							}
 
 
-							if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::BLUE) {
+							else if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::BLUE) {
 								LOG("bodyHP %d", bodyHP); 
 								bodyHP = j;
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::BLUE;
 								balls.at(i).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + i);
 							}
 
-							if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::BLUE) {
+							else if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::BLUE) {
 
 								bodyHP = j;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::BLUE;
 								balls.at(i).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + i);
 							}
 
-							if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::BLUE) {
+							else if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::BLUE) {
 								LOG("bodyHP %d", bodyHP);
 								bodyHP = i;
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::BLUE;
 								balls.at(j).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + j);
 							}
 
-							if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::BLUE) {
+							else if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::BLUE) {
 
 								bodyHP = i;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::BLUE;
 								balls.at(j).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + j);
 							}
 						}
-				
 
-						// Sacamos el vector desde el centro de i hacia j
-						float preXj = balls.at(j).x - balls.at(i).x;
-						float preYj = balls.at(j).y - balls.at(i).y;
+						t = balls.size(); 
 
-						//Modulo del vector
-						float module = modulus(preXj, preYj);
+						if ((i < t) && (j < t)) {
 
-						//Hacemos el vector unitario
-						preXj /= module;
-						preYj /= module;
+							// Sacamos el vector desde el centro de i hacia j
+							float preXj = balls.at(j).x - balls.at(i).x;
+							float preYj = balls.at(j).y - balls.at(i).y;
 
-						float dist = balls.at(i).radius + balls.at(j).radius;
+							//Modulo del vector
+							float module = modulus(preXj, preYj);
 
-						balls.at(j).x = balls.at(i).x + preXj * dist;
-						balls.at(j).y = balls.at(i).y + preYj * dist;
+							//Hacemos el vector unitario
+							preXj /= module;
+							preYj /= module;
 
-						//Hacemos lo mismo de j a i
-						float preXi = balls.at(i).x - balls.at(j).x;
-						float preYi = balls.at(i).y - balls.at(j).y;
+							float dist = balls.at(i).radius + balls.at(j).radius;
 
-						//Modulo del vector
-						module = modulus(preXi, preYi);
+							balls.at(j).x = balls.at(i).x + preXj * dist;
+							balls.at(j).y = balls.at(i).y + preYj * dist;
 
-						//Hacemos el vector unitario
-						preXi /= module;
-						preYi /= module;
+							//Hacemos lo mismo de j a i
+							float preXi = balls.at(i).x - balls.at(j).x;
+							float preYi = balls.at(i).y - balls.at(j).y;
 
-						balls.at(i).x = balls.at(j).x + preXi * dist;
-						balls.at(i).y = balls.at(j).y + preYi * dist;
+							//Modulo del vector
+							module = modulus(preXi, preYi);
 
-						/*if (App->input->GetKey(SDL_SCANCODE_5) == KEY_REPEAT)
-						{
-							balls.at(i).vx = -balls.at(j).vx;
-							balls.at(i).vy = -balls.at(j).vy;
-							balls.at(j).vy = -balls.at(i).vy;
-							balls.at(j).vx = -balls.at(i).vx;
-						}*/
+							//Hacemos el vector unitario
+							preXi /= module;
+							preYi /= module;
 
+							balls.at(i).x = balls.at(j).x + preXi * dist;
+							balls.at(i).y = balls.at(j).y + preYi * dist;
 
-						//if (App->input->GetKey(SDL_SCANCODE_P) == KEY_IDLE)
-						{
-							//Velocidad en X
-							float auxX = 0;
-							if (abs(balls.at(j).vx) <= 0.2f) { balls.at(j).vx = 0; }
-							if (abs(balls.at(i).vx) <= 0.2f) { balls.at(i).vx = 0; }
-							auxX = balls.at(j).vx;
-							balls.at(j).vx = balls.at(i).vx;
-							balls.at(i).vx = auxX;
+							/*if (App->input->GetKey(SDL_SCANCODE_5) == KEY_REPEAT)
+							{
+								balls.at(i).vx = -balls.at(j).vx;
+								balls.at(i).vy = -balls.at(j).vy;
+								balls.at(j).vy = -balls.at(i).vy;
+								balls.at(j).vx = -balls.at(i).vx;
+							}*/
 
 
-							//Velocidad en Y
-							if (abs(balls.at(j).vy) <= 0.2f) { balls.at(j).vy = 0; }
-							if (abs(balls.at(i).vy) <= 0.2f) { balls.at(i).vy = 0; }
-							float auxY = 0;
-							auxY = balls.at(j).vy;
-							balls.at(j).vy = balls.at(i).vy;
-							balls.at(i).vy = auxY;
+							//if (App->input->GetKey(SDL_SCANCODE_P) == KEY_IDLE)
+							{
+								//Velocidad en X
+								float auxX = 0;
+								if (abs(balls.at(j).vx) <= 0.2f) { balls.at(j).vx = 0; }
+								if (abs(balls.at(i).vx) <= 0.2f) { balls.at(i).vx = 0; }
+								auxX = balls.at(j).vx;
+								balls.at(j).vx = balls.at(i).vx;
+								balls.at(i).vx = auxX;
+
+
+								//Velocidad en Y
+								if (abs(balls.at(j).vy) <= 0.2f) { balls.at(j).vy = 0; }
+								if (abs(balls.at(i).vy) <= 0.2f) { balls.at(i).vy = 0; }
+								float auxY = 0;
+								auxY = balls.at(j).vy;
+								balls.at(j).vy = balls.at(i).vy;
+								balls.at(i).vy = auxY;
+							}
 						}
 					}
 				}

@@ -243,7 +243,10 @@ void ModuleSceneIntro::Debug() {
 
 	if (!App->player->playerTurn)	
 	{
-		if (App->player->listBlueP.at(App->player->currentBlue)->playerWeapon != 0) {
+
+		int t = App->physics->balls.size();
+
+		if (App->player->listBlueP.at(App->player->currentBlue)->playerWeapon < t) {
 
 			string posx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).x);
 			const char* x = posx.c_str();
@@ -275,7 +278,10 @@ void ModuleSceneIntro::Debug() {
 
 	else if (App->player->playerTurn) 
 	{
-		if (App->player->listRedP.at(App->player->currentRed)->playerWeapon != 0) {
+
+		int t = App->physics->balls.size(); 
+
+		if (App->player->listRedP.at(App->player->currentRed)->playerWeapon < t) {
 
 			string posx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).x);
 			const char* x = posx.c_str();
@@ -302,5 +308,6 @@ void ModuleSceneIntro::Debug() {
 			App->renderer->BlitText(60, 180, App->renderer->blueFont, ay);
 
 		}
+
 	}
 }
