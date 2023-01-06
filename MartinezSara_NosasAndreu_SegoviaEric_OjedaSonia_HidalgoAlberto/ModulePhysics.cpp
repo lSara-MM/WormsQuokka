@@ -168,10 +168,16 @@ update_status ModulePhysics::PreUpdate()
 			// ----------------------------------------------------------------------------------------
 
 			// Gravity force
-			if (options[1] == true || !(ball.type==ObjectType::MISSILE))
+			if (options[1] == true)
 			{
 				float fgx = ball.mass * 0.0f;
 				float fgy = ball.mass * 10.0f; // Let's assume gravity is constant and downwards
+
+				if (ball.type==ObjectType::MISSILE)
+				{
+					fgy = 0.0f;
+				}
+
 
 				ball.fx += fgx; ball.fy += fgy; // Add this force to ball's total force
 			}
