@@ -289,6 +289,24 @@ update_status ModulePhysics::PreUpdate()
 								balls.erase(balls.begin() + i);
 							}
 
+							else if (balls.at(i).type == ObjectType::MISSILE && balls.at(j).type == ObjectType::RED) {
+
+								bodyHP = j;
+								typeW = ObjectType::MISSILE;
+								typeP = ObjectType::RED;
+								balls.at(i).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + i);
+							}
+
+							else if (balls.at(j).type == ObjectType::MISSILE && balls.at(i).type == ObjectType::RED) {
+
+								bodyHP = i;
+								typeW = ObjectType::MISSILE;
+								typeP = ObjectType::RED;
+								balls.at(j).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + j);
+							}
+
 
 							else if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::BLUE) {
 								LOG("bodyHP %d", bodyHP); 
@@ -324,6 +342,24 @@ update_status ModulePhysics::PreUpdate()
 								typeP = ObjectType::BLUE;
 								balls.at(j).type = ObjectType::OTHER;
 								balls.erase(balls.begin() + j);
+							}
+
+							else if (balls.at(j).type == ObjectType::MISSILE && balls.at(i).type == ObjectType::BLUE) {
+
+								bodyHP = i;
+								typeW = ObjectType::MISSILE;
+								typeP = ObjectType::BLUE;
+								balls.at(j).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + j);
+							}
+
+							else if (balls.at(i).type == ObjectType::MISSILE && balls.at(j).type == ObjectType::BLUE) {
+
+								bodyHP = j;
+								typeW = ObjectType::MISSILE;
+								typeP = ObjectType::BLUE;
+								balls.at(i).type = ObjectType::OTHER;
+								balls.erase(balls.begin() + i);
 							}
 						}
 

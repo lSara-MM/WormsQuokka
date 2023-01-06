@@ -579,7 +579,7 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 	    rest = 50;
 	}
 
-	if (type_W == ObjectType::GRENADE) {
+	if (type_W == ObjectType::MISSILE) {
 
 		rest = 35;
 	}
