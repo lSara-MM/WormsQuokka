@@ -50,6 +50,8 @@ bool ModulePlayer::Start()
 	////listPlayers.emplace_back(num);
 	//listRedP.emplace_back(num);
 
+	CleanUp();
+
 	setID = 0;
 
 	// Blue team
@@ -105,14 +107,16 @@ update_status ModulePlayer::Update()
 				App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
 				App->physics->balls.at(listBlueP.at(Worm->id)->body).physics_enabled = false;
 
-				for (int i = currentBlue + 1; i < listBlueP.size(); i++)
+				int j = 0;
+				for (int i = currentBlue + 1; j < listBlueP.size(); i++)
 				{
+					if (i >= listBlueP.size()) { i = 0; }
 					if (listBlueP.at(i)->hp > 0)
 					{
 						currentBlue = i;
 						break;
 					}
-					if (i >= listBlueP.size()) { currentBlue = 0; }
+					j++;
 				}
 				dead++;
 				deadBlue = dead;
@@ -138,14 +142,16 @@ update_status ModulePlayer::Update()
 				App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
 				App->physics->balls.at(listRedP.at(Worm->id)->body).physics_enabled = false;
 
-				for (int i = currentRed + 1; i < listRedP.size(); i++)
+				int j = 0;
+				for (int i = currentRed + 1; j < listRedP.size(); i++)
 				{
+					if (i >= listRedP.size()) { i = 0; }
 					if (listRedP.at(i)->hp > 0)
 					{
 						currentRed = i;
 						break;
 					}
-					if (i >= listRedP.size()) { currentRed = 0; }
+					j++;
 				}
 				dead++;
 				deadRed = dead;
@@ -282,13 +288,16 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir,float angle, float 
 int ModulePlayer::selectPlayer(int p)
 {
 	// Depende del num de players, se puede hacer general pero nose, por ahora parece mas comodo asi
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{ return 0; }
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{ return 1; }
-	/*if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) { return 2; }
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN) { return 3; }
-	if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) { return 4; }*/
+	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		{ return 0; }
+		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		{ return 1; }
+		/*if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) { return 2; }
+		if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN) { return 3; }
+		if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) { return 4; }*/
+	}
 
 	return p;
 }
@@ -433,39 +442,26 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 	if (player->angle < 90)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
-		{			player->angle += 15;
-
-		}
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN) 
+		{ player->angle += 15; }
 	}
 
 	if (player->angle > -90)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
-		{
-			player->angle -= 15;
-		}
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) 
+		{ player->angle -= 15; }
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN) 
 	{ selectWeapon(player); }
 	
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT && player->forceApplied <= 500.0f)
-	{
-		player->forceApplied += 10.0f;
-	}
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT && player->forceApplied <= 500.0f) 
+	{ player->forceApplied += 10.0f; }
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 	
 	{ 
-		if (player->hp > 0) {
-			shoot(player);
-		}
-		 
-
+		shoot(player);
 		LOG("force %f", player->forceApplied);
-
-		
-
 		player->forceApplied = 0;
 	}
 
@@ -567,17 +563,14 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 	int rest = 0; 
 
 	if (type_W == ObjectType::GUN) {
-
 		rest = 20;
 	}
 
 	if (type_W == ObjectType::GRENADE) {
-
 	    rest = 50;
 	}
 
 	if (type_W == ObjectType::MISSILE) {
-
 		rest = 35;
 	}
 
@@ -588,12 +581,9 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 		for (int i = 0; i < t; i++) {
 
 			if (listRedP.at(i)->body == body) {
-
 				listRedP.at(i)->hp = listRedP.at(i)->hp - rest;
-
 			}
 		}
-
 	}
 
 	if (type_P == ObjectType::BLUE) {
@@ -601,10 +591,8 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 		for (int i = 0; i < t; i++) {
 
 			if (listBlueP.at(i)->body == body) {
-
 				listBlueP.at(i)->hp = listBlueP.at(i)->hp - rest; 
 			}
 		}
-
 	}
 }

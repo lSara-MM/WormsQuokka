@@ -115,10 +115,7 @@ update_status ModulePhysics::PreUpdate()
 		atmosphere.windx = 5.0f; // [m/s]
 		atmosphere.windy = 0.0f; // [m/s]
 		atmosphere.density = 1.0f; // [kg/m^3]
-
 	}
-
-
 
 
 
