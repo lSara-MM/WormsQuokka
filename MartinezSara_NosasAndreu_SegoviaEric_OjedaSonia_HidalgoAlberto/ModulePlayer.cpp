@@ -108,7 +108,7 @@ update_status ModulePlayer::Update()
 
 			if (listBlueP.at(Worm->id)->hp <= 0)
 			{
-				App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
+				App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 35, App->renderer->blueFont, "DEAD");
 				App->physics->balls.at(listBlueP.at(Worm->id)->body).physics_enabled = false;
 
 				int j = 0;
@@ -131,7 +131,8 @@ update_status ModulePlayer::Update()
 				string s_hp = std::to_string(Worm->hp);
 				const char* ch_hp = s_hp.c_str();
 
-				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 - 15, Worm->posY - 50, App->renderer->blueFont, "HP-");
+				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 + 10, Worm->posY - 50, App->renderer->blueFont, ch_hp);
 			}
 		}
 
@@ -143,7 +144,7 @@ update_status ModulePlayer::Update()
 
 			if (listRedP.at(Worm->id)->hp <= 0)
 			{
-				App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 40, App->renderer->blueFont, "DEAD");
+				App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 35, App->renderer->blueFont, "DEAD");
 				App->physics->balls.at(listRedP.at(Worm->id)->body).physics_enabled = false;
 
 				int j = 0;
@@ -165,8 +166,8 @@ update_status ModulePlayer::Update()
 				// strings to const char*
 				string s_hp = std::to_string(Worm->hp);
 				const char* ch_hp = s_hp.c_str();
-
-				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2, Worm->posY - 40, App->renderer->blueFont, ch_hp);
+				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 - 15, Worm->posY - 50, App->renderer->blueFont, "HP-");
+				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 + 10, Worm->posY - 50, App->renderer->blueFont, ch_hp);
 			}
 		}
 
@@ -477,41 +478,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		player->forceApplied = 0;
 	}
 
-	// App->renderer->DrawLine(player->posX, player->posY, player->posX + cos(3.14 * player->angle / 180) * 50 * player->direction, player->posY - sin(3.14 * player->angle / 180) * 50, 0, 255, 100);
-	// en vdd este no es acurate perque no se perque no dispara recte cap amunt totalment :/
-
-	float cosinus = cos(player->angle* DEG_TO_RAD);
-	float Sinus = sin(player->angle* DEG_TO_RAD);
-
-	App->renderer->DrawLine(player->posX, player->posY, player->posX + (player->forceApplied/3+40) * cosinus*player->direction, player->posY - (player->forceApplied/3+40) *Sinus, 100, 255, 100);
-	
-	//Actual weapon
-	const char* weaponName= "NONE";
-	int margin = 1;
-	switch (player->weapon)
-	{
-	case ObjectType::GUN:
-		weaponName = "GUN";
-		margin = 2;
-		break;
-	case ObjectType::GRENADE:
-		weaponName = "GRENADE";
-		margin = 1;
-		break;
-	case ObjectType::MISSILE:
-		weaponName = "MISSILE";
-		margin = 1;
-		break;
-	case ObjectType::OTHER:
-		break;
-	default:
-		weaponName = "EROR 404";
-		break;
-	}
-
-	//Show actual weapon
-	App->renderer->BlitText(player->posX- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)/ margin, player->posY- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)-10, App->renderer->blueFont, weaponName);
-	
+	renderStats(player);
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) 
 	{ CleanUp(); }
@@ -521,6 +488,52 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) 
 		{ (player->type == ObjectType::BLUE) ? listBlueP.at(player->id)->hp = 0 : listRedP.at(player->id)->hp = 0; }
 	}
+}
+
+void ModulePlayer::renderStats(Worm* player)
+{
+	float cosinus = cos(player->angle * DEG_TO_RAD);
+	float Sinus = sin(player->angle * DEG_TO_RAD);
+
+	App->renderer->DrawLine(player->posX, player->posY, player->posX + (player->forceApplied / 3 + 40) * cosinus * player->direction, player->posY - (player->forceApplied / 3 + 40) * Sinus, 100, 255, 100);
+
+	//Actual weapon
+	const char* weaponName = "NONE";
+	int margin = 1;
+	int ammo;
+
+	switch (player->weapon)
+	{
+	case ObjectType::GUN:
+		weaponName = "GUN";
+		margin = 2;
+		ammo = 99; //(random num per si peta)
+		break;
+	case ObjectType::GRENADE:
+		weaponName = "GRENADE";
+		margin = 1;
+		ammo = player->gAmmo;
+		break;
+	case ObjectType::MISSILE:
+		weaponName = "MISSILE";
+		margin = 1;
+		ammo = player->mAmmo;
+		break;
+	case ObjectType::OTHER:
+		break;
+	default:
+		weaponName = "EROR 404";
+		break;
+	}
+
+	//Show actual weapon
+	App->renderer->BlitText(player->posX - METERS_TO_PIXELS(App->physics->balls.at(player->body).radius) / margin, player->posY - METERS_TO_PIXELS(App->physics->balls.at(player->body).radius) - 15, App->renderer->blueFont, weaponName);
+
+	// strings to const char*
+	string s_ammo = std::to_string(ammo);
+	const char* ch_ammo = s_ammo.c_str();
+	App->renderer->BlitText(player->posX - METERS_TO_PIXELS(App->physics->balls.at(player->body).radius) - 60, player->posY - METERS_TO_PIXELS(App->physics->balls.at(player->body).radius) - 15, App->renderer->blueFont, "AMMO-");
+	App->renderer->BlitText(player->posX - METERS_TO_PIXELS(App->physics->balls.at(player->body).radius) - 20, player->posY - METERS_TO_PIXELS(App->physics->balls.at(player->body).radius) - 15, App->renderer->blueFont, ch_ammo);
 }
 
 int ModulePlayer::shoot(Worm* player)

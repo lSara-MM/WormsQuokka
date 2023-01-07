@@ -100,6 +100,7 @@ public:
 
 	int selectPlayer(int p);
 	void controls(Worm* player, MovementType move);
+	void renderStats(Worm* player);
 
 	void selectWeapon(Worm* player);
 	int shoot(Worm* player);
