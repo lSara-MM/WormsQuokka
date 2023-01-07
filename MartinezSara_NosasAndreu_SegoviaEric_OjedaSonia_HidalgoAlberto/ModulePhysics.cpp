@@ -528,13 +528,14 @@ update_status ModulePhysics::PreUpdate()
 			}
 
 			//In case the ball gets out of the screen
-			if ((ball.x) >= PIXEL_TO_METERS(SCREEN_WIDTH)) { ball.x = PIXEL_TO_METERS(SCREEN_WIDTH) - ball.radius; }
+			//if ((ball.x) >= PIXEL_TO_METERS(SCREEN_WIDTH)) { ball.x = PIXEL_TO_METERS(SCREEN_WIDTH) - ball.radius; }
 
 			if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
 			{
 
+				ball.x -= ball.radius/2; //FUYM, if we not get the ball out of the wall its starts cliping, we put a half radius to not be so much visible
+				ball.vx = -ball.vx ;
 
-				ball.vx = -ball.vx * 1.2f;
 
 				// FUYM non-elasticity
 				ball.vx *= ball.coef_friction;
