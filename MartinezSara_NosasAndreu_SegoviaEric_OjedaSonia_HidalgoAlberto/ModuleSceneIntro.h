@@ -64,4 +64,6 @@ public:
 	int result;		//	-1 draw / 0 Blue / 1 red 
 
 	int frames;
+
+	bool fixCutre;
 };

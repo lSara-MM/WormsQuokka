@@ -50,8 +50,6 @@ bool ModulePlayer::Start()
 	////listPlayers.emplace_back(num);
 	//listRedP.emplace_back(num);
 
-	CleanUp();
-
 	setID = 0;
 
 	// Blue team
@@ -81,6 +79,12 @@ bool ModulePlayer::Start()
 //Player control
 update_status ModulePlayer::Update()
 {
+	if (!App->scene_intro->fixCutre)
+	{
+		CleanUp();
+		App->scene_intro->fixCutre = true;
+	}
+
 	if (!App->scene_intro->endGame)
 	{	
 		// Select player
@@ -307,7 +311,7 @@ void ModulePlayer::selectWeapon(Worm* player)
 	switch (player->weapon)
 	{
 	case ObjectType::GUN:
-		player->weapon = ObjectType::GRENADE;
+		(player->gAmmo > 0) ? player->weapon = ObjectType::GRENADE : player->weapon = ObjectType::MISSILE;
 		break;
 	case ObjectType::GRENADE:
 		player->weapon = ObjectType::MISSILE;	// in case more weapons, put next weapon
@@ -440,23 +444,31 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		break;
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) 
+	{ player->direction = 1; }
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN) 
+	{ player->direction = -1; }
+
 	if (player->angle < 90)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN) 
 		{ player->angle += 15; }
 	}
-
 	if (player->angle > -90)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) 
 		{ player->angle -= 15; }
 	}
 
+
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN) 
 	{ selectWeapon(player); }
 	
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT && player->forceApplied <= 500.0f) 
 	{ player->forceApplied += 10.0f; }
+
+	if (player->gAmmo <= 0 && player->weapon == ObjectType::GRENADE) { player->weapon = ObjectType::GUN; }
+	if (player->mAmmo <= 0 && player->weapon == ObjectType::MISSILE) { player->weapon = ObjectType::GUN; }
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 	
 	{ 
@@ -496,8 +508,8 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		weaponName = "EROR 404";
 		break;
 	}
-	//Show actual weapon
 
+	//Show actual weapon
 	App->renderer->BlitText(player->posX- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)/ margin, player->posY- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)-10, App->renderer->blueFont, weaponName);
 	
 
@@ -514,6 +526,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 int ModulePlayer::shoot(Worm* player)
 {
 	int a;	// projectile radius
+
 	switch (player->weapon)
 	{
 	case ObjectType::GUN:
@@ -521,9 +534,11 @@ int ModulePlayer::shoot(Worm* player)
 		break;
 	case ObjectType::GRENADE:
 		a = METERS_TO_PIXELS(2.0f);
+		player->gAmmo--;
 		break;
 	case ObjectType::MISSILE:
 		a = METERS_TO_PIXELS(3.0f);
+		player->mAmmo--;
 		break;
 	default:
 		break;

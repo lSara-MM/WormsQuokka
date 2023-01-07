@@ -35,6 +35,8 @@ bool ModuleSceneIntro::Start()
 	endGame = false;
 	frames = 60;
 
+
+	fixCutre = false;
 	return ret;
 }
 

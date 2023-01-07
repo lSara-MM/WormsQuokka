@@ -173,7 +173,6 @@ update_status ModulePhysics::PreUpdate()
 			if (!ball.physics_enabled)
 			{
 				continue;
-				
 			}
 
 			// Step #0: Clear old values
@@ -236,8 +235,8 @@ update_status ModulePhysics::PreUpdate()
 				if (ball.type == ObjectType::GUN || ball.type == ObjectType::GRENADE || ball.type == ObjectType::MISSILE) {
 
 					ball.type = ObjectType::OTHER;
-
 				}
+
 				// Hydrodynamic Drag force
 				if (options[3])
 				{
@@ -508,7 +507,6 @@ update_status ModulePhysics::PreUpdate()
 				// FUYM non-elasticity
 				ball.vx *= ball.coef_friction;
 				ball.vy *= ball.coef_restitution;
-
 			}
 
 			if (ball.y >= PIXEL_TO_METERS(SCREEN_HEIGHT))
@@ -521,7 +519,6 @@ update_status ModulePhysics::PreUpdate()
 				// FUYM non-elasticity
 				ball.vx *= ball.coef_friction;
 				ball.vy *= ball.coef_restitution;
-
 			}
 
 			//In case the ball gets out of the screen
@@ -529,15 +526,12 @@ update_status ModulePhysics::PreUpdate()
 
 			if ((ball.x + ball.radius) >= PIXEL_TO_METERS(SCREEN_WIDTH))
 			{
-
-				ball.x -= ball.radius/2; //FUYM, if we not get the ball out of the wall its starts cliping, we put a half radius to not be so much visible
-				ball.vx = -ball.vx ;
-
+				ball.x -= ball.radius / 2; //FUYM, if we not get the ball out of the wall its starts cliping, we put a half radius to not be so much visible
+				ball.vx = -ball.vx;
 
 				// FUYM non-elasticity
 				ball.vx *= ball.coef_friction;
 				ball.vy *= ball.coef_restitution;
-
 			}
 
 			// Solve collision between ball and ground
@@ -546,8 +540,7 @@ update_status ModulePhysics::PreUpdate()
 				if (ball.type == ObjectType::GUN || ball.type == ObjectType::GRENADE) {
 			
 					ball.type = ObjectType::OTHER; 
-					typeW = ObjectType::OTHER;
-				 
+					typeW = ObjectType::OTHER;			 
 				}
 
 				if (METERS_TO_PIXELS(ball.y) <= (METERS_TO_PIXELS(ground.y) + METERS_TO_PIXELS(ground.h)))

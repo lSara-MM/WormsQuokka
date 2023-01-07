@@ -27,7 +27,9 @@ public:
 		posX = posX_;
 		posY = posY_;
 		type = type_;
-		renderable = render;	
+		renderable = render;
+		gAmmo = 2;
+		mAmmo = 3;
 	}
 
 public:
@@ -45,6 +47,9 @@ public:
 	int playerWeapon;
 	ObjectType weapon;
 	float angle = 0;
+
+	int gAmmo;
+	int mAmmo;
 
 	float forceApplied = 0;//force applied to projectile when launched
 };
