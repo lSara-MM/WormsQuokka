@@ -272,7 +272,7 @@ update_status ModulePhysics::PreUpdate()
 						if (balls.at(j).player != balls.at(i).player) {
 							losehp = true; 
 							 
-							if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::RED) {
+							 if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::RED) {
 
 								bodyHP = i; 
 								typeW = ObjectType::GUN;
@@ -380,6 +380,11 @@ update_status ModulePhysics::PreUpdate()
 								balls.at(i).type = ObjectType::OTHER;
 								balls.erase(balls.begin() + i);
 							}
+
+
+							
+
+							
 						}
 
 						t = balls.size(); 
@@ -507,6 +512,11 @@ update_status ModulePhysics::PreUpdate()
 				// FUYM non-elasticity
 				ball.vx *= ball.coef_friction;
 				ball.vy *= ball.coef_restitution;
+
+				if (ball.type == ObjectType::MISSILE) //Turn missile into other
+				{
+					ball.type = ObjectType::OTHER;
+				}
 			}
 
 			if (ball.y >= PIXEL_TO_METERS(SCREEN_HEIGHT))
@@ -532,15 +542,22 @@ update_status ModulePhysics::PreUpdate()
 				// FUYM non-elasticity
 				ball.vx *= ball.coef_friction;
 				ball.vy *= ball.coef_restitution;
+
+				if (ball.type==ObjectType::MISSILE) //Turn missile into other
+				{
+					ball.type = ObjectType::OTHER;
+				}
 			}
 
 			// Solve collision between ball and ground
 			if (is_colliding_with_ground(ball, ground))
 			{
-				if (ball.type == ObjectType::GUN || ball.type == ObjectType::GRENADE) {
+				if (ball.type == ObjectType::GUN /*|| ball.type == ObjectType::GRENADE*/) {
 			
 					ball.type = ObjectType::OTHER; 
-					typeW = ObjectType::OTHER;			 
+					typeW = ObjectType::OTHER;
+
+					
 				}
 
 				if (METERS_TO_PIXELS(ball.y) <= (METERS_TO_PIXELS(ground.y) + METERS_TO_PIXELS(ground.h)))
@@ -561,7 +578,7 @@ update_status ModulePhysics::PreUpdate()
 								ball.y = ground.y - ground.h - ball.radius;
 
 								// Elastic bounce with ground
-								if (abs(ball.vy) <= 0.4f) { ball.vy = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
+								if (abs(ball.vy) <= 0.1f) { ball.vy = 0; } //FUYM, if speed is to slow stop moving (this is to stop the ball continuos bounce do to travesing the floor)
 								ball.vy = -ball.vy;
 
 								// FUYM non-elasticity
@@ -603,6 +620,8 @@ update_status ModulePhysics::PreUpdate()
 						ball.vy *= ball.coef_restitution;
 					}
 				}
+
+				
 			}
 		}
 	}

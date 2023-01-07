@@ -255,7 +255,7 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir,float angle, float 
 	Weapon* new_gun = new Weapon(posX_, posY_, type_, render);
 	//new_gun->id = setID++;
 	
-	float vx, vy, mass;
+	float vx, vy, mass,rest;
 
 	float dirX = dir* cos(angle * DEG_TO_RAD);
 	float dirY = -sin(angle * DEG_TO_RAD);
@@ -267,13 +267,15 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir,float angle, float 
 		new_gun->range = 3; 
 		mass = 10.0f;
 		vx = force/mass * dirX;		vy = force / mass * dirY;
+		rest = 0.1f;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 10.0f;// no acaba d'anar bé
 	}
 	if (type_ == ObjectType::GRENADE) 
 	{ 
 		new_gun->range = 10;
-		mass = 50.0f;
+		mass = 20.0f;
 		vx = force / mass * dirX;		vy = force / mass * dirY;
+		rest = 0.9f;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 50.0f;
 	}
 	if (type_ == ObjectType::MISSILE)
@@ -281,10 +283,24 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir,float angle, float 
 		new_gun->range = 5;
 		mass = 30.0f;
 		vx = force / mass * dirX;		vy = force / mass * dirY;
+		rest = 0.0f;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 50.0f;
 	}
 
-	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), new_gun->range / 10, type_, mass, vx, vy, 1.0f, 1.0f, 1.0f, 0.3, 0.1f, 0.2f, 0.2f);
+	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), //Position X
+											PIXEL_TO_METERS(posY_), //Position y
+											new_gun->range / 10, //Radius
+											type_, //Tipo
+											mass, //Massa
+											vx, // Velocidad X
+											vy, // Velocidad Y
+											1.0f, //Superficie
+											1.0f, // Coeficiente lift aerodinamico
+											1.0f, //Coeficiente drag aerodinamico
+											0.3, //Coeficiente buoyancy
+											0.1f, //Coeficiente friccion
+											rest //Coeficiente restitucion
+											);
 
 	return new_gun->body;
 }
