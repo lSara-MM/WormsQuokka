@@ -221,18 +221,16 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
-int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, bool render)
+int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_)
 {
-	Worm* new_worm = new Worm(posX_, posY_, type_, hp_, render);
+	Worm* new_worm = new Worm(posX_, posY_, type_, hp_);
 	new_worm->id = setID++;
 	new_worm->weapon = ObjectType::GUN; // gun by default 
 
-	bool a;
-	(render) ? a = true : a = false;	// if render true, physics true 
 
-	new_worm->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), 1.0f, type_, 80.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0f, 0.0f, a, true);
+	new_worm->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), 1.0f, type_, 80.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0f, 0.0f, true, true);
 	LOG("newWorm: %d", new_worm->body);
-	// nose si aixo servira per a algo, potser si despues 
+
 	switch (type_)
 	{
 	case ObjectType::RED:
@@ -250,10 +248,9 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, 
 	return new_worm->body;
 }
 
-int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir,float angle, float force, ObjectType type_, bool render)
+int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir, float angle, float force, ObjectType type_)
 {
-	Weapon* new_gun = new Weapon(posX_, posY_, type_, render);
-	//new_gun->id = setID++;
+	Weapon* new_gun = new Weapon(posX_, posY_, type_);
 	
 	float vx, vy, mass,rest;
 

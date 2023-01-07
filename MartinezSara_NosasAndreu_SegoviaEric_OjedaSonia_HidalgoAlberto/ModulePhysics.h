@@ -17,7 +17,6 @@ enum class integrationMethods
 	BACKWARDS_EULER,
 	FORWARDS_EULER,
 	VERLET
-	
 };
 
 enum class ObjectType
@@ -110,13 +109,13 @@ public:
 
 	// Has physics enabled?
 	bool physics_enabled = true;
-	int id;
+	//int id;	
 	ObjectType type;
 
 	//variable used to draw wind
 	int iwind = 0;
 
-	bool player; 
+	bool player; // true - player / false - weapon
 };
 
 

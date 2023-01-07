@@ -22,12 +22,12 @@ public:
 
 	Worm() : graphic(NULL) {}
 
-	Worm(int posX_, int posY_, ObjectType type_, int hp = 100, bool render = true) : graphic(NULL)
+	Worm(int posX_, int posY_, ObjectType type_, int hp = 100) : graphic(NULL)
 	{
 		posX = posX_;
 		posY = posY_;
 		type = type_;
-		renderable = render;
+		
 		gAmmo = 2;
 		mAmmo = 3;
 	}
@@ -36,7 +36,6 @@ public:
 	//iPoint position;	// idk perque me dona problemes? tf 
 	int posX, posY;
 
-	bool renderable = true;
 	int id;	// Position in vector 
 	int hp = 100;
 	int direction = 1;	// 1 - derecha, -1 - izquierda
@@ -51,7 +50,7 @@ public:
 	int gAmmo;
 	int mAmmo;
 
-	float forceApplied = 0;//force applied to projectile when launched
+	float forceApplied = 0;		//force applied to projectile when launched
 };
 
 class Weapon
@@ -62,20 +61,17 @@ public:
 
 	Weapon() : graphic(NULL) {}
 
-	Weapon(int posX_, int posY_, ObjectType type_, bool render = true) : graphic(NULL)
+	Weapon(int posX_, int posY_, ObjectType type_) : graphic(NULL)
 	{
 		posX = posX_;
 		posY = posY_;
 		type = type_;
-
-		renderable = render;
 	}
 	
 public:
 	//iPoint position;	// idk perque me dona problemes? tf 
 	int posX, posY;
 
-	bool renderable = true;
 	float range;	// range of damage
 	ObjectType type;
 
@@ -94,8 +90,8 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	int CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_ = 100, bool render = true);
-	int CreateWeapon(int posX_, int posY_, int dirX, float angle, float force,ObjectType type_, bool render = true);
+	int CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_ = 100);
+	int CreateWeapon(int posX_, int posY_, int dirX, float angle, float force, ObjectType type_);
 	void LoseHPplayer(int body, ObjectType type_W, ObjectType type_P);
 
 	int selectPlayer(int p);

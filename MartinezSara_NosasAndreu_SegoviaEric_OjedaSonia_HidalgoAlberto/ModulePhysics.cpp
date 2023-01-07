@@ -62,27 +62,6 @@ bool ModulePhysics::Start()
 	atmosphere.windy = 0.0f; // [m/s]
 	atmosphere.density = 1.0f; // [kg/m^3]
 
-	PhysBall ball = PhysBall();
-	// Set static properties of the ball
-	ball.mass = 10.0f; // [kg]
-	ball.surface = 1.0f; // [m^2]
-	ball.radius = 0.5f; // [m]
-	ball.cd = 0.4f; // [-]
-	ball.cl = 1.2f; // [-]
-	ball.b = 10.0f; // [...]
-	ball.coef_friction = 0.9f; // [-]
-	ball.coef_restitution = 0.8f; // [-]
-
-	// Set initial position and velocity of the ball
-	ball.x = 2.0f ;
-	ball.y = (ground.y - ground.h) + 2.0f;
-	ball.vx = 5.0f;
-	ball.vy = 10.0f;
-
-	// Add ball to the collection
-	//balls.emplace_back(ball);
-
-
 	//debug
 	options[0] = true; //Show wind
 	options[1] = true; //Gravity
@@ -117,16 +96,12 @@ update_status ModulePhysics::PreUpdate()
 		atmosphere.density = 1.0f; // [kg/m^3]
 	}
 
-
-
 	if(options[5])
 	{ 
 		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) { atmosphere.windx += 0.1F; }
 		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) { atmosphere.windx -= 0.1F; }
 		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) { atmosphere.windy += 0.1F; }
 		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) { atmosphere.windy -= 0.1F; }
-
-
 	}
 
 	if (options[6])
@@ -253,11 +228,9 @@ update_status ModulePhysics::PreUpdate()
 
 					ball.fx += fhbx; ball.fy += fhby; // Add this force to ball's total force
 				}
-			
 			}
 
 			int t = balls.size(); 
-
 			for (int i = 0; i < t-1; i++) {
 				t = balls.size();
 				for (int j = 0; j < t; j++) {
@@ -267,18 +240,18 @@ update_status ModulePhysics::PreUpdate()
 					{
 						continue;
 					}
+
 					if (check_collision_circle_circle(balls.at(i).x, balls.at(i).y, balls.at(i).radius, balls.at(j).x, balls.at(j).y, balls.at(j).radius) == true && i != j) {
 
 						if (balls.at(j).player != balls.at(i).player) {
 							losehp = true; 
 							 
-							 if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::RED) {
+							if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::RED) {
 
-								bodyHP = i; 
+								bodyHP = i;
 								typeW = ObjectType::GUN;
-								typeP =ObjectType::RED;
+								typeP = ObjectType::RED;
 								balls.at(j).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + j);
 							}
 
 							else if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::RED) {
@@ -287,7 +260,6 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::RED;
 								balls.at(j).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + j);
 							}
 
 							else if (balls.at(i).type == ObjectType::GUN && balls.at(j).type == ObjectType::RED) {
@@ -296,7 +268,6 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::RED;
 								balls.at(i).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + i);
 							}
 
 							else if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::RED) {
@@ -305,7 +276,6 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::RED;
 								balls.at(i).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + i);
 							}
 
 							else if (balls.at(i).type == ObjectType::MISSILE && balls.at(j).type == ObjectType::RED) {
@@ -314,7 +284,6 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::MISSILE;
 								typeP = ObjectType::RED;
 								balls.at(i).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + i);
 							}
 
 							else if (balls.at(j).type == ObjectType::MISSILE && balls.at(i).type == ObjectType::RED) {
@@ -323,7 +292,6 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::MISSILE;
 								typeP = ObjectType::RED;
 								balls.at(j).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + j);
 							}
 
 
@@ -333,7 +301,6 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::BLUE;
 								balls.at(i).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + i);
 							}
 
 							else if (balls.at(i).type == ObjectType::GRENADE && balls.at(j).type == ObjectType::BLUE) {
@@ -342,7 +309,6 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::BLUE;
 								balls.at(i).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + i);
 							}
 
 							else if (balls.at(j).type == ObjectType::GUN && balls.at(i).type == ObjectType::BLUE) {
@@ -351,40 +317,31 @@ update_status ModulePhysics::PreUpdate()
 								typeW = ObjectType::GUN;
 								typeP = ObjectType::BLUE;
 								balls.at(j).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + j);
 							}
 
 							else if (balls.at(j).type == ObjectType::GRENADE && balls.at(i).type == ObjectType::BLUE) {
-
+								
 								bodyHP = i;
 								typeW = ObjectType::GRENADE;
 								typeP = ObjectType::BLUE;
 								balls.at(j).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + j);
 							}
 
 							else if (balls.at(j).type == ObjectType::MISSILE && balls.at(i).type == ObjectType::BLUE) {
-
+								
 								bodyHP = i;
 								typeW = ObjectType::MISSILE;
 								typeP = ObjectType::BLUE;
 								balls.at(j).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + j);
 							}
 
 							else if (balls.at(i).type == ObjectType::MISSILE && balls.at(j).type == ObjectType::BLUE) {
-
+								
 								bodyHP = j;
 								typeW = ObjectType::MISSILE;
 								typeP = ObjectType::BLUE;
 								balls.at(i).type = ObjectType::OTHER;
-								balls.erase(balls.begin() + i);
-							}
-
-
-							
-
-							
+							}					
 						}
 
 						t = balls.size(); 
@@ -552,12 +509,9 @@ update_status ModulePhysics::PreUpdate()
 			// Solve collision between ball and ground
 			if (is_colliding_with_ground(ball, ground))
 			{
-				if (ball.type == ObjectType::GUN /*|| ball.type == ObjectType::GRENADE*/) {
-			
+				if (!ball.player) {
 					ball.type = ObjectType::OTHER; 
-					typeW = ObjectType::OTHER;
-
-					
+					//typeW = ObjectType::OTHER;
 				}
 
 				if (METERS_TO_PIXELS(ball.y) <= (METERS_TO_PIXELS(ground.y) + METERS_TO_PIXELS(ground.h)))
@@ -624,21 +578,23 @@ update_status ModulePhysics::PreUpdate()
 				
 			}
 		}
+
+		if (ball.type == ObjectType::OTHER) { balls.erase(balls.begin() + (balls.size() - 1)); }
 	}
+	
 	// Continue game
 	return UPDATE_CONTINUE;
 }
 
 update_status ModulePhysics::PostUpdate()
 {
-	//ACTIVAR O DESACTIVAR 
+	// ACTIVAR O DESACTIVAR 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		debug = !debug;
 	}
 
 	
-
 	// Colors
 	int color_r, color_g, color_b;
 
@@ -646,7 +602,7 @@ update_status ModulePhysics::PostUpdate()
 	color_r = 0; color_g = 0; color_b = 255;
 	App->renderer->DrawQuad(water.pixels(), color_r, color_g, color_b);
 
-	//Draw wind
+	// Draw wind
 	color_r = 0; color_g = 255; color_b = 125;
 	
 	++iwind;
@@ -665,7 +621,7 @@ update_status ModulePhysics::PostUpdate()
 			}		
 		}
 
-		//Draw water currents
+		// Draw water currents
 		//LOG("El agua es %d y su w es %d",water.pixels().x, water.pixels().w)
 		for (int k = water.pixels().y+  water.pixels().h; k <= water.pixels().y; k -= water.pixels().h /4 ) //Pos y
 		{
@@ -698,7 +654,7 @@ update_status ModulePhysics::PostUpdate()
 
 	if (debug)
 	{
-		//LADO IZQUIERDO
+		// LADO IZQUIERDO
 		App->renderer->BlitText(10, 10, App->renderer->blueFont, "DEBUG MODE ACTIVE:");
 		
 		if (options[0]){App->renderer->BlitText(26, 20, App->renderer->blueFont, "1: SHOW OR HIDE WIND AND CURRENT ON ");}
@@ -716,7 +672,7 @@ update_status ModulePhysics::PostUpdate()
 		if (options[6]) { App->renderer->BlitText(26, 80, App->renderer->blueFont, "7: CHANGE CURRENT VELOCITY USING KEYS ON"); }
 		if (!options[6]) { App->renderer->BlitText(26, 80, App->renderer->blueFont, "7: CHANGE CURRENT VELOCITY USING KEYS OFF"); }
 		
-		//LADO CENTRAL 
+		// LADO CENTRAL 
 		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 20, App->renderer->blueFont, "B:CREATE BALL ");
 		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 30, App->renderer->blueFont, "V:CREATE BALL ");
 		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 40, App->renderer->blueFont, "C:CREATE BALL ");
@@ -724,9 +680,9 @@ update_status ModulePhysics::PostUpdate()
 		App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 60, App->renderer->blueFont, "N:REDUCE ALL BALLS RADIUS ");
 
 
-		//LADO DERECHO PANTALLA
+		// LADO DERECHO PANTALLA
 
-		//Integration method
+		// Integration method
 		App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 20, App->renderer->blueFont, "INTEGRATION METHOD: ");
 		switch (method)
 		{
@@ -749,7 +705,7 @@ update_status ModulePhysics::PostUpdate()
 			break;
 		}
 
-		//Movement type
+		// Movement type
 		App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 70, App->renderer->blueFont, "PLAYER MOVEMENT MODE: ");
 		switch (App->player->movement)
 		{
@@ -772,7 +728,7 @@ update_status ModulePhysics::PostUpdate()
 			break;
 		}
 
-		//Delta time
+		// Delta time
 		App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 120, App->renderer->blueFont, "DELTA TIME MODE: ");
 		switch (App->timeControl)
 		{
@@ -794,7 +750,6 @@ update_status ModulePhysics::PostUpdate()
 		default:
 			break;
 		}
-
 	}
 	
 
