@@ -457,8 +457,10 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 
 	{ 
-
-		shoot(player); 
+		if (player->hp > 0) {
+			shoot(player);
+		}
+		 
 
 		LOG("force %f", player->forceApplied);
 
