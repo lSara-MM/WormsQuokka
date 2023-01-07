@@ -262,7 +262,8 @@ update_status ModulePhysics::PreUpdate()
 
 			int t = balls.size(); 
 
-			for (int i = 0; i < t; i++) {
+			for (int i = 0; i < t-1; i++) {
+				t = balls.size();
 				for (int j = 0; j < t; j++) {
 
 					/*if(balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius && balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius*/
@@ -768,12 +769,12 @@ update_status ModulePhysics::PostUpdate()
 		case DeltaTimeControl::FIXED_DELTATIME:
 			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "FIXED");
 			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F9: CHANGE TO FIXED DELAY ");
-			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO POSITION MOVEMENT ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO VARIABLE ");
 			break;
 		case DeltaTimeControl::FIXED_DELTATIME_DELAY:
 			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "FIXED DELAY");
 			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F8: CHANGE TO FIXED ");
-			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO POSITION MOVEMENT ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO VARIABLE ");
 			break;
 		case DeltaTimeControl::VARIABLE_DELTATIME:
 			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "VARIABLE");

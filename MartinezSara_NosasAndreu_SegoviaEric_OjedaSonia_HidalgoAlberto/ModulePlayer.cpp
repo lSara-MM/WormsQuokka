@@ -453,18 +453,6 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT && player->forceApplied <= 500.0f)
 	{
 		player->forceApplied += 10.0f;
-
-		//PARA COMPROBAR LA FORECEAPLIED
-
-		//// strings to const char*
-		//string s_hp = std::to_string(player->forceApplied);
-		//const char* fuersa = s_hp.c_str();
-
-		//App->renderer->BlitText(100, 100, App->renderer->greenFont, fuersa);
-
-		//string max = std::to_string(20.0f);
-		//const char* maximo = max.c_str();
-		//App->renderer->BlitText(100, 120, App->renderer->greenFont, maximo);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 
@@ -512,19 +500,10 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		weaponName = "EROR 404";
 		break;
 	}
+	//Show actual weapon
+
 	App->renderer->BlitText(player->posX- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)/ margin, player->posY- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)-10, App->renderer->blueFont, weaponName);
-	//fer dibuix amb efecte força no acaba d'anar
-	/*if (player->forceApplied < 5) {
-
-		App->renderer->DrawLine(player->posX, player->posY, player->posX + 50 * player->direction, player->posY - 50 * player->angle, 0, 255, 100);
-
-	}
-
-	else {
-
-		App->renderer->DrawLine(player->posX, player->posY, player->posX + player->forceApplied * 10 * player->direction, player->posY - player->forceApplied * 10 * player->angle, 0, 255, 100);
-
-	}*/
+	
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) 
 	{ CleanUp(); }
@@ -545,7 +524,7 @@ int ModulePlayer::shoot(Worm* player)
 		a = METERS_TO_PIXELS(0.5f);
 		break;
 	case ObjectType::GRENADE:
-		a = METERS_TO_PIXELS(6.0f);
+		a = METERS_TO_PIXELS(2.0f);
 		break;
 	case ObjectType::MISSILE:
 		a = METERS_TO_PIXELS(3.0f);
