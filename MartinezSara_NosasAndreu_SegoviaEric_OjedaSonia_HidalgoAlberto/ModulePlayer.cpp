@@ -219,7 +219,7 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_, 
 	bool a;
 	(render) ? a = true : a = false;	// if render true, physics true 
 
-	new_worm->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), 1.0f, type_, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0f, 0.0f, a, true);
+	new_worm->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), PIXEL_TO_METERS(posY_), 1.0f, type_, 80.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f, 0.0f, 0.0f, a, true);
 	LOG("newWorm: %d", new_worm->body);
 	// nose si aixo servira per a algo, potser si despues 
 	switch (type_)
@@ -331,7 +331,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		}
 
 		if (jump) {
-			if (timer >= 40) {
+			if (timer >= 10) {
 				App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f);
 				jump = false;
 			}
@@ -345,7 +345,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 				{
 					timer = 0.0f;
 					jump = true;
-					App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, -2700.0f);
+					App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, -2000.0f);
 				}
 			}
 		}
@@ -366,13 +366,13 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).SetVelocity(15.0f, 0.0f);
+			App->physics->balls.at(player->body).SetVelocity(10.0f, 0.0f);
 			player->direction = 1;
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).SetVelocity(-15.0f, 0.0f);
+			App->physics->balls.at(player->body).SetVelocity(-10.0f, 0.0f);
 			player->direction = -1;
 		}
 
@@ -399,13 +399,13 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).AddPosition(15.0f, 0.0f);
+			App->physics->balls.at(player->body).AddPosition(5.0f, 0.0f);
 			player->direction = 1;
 		}
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		{
-			App->physics->balls.at(player->body).AddPosition(-15.0f, 0.0f);
+			App->physics->balls.at(player->body).AddPosition(-5.0f, 0.0f);
 			player->direction = -1;
 		}
 
@@ -416,7 +416,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			{
 				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 				{
-					App->physics->balls.at(player->body).AddPosition(App->physics->balls.at(player->body).x, -100.0f);
+					App->physics->balls.at(player->body).AddPosition(App->physics->balls.at(player->body).x, -80.0f);
 				}
 			}
 		}
@@ -453,18 +453,6 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT && player->forceApplied <= 500.0f)
 	{
 		player->forceApplied += 10.0f;
-
-		//PARA COMPROBAR LA FORECEAPLIED
-
-		//// strings to const char*
-		//string s_hp = std::to_string(player->forceApplied);
-		//const char* fuersa = s_hp.c_str();
-
-		//App->renderer->BlitText(100, 100, App->renderer->greenFont, fuersa);
-
-		//string max = std::to_string(20.0f);
-		//const char* maximo = max.c_str();
-		//App->renderer->BlitText(100, 120, App->renderer->greenFont, maximo);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 
@@ -510,19 +498,10 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		weaponName = "EROR 404";
 		break;
 	}
+	//Show actual weapon
+
 	App->renderer->BlitText(player->posX- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)/ margin, player->posY- METERS_TO_PIXELS(App->physics->balls.at(player->body).radius)-10, App->renderer->blueFont, weaponName);
-	//fer dibuix amb efecte força no acaba d'anar
-	/*if (player->forceApplied < 5) {
-
-		App->renderer->DrawLine(player->posX, player->posY, player->posX + 50 * player->direction, player->posY - 50 * player->angle, 0, 255, 100);
-
-	}
-
-	else {
-
-		App->renderer->DrawLine(player->posX, player->posY, player->posX + player->forceApplied * 10 * player->direction, player->posY - player->forceApplied * 10 * player->angle, 0, 255, 100);
-
-	}*/
+	
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) 
 	{ CleanUp(); }
@@ -543,7 +522,7 @@ int ModulePlayer::shoot(Worm* player)
 		a = METERS_TO_PIXELS(0.5f);
 		break;
 	case ObjectType::GRENADE:
-		a = METERS_TO_PIXELS(6.0f);
+		a = METERS_TO_PIXELS(2.0f);
 		break;
 	case ObjectType::MISSILE:
 		a = METERS_TO_PIXELS(3.0f);
