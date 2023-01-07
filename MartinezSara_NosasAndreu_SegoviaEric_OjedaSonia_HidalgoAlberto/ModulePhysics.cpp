@@ -768,12 +768,12 @@ update_status ModulePhysics::PostUpdate()
 		case DeltaTimeControl::FIXED_DELTATIME:
 			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "FIXED");
 			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F9: CHANGE TO FIXED DELAY ");
-			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO POSITION MOVEMENT ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO VARIABLE ");
 			break;
 		case DeltaTimeControl::FIXED_DELTATIME_DELAY:
 			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "FIXED DELAY");
 			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F8: CHANGE TO FIXED ");
-			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO POSITION MOVEMENT ");
+			App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO VARIABLE ");
 			break;
 		case DeltaTimeControl::VARIABLE_DELTATIME:
 			App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "VARIABLE");
