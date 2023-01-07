@@ -262,7 +262,8 @@ update_status ModulePhysics::PreUpdate()
 
 			int t = balls.size(); 
 
-			for (int i = 0; i < t; i++) {
+			for (int i = 0; i < t-1; i++) {
+				t = balls.size();
 				for (int j = 0; j < t; j++) {
 
 					/*if(balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius && balls.at(i).x + balls.at(i).radius >= balls.at(j).x + balls.at(j).radius*/
