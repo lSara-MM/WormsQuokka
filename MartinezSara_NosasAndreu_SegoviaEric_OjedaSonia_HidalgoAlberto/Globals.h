@@ -26,4 +26,4 @@ enum update_status
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC false
-#define TITLE "2D Physics Playground"
+#define TITLE "Worms: Battle for the Quokka Throne"
