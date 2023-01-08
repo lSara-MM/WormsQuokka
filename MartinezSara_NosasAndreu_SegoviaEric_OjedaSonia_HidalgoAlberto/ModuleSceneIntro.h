@@ -43,8 +43,13 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void Debug();
+
 	void renderParameters(std::vector<Worm*> list, int current);
 	void renderParameters();
+
+
+	void RandomEvent();
+	
 
 public:
 
@@ -65,6 +70,22 @@ public:
 	bool endGame;	// true when a team has lost or draw
 	int result;		//	-1 draw / 0 Blue / 1 red 
 	bool winaudio; 
+
+	int eventProbability=0;
+	int actualEvent = -1;
+	
+	enum events
+	{
+		WATERRISE=0, //INCREASE WATER BY 5 (Max 2 times)
+		WATERDESCEND, //REDUCE WATER BY 5 (Max 1 time)
+		NOWIND, // Set wind to +- 0.1
+		CHANGEWIND, //Wind *-1
+		MOREWIND, //Add 5 of wind 
+		LESSFWIND, // Substracts 5 of wind
+		NUMEVENTS
+
+	};
+	int eventCounter[NUMEVENTS];
 
 	int frames;
 
