@@ -579,7 +579,7 @@ update_status ModulePhysics::PreUpdate()
 			}
 		}
 
-		if (ball.type == ObjectType::OTHER) { balls.erase(balls.begin() + (balls.size() - 1)); }
+		if (ball.type == ObjectType::OTHER && debug) { balls.erase(balls.begin() + (balls.size() - 1)); }
 	}
 	
 	// Continue game
