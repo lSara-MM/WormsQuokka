@@ -56,9 +56,7 @@ update_status ModuleSceneIntro::Update()
 	SString title("%s | Current FPS: %f DeltaTime: %f  Expected FPS: %i, DeltaTime: %i", TITLE, 1000 / App->dt, App->dt, 1000 / App->time, App->time);
 	App->window->SetTitle(title.GetString());
 
-	if (App->physics->debug) 
-	{ Debug(); }
-	
+	(App->physics->debug) ? Debug() : App->renderer->BlitText(10, 10, App->renderer->blueFont, "PRESS F1 TO ACTIVATE DEBUG");
 
 	if (endGame)
 	{
@@ -83,10 +81,8 @@ update_status ModuleSceneIntro::Update()
 		}
 		
 		App->renderer->BlitText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, App->renderer->blueFont, "PRESS ENTER TO PLAY AGAIN");
-		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
-		{
-			App->player->CleanUp();
-		}
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) 
+		{ App->player->CleanUp(); }
 	}
 	return UPDATE_CONTINUE;
 }
@@ -121,6 +117,8 @@ void ModuleSceneIntro::Debug() {
 
 	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) 
 	{ App->player->CreateWeapon(posX, posY, 1, 1, 1, ObjectType::GRENADE); }
+
+
 
 	// "Nomenclatura": Bools con 1,2,3...,0 , multiple opcion con F1,F2...,F12
 	
@@ -260,7 +258,112 @@ void ModuleSceneIntro::Debug() {
 		}
 	}
 
-	App->renderer->BlitText(10, 110, App->renderer->blueFont, "STATUS:");//Valores fps, valores bala/player, etc...
+	//renderParameters();
+	(!App->player->playerTurn) ? renderParameters(App->player->listBlueP, App->player->currentBlue) : renderParameters(App->player->listRedP, App->player->currentRed);
+}
+
+
+void ModuleSceneIntro::renderParameters(std::vector<Worm*> list, int current)
+{
+	// LADO IZQUIERDO
+	App->renderer->BlitText(10, 10, App->renderer->blueFont, "DEBUG MODE ACTIVE:");
+
+	if (App->physics->options[0]) { App->renderer->BlitText(26, 20, App->renderer->blueFont, "1: SHOW OR HIDE WIND AND CURRENT ON "); }
+	if (!App->physics->options[0]) { App->renderer->BlitText(26, 20, App->renderer->blueFont, "1: SHOW OR HIDE WIND AND CURRENT OFF"); }
+	if (App->physics->options[1]) { App->renderer->BlitText(26, 30, App->renderer->blueFont, "2: ENABLE OR DISABLE GRAVITY ON"); }
+	if (!App->physics->options[1]) { App->renderer->BlitText(26, 30, App->renderer->blueFont, "2: ENABLE OR DISABLE GRAVITY OFF"); }
+	if (App->physics->options[2]) { App->renderer->BlitText(26, 40, App->renderer->blueFont, "3: ENABLE OR DISABLE BUOYANCY ON"); }
+	if (!App->physics->options[2]) { App->renderer->BlitText(26, 40, App->renderer->blueFont, "3: ENABLE OR DISABLE BUOYANCY OFF"); }
+	if (App->physics->options[3]) { App->renderer->BlitText(26, 50, App->renderer->blueFont, "4: ENABLE OR DISABLE HYDRO DRAG ON"); }
+	if (!App->physics->options[3]) { App->renderer->BlitText(26, 50, App->renderer->blueFont, "4: ENABLE OR DISABLE HYDRO DRAG OFF"); }
+	if (App->physics->options[4]) { App->renderer->BlitText(26, 60, App->renderer->blueFont, "5: ENABLE OR DISABLE AERO DRAG ON"); }
+	if (!App->physics->options[4]) { App->renderer->BlitText(26, 60, App->renderer->blueFont, "5: ENABLE OR DISABLE AERO DRAG OFF"); }
+	if (App->physics->options[5]) { App->renderer->BlitText(26, 70, App->renderer->blueFont, "6: CHANGE WIND VELOCITY USING KEYS ON"); }
+	if (!App->physics->options[5]) { App->renderer->BlitText(26, 70, App->renderer->blueFont, "6: CHANGE WIND VELOCITY USING KEYS OFF"); }
+	if (App->physics->options[6]) { App->renderer->BlitText(26, 80, App->renderer->blueFont, "7: CHANGE CURRENT VELOCITY USING KEYS ON"); }
+	if (!App->physics->options[6]) { App->renderer->BlitText(26, 80, App->renderer->blueFont, "7: CHANGE CURRENT VELOCITY USING KEYS OFF"); }
+
+	// LADO CENTRAL 
+	App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 20, App->renderer->blueFont, "B:CREATE BALL ");
+	App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 30, App->renderer->blueFont, "V:CREATE BALL ");
+	App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 40, App->renderer->blueFont, "C:CREATE BALL ");
+	App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 50, App->renderer->blueFont, "M:INCREASE ALL BALLS RADIUS ");
+	App->renderer->BlitText(SCREEN_WIDTH - 80 * 8, 60, App->renderer->blueFont, "N:REDUCE ALL BALLS RADIUS ");
+
+
+	// LADO DERECHO PANTALLA
+
+	// Integration method
+	App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 20, App->renderer->blueFont, "INTEGRATION METHOD: ");
+	switch (App->physics->method)
+	{
+	case integrationMethods::BACKWARDS_EULER:
+		App->renderer->BlitText(SCREEN_WIDTH - 19 * 8, 16, App->renderer->greenFont, "BACKWARDS");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 40, App->renderer->blueFont, "F3: CHANGE TO FOWARDS EULER ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 50, App->renderer->blueFont, "F4: CHANGE TO VERLET ");
+		break;
+	case integrationMethods::FORWARDS_EULER:
+		App->renderer->BlitText(SCREEN_WIDTH - 19 * 8, 16, App->renderer->greenFont, "FOWARDS");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 40, App->renderer->blueFont, "F2: CHANGE TO BACWARDS EULER ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 50, App->renderer->blueFont, "F4: CHANGE TO VERLET ");
+		break;
+	case integrationMethods::VERLET:
+		App->renderer->BlitText(SCREEN_WIDTH - 19 * 8, 16, App->renderer->greenFont, "VERLET");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 40, App->renderer->blueFont, "F2: CHANGE TO BACWARDS EULER ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 50, App->renderer->blueFont, "F3: CHANGE TO FOWARDS EULER ");
+		break;
+	default:
+		break;
+	}
+
+	// Movement type
+	App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 70, App->renderer->blueFont, "PLAYER MOVEMENT MODE: ");
+	switch (App->player->movement)
+	{
+	case MovementType::APPLY_FORCE:
+		App->renderer->BlitText(SCREEN_WIDTH - 17 * 8, 66, App->renderer->greenFont, "FORCE");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 90, App->renderer->blueFont, "F6: CHANGE TO VELOCITY MOVEMENT ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 100, App->renderer->blueFont, "F7: CHANGE TO POSITION MOVEMENT ");
+		break;
+	case MovementType::APPLY_VELOCITY:
+		App->renderer->BlitText(SCREEN_WIDTH - 17 * 8, 66, App->renderer->greenFont, "VELOCITY");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 90, App->renderer->blueFont, "F5: CHANGE TO FORCE MOVEMENT ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 100, App->renderer->blueFont, "F7: CHANGE TO POSITION MOVEMENT ");
+		break;
+	case MovementType::CHANGE_POSITION:
+		App->renderer->BlitText(SCREEN_WIDTH - 17 * 8, 66, App->renderer->greenFont, "POSITION");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 90, App->renderer->blueFont, "F5: CHANGE TO FORCE MOVEMENT ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 100, App->renderer->blueFont, "F6: CHANGE TO VELOCITY MOVEMENT ");
+		break;
+	default:
+		break;
+	}
+
+	// Delta time
+	App->renderer->BlitText(SCREEN_WIDTH - 38 * 8, 120, App->renderer->blueFont, "DELTA TIME MODE: ");
+	switch (App->timeControl)
+	{
+	case DeltaTimeControl::FIXED_DELTATIME:
+		App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "FIXED");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F9: CHANGE TO FIXED DELAY ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO VARIABLE ");
+		break;
+	case DeltaTimeControl::FIXED_DELTATIME_DELAY:
+		App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "FIXED DELAY");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F8: CHANGE TO FIXED ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F10: CHANGE TO VARIABLE ");
+		break;
+	case DeltaTimeControl::VARIABLE_DELTATIME:
+		App->renderer->BlitText(SCREEN_WIDTH - 22 * 8, 116, App->renderer->greenFont, "VARIABLE");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 140, App->renderer->blueFont, "F8: CHANGE TO FIXED  ");
+		App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 150, App->renderer->blueFont, "F9: CHANGE TO FIXED DELAY ");
+		break;
+	default:
+		break;
+	}
+
+
+	App->renderer->BlitText(10, 110, App->renderer->blueFont, "STATUS:"); // Valores fps, valores bala/player, etc...
 	App->renderer->BlitText(26, 120, App->renderer->blueFont, "FPS:");
 	string f_num = std::to_string(frames);
 	const char* f = f_num.c_str();
@@ -270,73 +373,39 @@ void ModuleSceneIntro::Debug() {
 
 	App->renderer->BlitText(26, 130, App->renderer->blueFont, "POSITION X: ");
 	App->renderer->BlitText(26, 140, App->renderer->blueFont, "POSITION Y: ");
-	App->renderer->BlitText(26, 150, App->renderer->blueFont, "VELOCITY X: ");	
+	App->renderer->BlitText(26, 150, App->renderer->blueFont, "VELOCITY X: ");
 	App->renderer->BlitText(26, 160, App->renderer->blueFont, "VELOCITY Y: ");
 	App->renderer->BlitText(26, 170, App->renderer->blueFont, "ACCELERATION X: ");
 	App->renderer->BlitText(26, 180, App->renderer->blueFont, "ACCELERATION Y: ");
 
 
-	if (!App->player->playerTurn)	
+	int t = App->physics->balls.size();
+
+
+	if (list.at(current)->playerWeapon < t && list.at(current)->playerWeapon != -1)
 	{
-		int t = App->physics->balls.size();
+		string posx = std::to_string(App->physics->balls.at(list.at(current)->playerWeapon).x);
+		const char* x = posx.c_str();
+		App->renderer->BlitText(120, 130, App->renderer->blueFont, x);
 
-		if (App->player->listBlueP.at(App->player->currentBlue)->playerWeapon < t) {
+		string posy = std::to_string(App->physics->balls.at(list.at(current)->playerWeapon).y);
+		const char* y = posy.c_str();
+		App->renderer->BlitText(120, 140, App->renderer->blueFont, y);
 
-			string posx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).x);
-			const char* x = posx.c_str();
-			App->renderer->BlitText(120, 130, App->renderer->blueFont, x);
+		string velx = std::to_string(App->physics->balls.at(list.at(current)->playerWeapon).vx);
+		const char* vx = velx.c_str();
+		App->renderer->BlitText(120, 150, App->renderer->blueFont, vx);
 
-			string posy = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).y);
-			const char* y = posy.c_str();
-			App->renderer->BlitText(120, 140, App->renderer->blueFont, y);
+		string vely = std::to_string(App->physics->balls.at(list.at(current)->playerWeapon).vy);
+		const char* vy = vely.c_str();
+		App->renderer->BlitText(120, 160, App->renderer->blueFont, vy);
 
-			string velx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).vx);
-			const char* vx = velx.c_str();
-			App->renderer->BlitText(120, 150, App->renderer->blueFont, vx);
+		string accx = std::to_string(App->physics->balls.at(list.at(current)->playerWeapon).ax);
+		const char* ax = accx.c_str();
+		App->renderer->BlitText(150, 170, App->renderer->blueFont, ax);
 
-			string vely = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).vy);
-			const char* vy = vely.c_str();
-			App->renderer->BlitText(120, 160, App->renderer->blueFont, vy);
-
-			string accx = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).ax);
-			const char* ax = accx.c_str();
-			App->renderer->BlitText(150, 170, App->renderer->blueFont, ax);
-
-			string accy = std::to_string(App->physics->balls.at(App->player->listBlueP.at(App->player->currentBlue)->playerWeapon).ay);
-			const char* ay = accy.c_str();
-			App->renderer->BlitText(150, 180, App->renderer->blueFont, ay);
-		}
-	}
-
-	else if (App->player->playerTurn) 
-	{
-		int t = App->physics->balls.size(); 
-
-		if (App->player->listRedP.at(App->player->currentRed)->playerWeapon < t) {
-
-			string posx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).x);
-			const char* x = posx.c_str();
-			App->renderer->BlitText(120, 130, App->renderer->blueFont, x);
-
-			string posy = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).y);
-			const char* y = posy.c_str();
-			App->renderer->BlitText(120, 140, App->renderer->blueFont, y);
-
-			string velx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).vx);
-			const char* vx = velx.c_str();
-			App->renderer->BlitText(120, 150, App->renderer->blueFont, vx);
-
-			string vely = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).vy);
-			const char* vy = vely.c_str();
-			App->renderer->BlitText(120, 160, App->renderer->blueFont, vy);
-
-			string accx = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).ax);
-			const char* ax = accx.c_str();
-			App->renderer->BlitText(150, 170, App->renderer->blueFont, ax);
-
-			string accy = std::to_string(App->physics->balls.at(App->player->listRedP.at(App->player->currentRed)->playerWeapon).ay);
-			const char* ay = accy.c_str();
-			App->renderer->BlitText(150, 180, App->renderer->blueFont, ay);
-		}
+		string accy = std::to_string(App->physics->balls.at(list.at(current)->playerWeapon).ay);
+		const char* ay = accy.c_str();
+		App->renderer->BlitText(150, 180, App->renderer->blueFont, ay);
 	}
 }

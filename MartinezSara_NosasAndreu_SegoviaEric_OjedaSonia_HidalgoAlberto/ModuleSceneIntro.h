@@ -43,6 +43,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void Debug();
+	void renderParameters(std::vector<Worm*> list, int current);
+	void renderParameters();
 
 public:
 

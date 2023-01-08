@@ -30,6 +30,8 @@ public:
 		
 		gAmmo = 2;
 		mAmmo = 3;
+
+		playerWeapon = -1;
 	}
 
 public:
@@ -93,6 +95,7 @@ public:
 	int CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_ = 100);
 	int CreateWeapon(int posX_, int posY_, int dirX, float angle, float force, ObjectType type_);
 	void LoseHPplayer(int body, ObjectType type_W, ObjectType type_P);
+	int checkHp(std::vector<Worm*> list, int current);
 
 	int selectPlayer(int p);
 	void controls(Worm* player, MovementType move);

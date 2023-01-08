@@ -104,77 +104,10 @@ update_status ModulePlayer::Update()
 		}
 
 		// Check hp
-		int dead = 0;
-		for (auto& Worm : listBlueP)
-		{
-			Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
-			Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
+		currentBlue = checkHp(listBlueP, currentBlue);
+		currentRed = checkHp(listRedP, currentRed);
 
-			if (listBlueP.at(Worm->id)->hp <= 0)
-			{
-				App->renderer->BlitText(listBlueP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listBlueP.at(Worm->id)->body).radius) / 2, listBlueP.at(Worm->id)->posY - 35, App->renderer->blueFont, "DEAD");
-				App->physics->balls.at(listBlueP.at(Worm->id)->body).physics_enabled = false;
-
-				int j = 0;
-				for (int i = currentBlue + 1; j < listBlueP.size(); i++)
-				{
-					if (i >= listBlueP.size()) { i = 0; }
-					if (listBlueP.at(i)->hp > 0)
-					{
-						currentBlue = i;
-						break;
-					}
-					j++;
-				}
-				dead++;
-				deadBlue = dead;
-			}
-			else
-			{
-				// strings to const char*
-				string s_hp = std::to_string(Worm->hp);
-				const char* ch_hp = s_hp.c_str();
-
-				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 - 15, Worm->posY - 50, App->renderer->blueFont, "HP-");
-				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 + 10, Worm->posY - 50, App->renderer->blueFont, ch_hp);
-			}
-		}
-
-		dead = 0;
-		for (auto& Worm : listRedP)
-		{
-			Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
-			Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
-
-			if (listRedP.at(Worm->id)->hp <= 0)
-			{
-				App->renderer->BlitText(listRedP.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(listRedP.at(Worm->id)->body).radius) / 2, listRedP.at(Worm->id)->posY - 35, App->renderer->blueFont, "DEAD");
-				App->physics->balls.at(listRedP.at(Worm->id)->body).physics_enabled = false;
-
-				int j = 0;
-				for (int i = currentRed + 1; j < listRedP.size(); i++)
-				{
-					if (i >= listRedP.size()) { i = 0; }
-					if (listRedP.at(i)->hp > 0)
-					{
-						currentRed = i;
-						break;
-					}
-					j++;
-				}
-				dead++;
-				deadRed = dead;
-			}
-			else
-			{
-				// strings to const char*
-				string s_hp = std::to_string(Worm->hp);
-				const char* ch_hp = s_hp.c_str();
-				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 - 15, Worm->posY - 50, App->renderer->blueFont, "HP-");
-				App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 + 10, Worm->posY - 50, App->renderer->blueFont, ch_hp);
-			}
-		}
-
+		// Turn control
 		turnControl();
 
 		// Win/Lose conditions
@@ -653,15 +586,62 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 	}
 }
 
+int ModulePlayer::checkHp(std::vector<Worm*> list, int current)
+{
+	int dead = 0;
+	for (auto& Worm : list)
+	{
+		Worm->posX = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).x);
+		Worm->posY = METERS_TO_PIXELS(App->physics->balls.at(Worm->body).y);
+
+		if (list.at(Worm->id)->hp <= 0)
+		{
+			App->renderer->BlitText(list.at(Worm->id)->posX - METERS_TO_PIXELS(App->physics->balls.at(list.at(Worm->id)->body).radius) / 2, list.at(Worm->id)->posY - 35, App->renderer->blueFont, "DEAD");
+			App->physics->balls.at(list.at(Worm->id)->body).physics_enabled = false;
+
+			int j = 0;
+			for (int i = current + 1; j < list.size(); i++)
+			{
+				if (i >= list.size()) { i = 0; }
+				if (list.at(i)->hp > 0)
+				{
+					current = i;
+					break;
+				}
+				j++;
+			}
+			dead++;
+			deadBlue = dead;
+		}
+		else
+		{
+			// strings to const char*
+			string s_hp = std::to_string(Worm->hp);
+			const char* ch_hp = s_hp.c_str();
+
+			App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 - 15, Worm->posY - 50, App->renderer->blueFont, "HP-");
+			App->renderer->BlitText(Worm->posX - METERS_TO_PIXELS(App->physics->balls.at(Worm->body).radius) / 2 + 10, Worm->posY - 50, App->renderer->blueFont, ch_hp);
+		}
+	}
+
+	return current;
+}
+
 void ModulePlayer::turnControl()
 {
 	turnTimer = SDL_GetTicks() - startTime;
 
-	//turnTimer--;
 	LOG("Turn %d - Time left: %d", playerTurn, turnTimer);
 	if (turnTimer > 10800)
 	{
 		playerTurn = !playerTurn;
 		startTime = SDL_GetTicks();
 	}
+
+	int timeLeft = (10800 - turnTimer) / 600;
+
+	string s_timer = std::to_string(timeLeft);
+	const char* ch_timer = s_timer.c_str();
+	App->renderer->BlitText(SCREEN_WIDTH - 36 * 8, 300, App->renderer->greenFont, "TIME LEFT-");
+	App->renderer->BlitText(SCREEN_WIDTH - 15 * 8, 300, App->renderer->greenFont, ch_timer);
 }
