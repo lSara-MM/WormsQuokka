@@ -130,4 +130,5 @@ public:
 	int audiogun;
 	int audiomisile;
 	int audiogrenade;
+	int audiodrums; 
 };
