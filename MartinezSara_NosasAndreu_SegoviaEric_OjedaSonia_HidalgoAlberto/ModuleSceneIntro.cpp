@@ -71,7 +71,7 @@ update_status ModuleSceneIntro::Update()
 	(App->physics->debug) ? Debug() : App->renderer->BlitText(10, 10, App->renderer->blueFont, "PRESS F1 TO ACTIVATE DEBUG");
 
 	//RANDOM EVENT GENERATOR
-	int random = rand() % 11+1;
+	int random = rand() % 25+1;
 
 	if (random<=eventProbability* eventProbability)
 	{
@@ -449,7 +449,7 @@ void ModuleSceneIntro::RandomEvent()
 	switch (num)
 	{
 	case ModuleSceneIntro::WATERRISE:
-		if (eventCounter[WATERRISE] <= (eventCounter[WATERDESCEND] + 4))
+		if (eventCounter[WATERRISE] <= (eventCounter[WATERDESCEND] + 3))
 		{
 			eventCounter[WATERRISE]++;
 			actualEvent = WATERRISE;
@@ -457,15 +457,17 @@ void ModuleSceneIntro::RandomEvent()
 			eventProbability = 0;
 			
 		}
+		else { RandomEvent(); }
 		break;
 	case ModuleSceneIntro::WATERDESCEND:
-		if (eventCounter[WATERRISE] + 3 >= eventCounter[WATERDESCEND])
+		if (eventCounter[WATERRISE] + 1 >= eventCounter[WATERDESCEND])
 		{
 			eventCounter[WATERDESCEND]++;
 			eventProbability = 0;
 			App->physics->water.h -= 2.0f;
  			
 		}
+		else { RandomEvent(); }
 		break;
 	case ModuleSceneIntro::NOWIND:
 		if (abs(App->physics->atmosphere.windx)>1.0f)
@@ -474,7 +476,7 @@ void ModuleSceneIntro::RandomEvent()
 			eventProbability = 0;
 			App->physics->atmosphere.windx = 0.1f*(App->physics->atmosphere.windx/abs(App->physics->atmosphere.windx)); //Asiganr un signo al viento
 		}
-		//RandomEvent();
+		else { RandomEvent(); }
 		break;
 	case ModuleSceneIntro::CHANGEWIND:
 		if ((eventCounter[MOREWIND]+ eventCounter[LESSFWIND])/2 >= eventCounter[CHANGEWIND])
@@ -484,6 +486,7 @@ void ModuleSceneIntro::RandomEvent()
 		eventProbability = 0;
 		App->physics->atmosphere.windx *= -1.0f; //Asiganr un signo al viento
 		}
+		else { RandomEvent(); }
 		break;
 	case ModuleSceneIntro::MOREWIND:
 		if (eventCounter[MOREWIND] <= (eventCounter[LESSFWIND] + 3))
@@ -492,7 +495,7 @@ void ModuleSceneIntro::RandomEvent()
 			eventProbability = 0;
 			App->physics->atmosphere.windx += 5.0f * (App->physics->atmosphere.windx / abs(App->physics->atmosphere.windx)); //Asiganr un signo al viento
 		}
-		//RandomEvent();
+		else { RandomEvent(); }
 		break;
 	case ModuleSceneIntro::LESSFWIND:
 		if (eventCounter[MOREWIND]+3 >= (eventCounter[LESSFWIND]))
@@ -501,10 +504,10 @@ void ModuleSceneIntro::RandomEvent()
 			eventProbability = 0;
 			App->physics->atmosphere.windx -= 5.0f * (App->physics->atmosphere.windx / abs(App->physics->atmosphere.windx)); //Asiganr un signo al viento
 		}
-		//RandomEvent();
+		else { RandomEvent(); }
 		break;
 	case ModuleSceneIntro::NUMEVENTS:
-		//RandomEvent();
+		RandomEvent();
 		break;
 	default:
 		break;

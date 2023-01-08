@@ -330,22 +330,22 @@ update_status ModulePhysics::PreUpdate()
 
 							//if (App->input->GetKey(SDL_SCANCODE_P) == KEY_IDLE)
 							{
-								//Velocidad en X
+								//Impulse en X
 								float auxX = 0;
 								if (abs(balls.at(j).vx) <= 0.2f) { balls.at(j).vx = 0; }
 								if (abs(balls.at(i).vx) <= 0.2f) { balls.at(i).vx = 0; }
-								auxX = balls.at(j).vx;
-								balls.at(j).vx = balls.at(i).vx;
-								balls.at(i).vx = auxX;
+								auxX = balls.at(j).vx*balls.at(j).mass;
+								balls.at(j).vx = balls.at(i).vx* balls.at(i).mass / balls.at(j).mass;
+								balls.at(i).vx = auxX/ balls.at(i).mass;
 
 
 								//Velocidad en Y
 								if (abs(balls.at(j).vy) <= 0.2f) { balls.at(j).vy = 0; }
 								if (abs(balls.at(i).vy) <= 0.2f) { balls.at(i).vy = 0; }
 								float auxY = 0;
-								auxY = balls.at(j).vy;
-								balls.at(j).vy = balls.at(i).vy;
-								balls.at(i).vy = auxY;
+								auxY = balls.at(j).vy * balls.at(j).mass;
+								balls.at(j).vy = balls.at(i).vy* balls.at(i).mass/ balls.at(j).mass;
+								balls.at(i).vy = auxY/ balls.at(i).mass;
 							}
 						}
 					}
@@ -450,7 +450,13 @@ update_status ModulePhysics::PreUpdate()
 			// Solve collision between ball and ground
 			if (is_colliding_with_ground(ball, ground))
 			{
-				if (!ball.player) {
+				if (ball.type == ObjectType::GRENADE)
+				{
+					ball.radius += 5.0f;
+
+				}
+
+				if (!ball.player || ball.type==ObjectType::GRENADE) {
 					ball.type = ObjectType::OTHER; 
 					//typeW = ObjectType::OTHER;
 				}

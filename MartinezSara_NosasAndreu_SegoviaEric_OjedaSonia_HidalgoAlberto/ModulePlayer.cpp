@@ -424,6 +424,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP)
 	{
 		shoot(player);
+		
 		LOG("force %f", player->forceApplied);
 		player->forceApplied = 0;
 		if (player->weapon == ObjectType::GUN) {
@@ -504,7 +505,7 @@ void ModulePlayer::renderStats(Worm* player)
 int ModulePlayer::shoot(Worm* player)
 {
 	int a;	// projectile radius
-
+	App->scene_intro->eventProbability++;
 	switch (player->weapon)
 	{
 	case ObjectType::GUN:
