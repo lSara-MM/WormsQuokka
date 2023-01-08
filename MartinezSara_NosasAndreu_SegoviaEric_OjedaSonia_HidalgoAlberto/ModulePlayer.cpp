@@ -50,7 +50,9 @@ bool ModulePlayer::Start()
 	audiogun = App->audio->LoadFx("audio/gun.ogg");
 	audiomisile = App->audio->LoadFx("audio/misile.ogg");
 	audiogrenade = App->audio->LoadFx("audio/grenade.ogg");
+	audiodrums = App->audio->LoadFx("audio/drums.ogg");
 
+	App->audio->PlayFx(audiodrums);
 	return true;
 }
 
