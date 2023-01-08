@@ -74,9 +74,9 @@ the last "worm" standing.
 
 * N -> Decrease the size of all bodies
 
-* B -> Create mdeium size projectile at mouse postion
+* B -> Create missile projectile at mouse postion
 
-* V -> Create small size projectile at mouse postion
+* V -> Create gun projectile at mouse postion
 
 * C -> Create grenade projectile at mouse postion
 

@@ -101,6 +101,7 @@ public:
 	void selectWeapon(Worm* player);
 	int shoot(Worm* player);
 
+	void turnControl();
 public:
 	 
 	std::vector<int> listPlayers{};
@@ -117,7 +118,9 @@ public:
 	int deadBlue;
 	int deadRed;
 
-	float timer;
+	float jumpTimer;
 	bool jump;
 
+	Uint32 startTime = 0;
+	uint turnTimer;
 };

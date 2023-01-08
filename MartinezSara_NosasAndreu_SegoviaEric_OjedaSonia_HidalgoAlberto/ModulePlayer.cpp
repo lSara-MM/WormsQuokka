@@ -7,9 +7,6 @@
 using namespace std;
 #include <sstream>
 
-#define DEG_TO_RAD 0.0174532925
-
-
 
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -70,9 +67,11 @@ bool ModulePlayer::Start()
 	deadRed = 0;
 	App->scene_intro->endGame = false;
 
-	timer = 0;
+	jumpTimer = 0;
 	jump = false;
 
+	turnTimer = 0;
+	startTime = SDL_GetTicks();
 	return true;
 }
 
@@ -171,7 +170,7 @@ update_status ModulePlayer::Update()
 			}
 		}
 
-
+		turnControl();
 
 		// Win/Lose conditions
 		if (deadBlue == listBlueP.size() && deadRed < listRedP.size())
@@ -192,7 +191,7 @@ update_status ModulePlayer::Update()
 			App->scene_intro->result = -1;
 		}
 
-		timer++;
+		jumpTimer++;
 
 		if (App->physics->losehp == true) {
 			LoseHPplayer(App->physics->bodyHP, App->physics->typeW, App->physics->typeP);
@@ -358,7 +357,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		}
 
 		if (jump) {
-			if (timer >= 10) {
+			if (jumpTimer >= 10) {
 				App->physics->balls.at(player->body).ApplyForce(0.0F, 0.0f);
 				jump = false;
 			}
@@ -370,7 +369,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 			{
 				if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 				{
-					timer = 0.0f;
+					jumpTimer = 0.0f;
 					jump = true;
 					App->physics->balls.at(player->body).ApplyForce(App->physics->balls.at(player->body).fx, -2000.0f);
 				}
@@ -458,9 +457,9 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		break;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) 
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && !App->physics->debug) 
 	{ player->direction = 1; }
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN) 
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN && !App->physics->debug)
 	{ player->direction = -1; }
 
 	if (player->angle < 90)
@@ -570,7 +569,7 @@ int ModulePlayer::shoot(Worm* player)
 		break;
 	}
 
-	float ang = player->angle * DEGTORAD;
+	float ang = player->angle * DEG_TO_RAD;
 	float co = cos(ang);
 	float si = sin(ang);
 
@@ -595,7 +594,7 @@ int ModulePlayer::shoot(Worm* player)
 	
 	// hacer que espere a que colisione el proyectil 
 	playerTurn = !playerTurn;
-
+	startTime = SDL_GetTicks();
 	return 0;
 }
 
@@ -635,5 +634,18 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 				listBlueP.at(i)->hp = listBlueP.at(i)->hp - rest; 
 			}
 		}
+	}
+}
+
+void ModulePlayer::turnControl()
+{
+	turnTimer = SDL_GetTicks() - startTime;
+
+	//turnTimer--;
+	LOG("Turn %d - Time left: %d", playerTurn, turnTimer);
+	if (turnTimer > 10800)
+	{
+		playerTurn = !playerTurn;
+		startTime = SDL_GetTicks();
 	}
 }

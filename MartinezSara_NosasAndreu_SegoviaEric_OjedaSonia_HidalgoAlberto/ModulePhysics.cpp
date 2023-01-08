@@ -4,8 +4,6 @@
 #include "math.h"
 #include <cmath>
 
-#define  PI 3.14159265f
-
 
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -63,13 +61,13 @@ bool ModulePhysics::Start()
 	atmosphere.density = 1.0f; // [kg/m^3]
 
 	//debug
-	options[0] = true; //Show wind
-	options[1] = true; //Gravity
-	options[2] = true; //Bouyancy
-	options[3] = true; //Hidro Drag
-	options[4] = true; //Aero Drag
-	options[5] = false; //Allow change wind with keys
-	options[6] = false; //Allow change current with keys
+	options[0] = true; // Show wind
+	options[1] = true; // Gravity
+	options[2] = true; // Bouyancy
+	options[3] = true; // Hidro Drag
+	options[4] = true; // Aero Drag
+	options[5] = false; // Allow change wind with keys
+	options[6] = false; // Allow change current with keys
 	options[7] = false; // Change FPS using keys
 	
 	method = integrationMethods::VERLET;
@@ -79,63 +77,6 @@ bool ModulePhysics::Start()
 
 update_status ModulePhysics::PreUpdate()
 {
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-	{
-		//Reset water
-		water.x = 0; // [m]
-		water.y = PIXEL_TO_METERS(SCREEN_HEIGHT); // [m]
-		water.w = PIXEL_TO_METERS(SCREEN_WIDTH); // [m]
-		water.h = 5.0f; // [m]
-		water.density = 50.0f; // [kg/m^3]
-		water.vx = -1.0f; // [m/s]
-		water.vy = 0.0f; // [m/s]
-
-		//Reset wind
-		atmosphere.windx = 5.0f; // [m/s]
-		atmosphere.windy = 0.0f; // [m/s]
-		atmosphere.density = 1.0f; // [kg/m^3]
-	}
-
-	if(options[5])
-	{ 
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) { atmosphere.windx += 0.1F; }
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) { atmosphere.windx -= 0.1F; }
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) { atmosphere.windy += 0.1F; }
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) { atmosphere.windy -= 0.1F; }
-	}
-
-	if (options[6])
-	{
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) { water.vx += 0.1F; }
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) { water.vx -= 0.1F; }
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) { water.h += 0.1F; }
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) { water.h -= 0.1F; }
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
-	{
-		float posX = PIXEL_TO_METERS(App->input->GetMouseX());
-		float posY = PIXEL_TO_METERS(App->input->GetMouseY());
-		PhysBall ball2 = PhysBall(posX, posY, 0.5f, ObjectType::OTHER, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
-
-		// Add ball to the collection
-		balls.emplace_back(ball2);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN)
-	{
-		float posX = App->input->GetMouseX();
-		float posY = App->input->GetMouseY();
-		App->player->CreateWeapon(posX, posY, 1,1,1, ObjectType::GUN);//change force
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
-	{
-		float posX = App->input->GetMouseX();
-		float posY = App->input->GetMouseY();
-		App->player->CreateWeapon(posX, posY, 1,1, 1, ObjectType::GRENADE);
-	}
-
 	// Process all balls in the scenario
 	for (auto& ball : balls)
 	{
@@ -579,7 +520,7 @@ update_status ModulePhysics::PreUpdate()
 			}
 		}
 
-		if (ball.type == ObjectType::OTHER) { balls.erase(balls.begin() + (balls.size() - 1)); }
+		if (ball.type == ObjectType::OTHER && debug) { balls.erase(balls.begin() + (balls.size() - 1)); }
 	}
 	
 	// Continue game
