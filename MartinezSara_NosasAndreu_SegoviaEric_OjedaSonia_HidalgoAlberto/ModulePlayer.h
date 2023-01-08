@@ -107,19 +107,22 @@ public:
 	void turnControl();
 public:
 	 
-	std::vector<int> listPlayers{};
+	//std::vector<int> listPlayers{};
 	std::vector<Worm*> listBlueP{};
 	std::vector<Worm*> listRedP{};
 
 	MovementType movement;
-
-	int setID;
+	
 	bool playerTurn;	// blue = true, red = false
+	bool canPlay;
 
 	int currentBlue;
 	int currentRed;
 	int deadBlue;
 	int deadRed;
+
+private:
+	int setID;
 
 	float jumpTimer;
 	bool jump;
