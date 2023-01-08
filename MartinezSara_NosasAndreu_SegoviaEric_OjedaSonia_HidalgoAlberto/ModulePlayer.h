@@ -1,4 +1,3 @@
-
 #pragma once
 #include "Module.h"
 #include "Animation.h"
@@ -121,6 +120,14 @@ public:
 	int currentRed;
 	int deadBlue;
 	int deadRed;
+	
+	
+	//Audio
+	int audiogun;
+	int audiomisile;
+	int audiogrenade;
+	int audiodrums;
+	int audiowin;
 
 private:
 	int setID;
@@ -131,8 +138,5 @@ private:
 	Uint32 startTime = 0;
 	uint turnTimer;
 
-	int audiogun;
-	int audiomisile;
-	int audiogrenade;
-	int audiodrums;
+	
 };

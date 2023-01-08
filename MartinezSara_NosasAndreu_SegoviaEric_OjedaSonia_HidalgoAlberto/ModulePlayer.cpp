@@ -19,7 +19,7 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
-	
+
 	setID = 0;
 
 	// Blue team
@@ -52,7 +52,7 @@ bool ModulePlayer::Start()
 	audiomisile = App->audio->LoadFx("audio/misile.ogg");
 	audiogrenade = App->audio->LoadFx("audio/grenade.ogg");
 	audiodrums = App->audio->LoadFx("audio/drums.ogg");
-	audiowin = App->audio->LoadFx("audio/win.ogg"); 
+	audiowin = App->audio->LoadFx("audio/win.ogg");
 
 	App->audio->PlayFx(audiodrums);
 	return true;
@@ -68,7 +68,7 @@ update_status ModulePlayer::Update()
 	}
 
 	if (!App->scene_intro->endGame)
-	{	
+	{
 		if (canPlay)
 		{
 			// Select player
@@ -88,7 +88,7 @@ update_status ModulePlayer::Update()
 
 			jumpTimer++;
 		}
-		
+
 		// Check hp
 		currentBlue = checkHp(listBlueP, currentBlue);
 		currentRed = checkHp(listRedP, currentRed);
@@ -105,7 +105,7 @@ update_status ModulePlayer::Update()
 		{
 			App->scene_intro->endGame = true;
 			App->scene_intro->result = 1;
-			App->scene_intro->winaudio = true; 
+			App->scene_intro->winaudio = true;
 		}
 
 		if (deadBlue == listBlueP.size() && deadRed == listRedP.size())
@@ -172,24 +172,24 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_)
 int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir, float angle, float force, ObjectType type_)
 {
 	Weapon* new_gun = new Weapon(posX_, posY_, type_);
-	
-	float vx, vy, mass,rest;
 
-	float dirX = dir* cos(angle * DEG_TO_RAD);
+	float vx, vy, mass, rest;
+
+	float dirX = dir * cos(angle * DEG_TO_RAD);
 	float dirY = -sin(angle * DEG_TO_RAD);
 
 	//force actua como un impulso ya que es una fuerza instantnea
 
-	if (type_ == ObjectType::GUN) 
-	{ 
-		new_gun->range = 3; 
+	if (type_ == ObjectType::GUN)
+	{
+		new_gun->range = 3;
 		mass = 10.0f;
-		vx = force/mass * dirX;		vy = force / mass * dirY;
+		vx = force / mass * dirX;		vy = force / mass * dirY;
 		rest = 0.1f;
 		//vx = force * dirX;		vy = -force * dirY;		mass = 10.0f;// no acaba d'anar bé
 	}
-	if (type_ == ObjectType::GRENADE) 
-	{ 
+	if (type_ == ObjectType::GRENADE)
+	{
 		new_gun->range = 10;
 		mass = 20.0f;
 		vx = force / mass * dirX;		vy = force / mass * dirY;
@@ -206,19 +206,19 @@ int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir, float angle, float
 	}
 
 	new_gun->body = App->physics->CreateBall(PIXEL_TO_METERS(posX_), //Position X
-											PIXEL_TO_METERS(posY_), //Position y
-											new_gun->range / 10, //Radius
-											type_, //Tipo
-											mass, //Massa
-											vx, // Velocidad X
-											vy, // Velocidad Y
-											1.0f, //Superficie
-											1.0f, // Coeficiente lift aerodinamico
-											1.0f, //Coeficiente drag aerodinamico
-											0.3, //Coeficiente buoyancy
-											0.1f, //Coeficiente friccion
-											rest //Coeficiente restitucion
-											);
+		PIXEL_TO_METERS(posY_), //Position y
+		new_gun->range / 10, //Radius
+		type_, //Tipo
+		mass, //Massa
+		vx, // Velocidad X
+		vy, // Velocidad Y
+		1.0f, //Superficie
+		1.0f, // Coeficiente lift aerodinamico
+		1.0f, //Coeficiente drag aerodinamico
+		0.3, //Coeficiente buoyancy
+		0.1f, //Coeficiente friccion
+		rest //Coeficiente restitucion
+	);
 
 	return new_gun->body;
 }
@@ -230,9 +230,13 @@ int ModulePlayer::selectPlayer(int p)
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-		{ return 0; }
+		{
+			return 0;
+		}
 		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-		{ return 1; }
+		{
+			return 1;
+		}
 		/*if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) { return 2; }
 		if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN) { return 3; }
 		if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN) { return 4; }*/
@@ -252,7 +256,7 @@ void ModulePlayer::selectWeapon(Worm* player)
 		player->weapon = ObjectType::MISSILE;	// in case more weapons, put next weapon
 		break;
 	case ObjectType::MISSILE:
-		player->weapon = ObjectType::GUN;	
+		player->weapon = ObjectType::GUN;
 		break;
 	default:
 		break;
@@ -379,35 +383,46 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		break;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && !App->physics->debug) 
-	{ player->direction = 1; }
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && !App->physics->debug)
+	{
+		player->direction = 1;
+	}
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN && !App->physics->debug)
-	{ player->direction = -1; }
+	{
+		player->direction = -1;
+	}
 
 	if (player->angle < 90)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN) 
-		{ player->angle += 15; }
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
+		{
+			player->angle += 15;
+		}
 	}
 	if (player->angle > -90)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) 
-		{ player->angle -= 15; }
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
+		{
+			player->angle -= 15;
+		}
 	}
 
 
-	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN) 
-	{ selectWeapon(player); }
-	
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT && player->forceApplied <= 500.0f) 
-	{ player->forceApplied += 10.0f; }
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
+	{
+		selectWeapon(player);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT && player->forceApplied <= 500.0f)
+	{
+		player->forceApplied += 10.0f;
+	}
 
 	if (player->gAmmo <= 0 && player->weapon == ObjectType::GRENADE) { player->weapon = ObjectType::GUN; }
 	if (player->mAmmo <= 0 && player->weapon == ObjectType::MISSILE) { player->weapon = ObjectType::GUN; }
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 	
-	{ 
-		App->scene_intro->eventProbability++;
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP)
+	{
 		shoot(player);
 		LOG("force %f", player->forceApplied);
 		player->forceApplied = 0;
@@ -426,13 +441,17 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 	renderStats(player);
 
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) 
-	{ CleanUp(); }
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
+		CleanUp();
+	}
 
 	if (App->physics->debug)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN) 
-		{ (player->type == ObjectType::BLUE) ? listBlueP.at(player->id)->hp = 0 : listRedP.at(player->id)->hp = 0; }
+		if (App->input->GetKey(SDL_SCANCODE_K) == KEY_DOWN)
+		{
+			(player->type == ObjectType::BLUE) ? listBlueP.at(player->id)->hp = 0 : listRedP.at(player->id)->hp = 0;
+		}
 	}
 }
 
@@ -525,7 +544,7 @@ int ModulePlayer::shoot(Worm* player)
 		(player->direction == 1) ? player->playerWeapon = CreateWeapon((player->posX + a) + METERS_TO_PIXELS(co), (player->posY + a) - METERS_TO_PIXELS(si), 1, player->angle, player->forceApplied, player->weapon)
 			: player->playerWeapon = CreateWeapon((player->posX - a) - METERS_TO_PIXELS(co), (player->posY + a) - METERS_TO_PIXELS(si), -1, player->angle, player->forceApplied, player->weapon);
 	}
-	
+
 	// Wait for projectile hit to continue playing
 	canPlay = false;
 	playerTurn = !playerTurn;
@@ -535,21 +554,21 @@ int ModulePlayer::shoot(Worm* player)
 
 void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) {
 
-	int rest = 0; 
+	int rest = 0;
 
 	if (type_W == ObjectType::GUN) {
 		rest = 20;
 	}
 
 	if (type_W == ObjectType::GRENADE) {
-	    rest = 50;
+		rest = 50;
 	}
 
 	if (type_W == ObjectType::MISSILE) {
 		rest = 35;
 	}
 
-	int t = listRedP.size(); 
+	int t = listRedP.size();
 
 	if (type_P == ObjectType::RED) {
 
@@ -566,7 +585,7 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 		for (int i = 0; i < t; i++) {
 
 			if (listBlueP.at(i)->body == body) {
-				listBlueP.at(i)->hp = listBlueP.at(i)->hp - rest; 
+				listBlueP.at(i)->hp = listBlueP.at(i)->hp - rest;
 			}
 		}
 	}
