@@ -66,6 +66,7 @@ bool ModulePlayer::Start()
 	deadBlue = 0;
 	deadRed = 0;
 	App->scene_intro->endGame = false;
+	App->scene_intro->winaudio = false;
 
 	jumpTimer = 0;
 	jump = false;
@@ -77,6 +78,7 @@ bool ModulePlayer::Start()
 	audiomisile = App->audio->LoadFx("audio/misile.ogg");
 	audiogrenade = App->audio->LoadFx("audio/grenade.ogg");
 	audiodrums = App->audio->LoadFx("audio/drums.ogg");
+	audiowin = App->audio->LoadFx("audio/win.ogg"); 
 
 	App->audio->PlayFx(audiodrums); 
 
@@ -118,18 +120,21 @@ update_status ModulePlayer::Update()
 		{
 			App->scene_intro->endGame = true;
 			App->scene_intro->result = 0;
+			App->scene_intro->winaudio = true;
 		}
 
 		if (deadBlue < listBlueP.size() && deadRed == listRedP.size())
 		{
 			App->scene_intro->endGame = true;
 			App->scene_intro->result = 1;
+			App->scene_intro->winaudio = true; 
 		}
 
 		if (deadBlue == listBlueP.size() && deadRed == listRedP.size())
 		{
 			App->scene_intro->endGame = true;
 			App->scene_intro->result = -1;
+			App->scene_intro->winaudio = true;
 		}
 
 		jumpTimer++;

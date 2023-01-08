@@ -70,11 +70,19 @@ update_status ModuleSceneIntro::Update()
 		case 0:
 			LOG("RED team wins");
 			App->renderer->BlitText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 50, App->renderer->greenFont, "RED TEAM WINS");
+			if (winaudio == true) {
+				App->audio->PlayFx(App->player->audiowin);
+				winaudio = false; 
+			}
 			break;
 
 		case 1:
 			LOG("BLUE team wins");
 			App->renderer->BlitText(SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 50, App->renderer->greenFont, "BLUE TEAM WINS");
+			if (winaudio == true) {
+				App->audio->PlayFx(App->player->audiowin);
+				winaudio = false;
+			}
 			break;
 		default:
 			break;

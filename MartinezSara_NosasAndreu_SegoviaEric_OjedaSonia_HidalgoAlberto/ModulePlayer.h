@@ -131,4 +131,5 @@ public:
 	int audiomisile;
 	int audiogrenade;
 	int audiodrums; 
+	int audiowin; 
 };
