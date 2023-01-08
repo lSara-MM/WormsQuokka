@@ -520,7 +520,11 @@ update_status ModulePhysics::PreUpdate()
 			}
 		}
 
-		if (ball.type == ObjectType::OTHER && debug) { balls.erase(balls.begin() + (balls.size() - 1)); }
+		if (ball.type == ObjectType::OTHER && debug) 
+		{
+			balls.erase(balls.begin() + (balls.size() - 1));
+			App->player->canPlay = true;
+		}
 	}
 	
 	// Continue game
@@ -596,7 +600,6 @@ update_status ModulePhysics::PostUpdate()
 		int pos_x = METERS_TO_PIXELS(ball.x);
 		int pos_y = METERS_TO_PIXELS(ball.y);
 		int size_r = METERS_TO_PIXELS(ball.radius);
-
 
 		// Select color
 		if (ball.physics_enabled)

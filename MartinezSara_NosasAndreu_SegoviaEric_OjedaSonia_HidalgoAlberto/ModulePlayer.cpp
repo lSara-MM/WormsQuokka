@@ -19,34 +19,7 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
-
-	// Blue team
-	//posX = PIXEL_TO_METERS(100);
-	//posY = PIXEL_TO_METERS(200);
-	//radBody = 0.7f;
-
-	//int num = App->physics->CreateBall(posX, posY, radBody, ObjectType::BLUE, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
-	//movement = MovementType::APPLY_FORCE;
-	////listPlayers.emplace_back(num);
-	//listBlueP.emplace_back(num);
-	//
-	//posX = PIXEL_TO_METERS(130);
-	//posY = PIXEL_TO_METERS(200);
-	//num = App->physics->CreateBall(posX, posY, radBody, ObjectType::BLUE, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
-	//movement = MovementType::APPLY_FORCE;
-	////listPlayers.emplace_back(num);
-	//listBlueP.emplace_back(num);
-
-
-	// Red team
-	//posX = PIXEL_TO_METERS(600);
-	//posY = PIXEL_TO_METERS(350);
-
-	//num = App->physics->CreateBall(posX, posY, radBody, ObjectType::RED, 200.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.5f, 0.1f);
-	//movement = MovementType::APPLY_FORCE;
-	////listPlayers.emplace_back(num);
-	//listRedP.emplace_back(num);
-
+	
 	setID = 0;
 
 	// Blue team
@@ -59,6 +32,7 @@ bool ModulePlayer::Start()
 	CreatePlayer(600, 350, ObjectType::RED);
 	CreatePlayer(700, 350, ObjectType::RED);
 
+	canPlay = true;
 	playerTurn = true;
 	currentBlue = 0;
 	currentRed = 0;
@@ -80,8 +54,7 @@ bool ModulePlayer::Start()
 	audiodrums = App->audio->LoadFx("audio/drums.ogg");
 	audiowin = App->audio->LoadFx("audio/win.ogg"); 
 
-	App->audio->PlayFx(audiodrums); 
-
+	App->audio->PlayFx(audiodrums);
 	return true;
 }
 
@@ -96,24 +69,29 @@ update_status ModulePlayer::Update()
 
 	if (!App->scene_intro->endGame)
 	{	
-		// Select player
-		if (playerTurn)	// Blue turn
+		if (canPlay)
 		{
-			currentBlue = selectPlayer(currentBlue);
-			controls(listBlueP.at(currentBlue), movement);
-		}
-		else // Red turn
-		{
-			currentRed = selectPlayer(currentRed);
-			controls(listRedP.at(currentRed), movement);
-		}
+			// Select player
+			if (playerTurn)	// Blue turn
+			{
+				currentBlue = selectPlayer(currentBlue);
+				controls(listBlueP.at(currentBlue), movement);
+			}
+			else // Red turn
+			{
+				currentRed = selectPlayer(currentRed);
+				controls(listRedP.at(currentRed), movement);
+			}
 
+			// Turn control
+			turnControl();
+
+			jumpTimer++;
+		}
+		
 		// Check hp
 		currentBlue = checkHp(listBlueP, currentBlue);
 		currentRed = checkHp(listRedP, currentRed);
-
-		// Turn control
-		turnControl();
 
 		// Win/Lose conditions
 		if (deadBlue == listBlueP.size() && deadRed < listRedP.size())
@@ -136,8 +114,6 @@ update_status ModulePlayer::Update()
 			App->scene_intro->result = -1;
 			App->scene_intro->winaudio = true;
 		}
-
-		jumpTimer++;
 
 		if (App->physics->losehp == true) {
 			LoseHPplayer(App->physics->bodyHP, App->physics->typeW, App->physics->typeP);
@@ -549,7 +525,8 @@ int ModulePlayer::shoot(Worm* player)
 			: player->playerWeapon = CreateWeapon((player->posX - a) - METERS_TO_PIXELS(co), (player->posY + a) - METERS_TO_PIXELS(si), -1, player->angle, player->forceApplied, player->weapon);
 	}
 	
-	// hacer que espere a que colisione el proyectil 
+	// Wait for projectile hit to continue playing
+	canPlay = false;
 	playerTurn = !playerTurn;
 	startTime = SDL_GetTicks();
 	return 0;
