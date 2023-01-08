@@ -72,6 +72,11 @@ bool ModulePlayer::Start()
 
 	turnTimer = 0;
 	startTime = SDL_GetTicks();
+
+	audiogun = App->audio->LoadFx("audio/gun.ogg");
+	audiomisile = App->audio->LoadFx("audio/misile.ogg");
+	audiogrenade = App->audio->LoadFx("audio/grenade.ogg");
+
 	return true;
 }
 
@@ -488,6 +493,17 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 		shoot(player);
 		LOG("force %f", player->forceApplied);
 		player->forceApplied = 0;
+		if (player->weapon == ObjectType::GUN) {
+			App->audio->PlayFx(audiogun);
+		}
+
+		if (player->weapon == ObjectType::MISSILE) {
+			App->audio->PlayFx(audiomisile);
+		}
+
+		if (player->weapon == ObjectType::GRENADE) {
+			App->audio->PlayFx(audiogrenade);
+		}
 	}
 
 	renderStats(player);

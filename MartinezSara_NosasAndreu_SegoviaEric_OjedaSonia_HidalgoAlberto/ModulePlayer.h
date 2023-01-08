@@ -123,4 +123,8 @@ public:
 
 	Uint32 startTime = 0;
 	uint turnTimer;
+
+	int audiogun;
+	int audiomisile;
+	int audiogrenade;
 };

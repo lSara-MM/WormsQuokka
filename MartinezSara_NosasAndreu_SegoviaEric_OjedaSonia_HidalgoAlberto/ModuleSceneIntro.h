@@ -66,4 +66,5 @@ public:
 	int frames;
 
 	bool fixCutre;
+
 };
