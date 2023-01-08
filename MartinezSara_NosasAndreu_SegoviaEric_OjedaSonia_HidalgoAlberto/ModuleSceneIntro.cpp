@@ -35,6 +35,11 @@ bool ModuleSceneIntro::Start()
 	endGame = false;
 	frames = 60;
 
+	//Set all events to 0
+	for (size_t i = 0; i < NUMEVENTS; i++)
+	{
+		eventCounter[i] = 0;
+	}
 
 	fixCutre = false;
 	return ret;
@@ -45,6 +50,13 @@ bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
 	
+	
+	//Set all events to 0
+	for (size_t i = 0; i < NUMEVENTS; i++)
+	{
+		eventCounter[i] = 0;
+	}
+
 	App->renderer->UnLoadFont(App->renderer->blueFont);
 	App->renderer->UnLoadFont(App->renderer->greenFont);
 	return true;
@@ -57,6 +69,15 @@ update_status ModuleSceneIntro::Update()
 	App->window->SetTitle(title.GetString());
 
 	(App->physics->debug) ? Debug() : App->renderer->BlitText(10, 10, App->renderer->blueFont, "PRESS F1 TO ACTIVATE DEBUG");
+
+	//RANDOM EVENT GENERATOR
+	int random = rand() % 11+1;
+
+	if (random<=eventProbability* eventProbability)
+	{
+		RandomEvent();
+	}
+	
 
 	if (endGame)
 	{
@@ -415,5 +436,77 @@ void ModuleSceneIntro::renderParameters(std::vector<Worm*> list, int current)
 		string accy = std::to_string(App->physics->balls.at(list.at(current)->playerWeapon).ay);
 		const char* ay = accy.c_str();
 		App->renderer->BlitText(150, 180, App->renderer->blueFont, ay);
+	}
+}
+
+
+void ModuleSceneIntro::RandomEvent()
+{
+	int max = NUMEVENTS;
+	int num = rand() % max;
+
+
+	switch (num)
+	{
+	case ModuleSceneIntro::WATERRISE:
+		if (eventCounter[WATERRISE] <= (eventCounter[WATERDESCEND] + 4))
+		{
+			eventCounter[WATERRISE]++;
+			actualEvent = WATERRISE;
+			App->physics->water.h += 2.0f;
+			eventProbability = 0;
+			
+		}
+		break;
+	case ModuleSceneIntro::WATERDESCEND:
+		if (eventCounter[WATERRISE] + 3 >= eventCounter[WATERDESCEND])
+		{
+			eventCounter[WATERDESCEND]++;
+			eventProbability = 0;
+			App->physics->water.h -= 2.0f;
+ 			
+		}
+		break;
+	case ModuleSceneIntro::NOWIND:
+		if (abs(App->physics->atmosphere.windx)>1.0f)
+		{
+			eventCounter[NOWIND]++;
+			eventProbability = 0;
+			App->physics->atmosphere.windx = 0.1f*(App->physics->atmosphere.windx/abs(App->physics->atmosphere.windx)); //Asiganr un signo al viento
+		}
+		//RandomEvent();
+		break;
+	case ModuleSceneIntro::CHANGEWIND:
+		if ((eventCounter[MOREWIND]+ eventCounter[LESSFWIND])/2 >= eventCounter[CHANGEWIND])
+		{
+		
+		eventCounter[CHANGEWIND]++;
+		eventProbability = 0;
+		App->physics->atmosphere.windx *= -1.0f; //Asiganr un signo al viento
+		}
+		break;
+	case ModuleSceneIntro::MOREWIND:
+		if (eventCounter[MOREWIND] <= (eventCounter[LESSFWIND] + 3))
+		{
+			eventCounter[NOWIND]++;
+			eventProbability = 0;
+			App->physics->atmosphere.windx += 5.0f * (App->physics->atmosphere.windx / abs(App->physics->atmosphere.windx)); //Asiganr un signo al viento
+		}
+		//RandomEvent();
+		break;
+	case ModuleSceneIntro::LESSFWIND:
+		if (eventCounter[MOREWIND]+3 >= (eventCounter[LESSFWIND]))
+		{
+			eventCounter[NOWIND]++;
+			eventProbability = 0;
+			App->physics->atmosphere.windx -= 5.0f * (App->physics->atmosphere.windx / abs(App->physics->atmosphere.windx)); //Asiganr un signo al viento
+		}
+		//RandomEvent();
+		break;
+	case ModuleSceneIntro::NUMEVENTS:
+		//RandomEvent();
+		break;
+	default:
+		break;
 	}
 }

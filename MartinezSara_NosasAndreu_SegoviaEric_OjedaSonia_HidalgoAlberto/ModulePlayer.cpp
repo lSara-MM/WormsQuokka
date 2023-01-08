@@ -407,6 +407,7 @@ void ModulePlayer::controls(Worm* player, MovementType move)
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP) 	
 	{ 
+		App->scene_intro->eventProbability++;
 		shoot(player);
 		LOG("force %f", player->forceApplied);
 		player->forceApplied = 0;
