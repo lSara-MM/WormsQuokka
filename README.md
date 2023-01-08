@@ -26,6 +26,9 @@ the last "worm" standing.
 
 * Shoot -> Hold spacebar down to increase the force applied to the projectile, release to shoot
 
+* Restart level -> R 
+
+* Change player -> Shift + number (for now up to 2)
 
 ### Debug
 
@@ -65,7 +68,7 @@ the last "worm" standing.
 
 * 8 -> Enable or disable the feature that allows to change the FPS value with the left and right arrow keys
 
-* R -> Restart level
+* K -> Instant kill current player
 
 * M -> Increase the size of all bodies
 
