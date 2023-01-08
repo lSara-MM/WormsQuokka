@@ -110,31 +110,17 @@ void ModuleSceneIntro::Debug() {
 		App->physics->atmosphere.density = 1.0f; // [kg/m^3]
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN)
-	{
-		float posX = PIXEL_TO_METERS(App->input->GetMouseX());
-		float posY = PIXEL_TO_METERS(App->input->GetMouseY());
-		PhysBall ball2 = PhysBall(posX, posY, 0.5f, ObjectType::OTHER, 10.0f, 0.0f, 20.0f, 1.0f, 1.2f, 0.4f, 10.0f, 0.9f, 0.8f);
+	float posX = App->input->GetMouseX();
+	float posY = App->input->GetMouseY();
 
-		// Add ball to the collection
-		App->physics->balls.emplace_back(ball2);
-	}
+	if (App->input->GetKey(SDL_SCANCODE_B) == KEY_DOWN) 
+	{ App->player->CreateWeapon(posX, posY, 1, 1, 1, ObjectType::MISSILE); }
 
-	if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN)
-	{
-		float posX = App->input->GetMouseX();
-		float posY = App->input->GetMouseY();
+	if (App->input->GetKey(SDL_SCANCODE_V) == KEY_DOWN) 
+	{ App->player->CreateWeapon(posX, posY, 1, 1, 1, ObjectType::GUN); }
 
-		App->player->CreateWeapon(posX, posY, 1, 1, 1, ObjectType::GUN);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
-	{
-		float posX = App->input->GetMouseX();
-		float posY = App->input->GetMouseY();
-		App->player->CreateWeapon(posX, posY, 1, 1, 1, ObjectType::GRENADE);
-	}
-
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) 
+	{ App->player->CreateWeapon(posX, posY, 1, 1, 1, ObjectType::GRENADE); }
 
 	// "Nomenclatura": Bools con 1,2,3...,0 , multiple opcion con F1,F2...,F12
 	
