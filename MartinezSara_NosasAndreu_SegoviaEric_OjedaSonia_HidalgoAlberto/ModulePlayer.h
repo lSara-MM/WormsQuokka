@@ -1,3 +1,4 @@
+
 #pragma once
 #include "Module.h"
 #include "Animation.h"
@@ -27,7 +28,7 @@ public:
 		posX = posX_;
 		posY = posY_;
 		type = type_;
-		
+
 		gAmmo = 2;
 		mAmmo = 3;
 
@@ -69,7 +70,7 @@ public:
 		posY = posY_;
 		type = type_;
 	}
-	
+
 public:
 	//iPoint position;	// idk perque me dona problemes? tf 
 	int posX, posY;
@@ -106,13 +107,13 @@ public:
 
 	void turnControl();
 public:
-	 
+
 	//std::vector<int> listPlayers{};
 	std::vector<Worm*> listBlueP{};
 	std::vector<Worm*> listRedP{};
 
 	MovementType movement;
-	
+
 	bool playerTurn;	// blue = true, red = false
 	bool canPlay;
 
@@ -120,7 +121,6 @@ public:
 	int currentRed;
 	int deadBlue;
 	int deadRed;
-	int audiowin;
 
 private:
 	int setID;
@@ -134,6 +134,5 @@ private:
 	int audiogun;
 	int audiomisile;
 	int audiogrenade;
-	int audiodrums; 
-	
+	int audiodrums;
 };
