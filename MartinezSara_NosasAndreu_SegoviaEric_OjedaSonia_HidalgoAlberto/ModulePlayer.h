@@ -136,5 +136,7 @@ private:
 	bool jump;
 
 	Uint32 startTime = 0;
-	uint turnTimer;	
+	uint turnTimer;
+	Uint32 startTimeEvents = 0;
+	uint eventTimer;
 };

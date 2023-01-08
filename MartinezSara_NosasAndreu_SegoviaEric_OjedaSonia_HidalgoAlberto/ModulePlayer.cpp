@@ -121,6 +121,17 @@ update_status ModulePlayer::Update()
 		}
 	}
 
+	//Events control
+	eventTimer = SDL_GetTicks() - startTimeEvents;
+
+	LOG("Turn %d - Time left: %d", playerTurn, turnTimer);
+	if (eventTimer > 4000)
+	{
+		if (App->scene_intro->eventProbability <= 5) { App->scene_intro->eventProbability++; }
+		startTimeEvents = SDL_GetTicks();
+	}
+
+
 	return UPDATE_CONTINUE;
 }
 
@@ -172,7 +183,7 @@ int ModulePlayer::CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_)
 int ModulePlayer::CreateWeapon(int posX_, int posY_, int dir, float angle, float force, ObjectType type_)
 {
 	Weapon* new_gun = new Weapon(posX_, posY_, type_);
-
+	
 	float vx, vy, mass, rest;
 
 	float dirX = dir * cos(angle * DEG_TO_RAD);
@@ -505,7 +516,7 @@ void ModulePlayer::renderStats(Worm* player)
 int ModulePlayer::shoot(Worm* player)
 {
 	int a;	// projectile radius
-	App->scene_intro->eventProbability++;
+	
 	switch (player->weapon)
 	{
 	case ObjectType::GUN:
