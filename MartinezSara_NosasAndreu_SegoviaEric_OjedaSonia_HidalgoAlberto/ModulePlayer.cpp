@@ -90,8 +90,8 @@ update_status ModulePlayer::Update()
 		}
 
 		// Check hp
-		currentBlue = checkHp(listBlueP, currentBlue);
-		currentRed = checkHp(listRedP, currentRed);
+		currentBlue = checkHp(listBlueP, currentBlue, &deadBlue);
+		currentRed = checkHp(listRedP, currentRed, &deadRed);
 
 		// Win/Lose conditions
 		if (deadBlue == listBlueP.size() && deadRed < listRedP.size())
@@ -592,7 +592,7 @@ void ModulePlayer::LoseHPplayer(int body, ObjectType type_W, ObjectType type_P) 
 	}
 }
 
-int ModulePlayer::checkHp(std::vector<Worm*> list, int current)
+int ModulePlayer::checkHp(std::vector<Worm*> list, int current, int *deadCount)
 {
 	int dead = 0;
 	for (auto& Worm : list)
@@ -617,7 +617,7 @@ int ModulePlayer::checkHp(std::vector<Worm*> list, int current)
 				j++;
 			}
 			dead++;
-			deadBlue = dead;
+			*deadCount = dead;
 		}
 		else
 		{

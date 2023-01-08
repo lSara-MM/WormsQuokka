@@ -95,7 +95,7 @@ public:
 	int CreatePlayer(int posX_, int posY_, ObjectType type_, int hp_ = 100);
 	int CreateWeapon(int posX_, int posY_, int dirX, float angle, float force, ObjectType type_);
 	void LoseHPplayer(int body, ObjectType type_W, ObjectType type_P);
-	int checkHp(std::vector<Worm*> list, int current);
+	int checkHp(std::vector<Worm*> list, int current, int* deadCount);
 
 	int selectPlayer(int p);
 	void controls(Worm* player, MovementType move);
@@ -136,7 +136,5 @@ private:
 	bool jump;
 
 	Uint32 startTime = 0;
-	uint turnTimer;
-
-	
+	uint turnTimer;	
 };
