@@ -120,6 +120,7 @@ public:
 	int currentRed;
 	int deadBlue;
 	int deadRed;
+	int audiowin;
 
 private:
 	int setID;
@@ -134,5 +135,5 @@ private:
 	int audiomisile;
 	int audiogrenade;
 	int audiodrums; 
-	int audiowin; 
+	
 };
